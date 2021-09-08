@@ -2,6 +2,7 @@ export {};
 
 const fs = require("fs");
 const path = require("path");
+const process = require("process");
 const { Client, Collection, Intents } = require("discord.js");
 const { tokenId } = require("./config.json");
 
