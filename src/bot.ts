@@ -7,11 +7,16 @@ export class Bot {
   public listen(): Promise<string> {
     //wot
     console.log(this.token);
-    let client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-    client.on("message", (message: Message) => {
-      message.reply("Complete depression"); //complete depression
+    this.client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+    // client.on("message", (message: Message) => {
+    //   message.reply("Complete depression")
+    //     .then(() => console.log(`Replied to message "${message.content}"`))
+    //     .catch(console.error);
+    // });
+    this.client.on("message", (message: Message) => {
+      console.log("Message received! Contents: ", message.content);
     });
 
-    return client.login(this.token);
+    return this.client.login(this.token);
   }
 }
