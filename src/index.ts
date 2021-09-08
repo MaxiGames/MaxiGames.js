@@ -1,11 +1,16 @@
-import { Bot } from "./bot"; //from ./bot import Bot
+const { Client, Intents } = require("discord.js");
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-let bot = new Bot();
-bot
-  .listen()
-  .then(() => {
-    console.log("Logged in!");
-  })
-  .catch((error) => {
-    console.log("Oh no! This is so depressing! ", error);
-  });
+client.on("ready", () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isCommand()) return;
+
+  if (interaction.commandName === "ping") {
+    await interaction.reply("Pong!");
+  }
+});
+
+client.login(require(`../config.json`)["tokenIdBeta"]);
