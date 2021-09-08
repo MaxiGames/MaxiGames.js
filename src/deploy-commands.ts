@@ -27,8 +27,6 @@ for (const filecol of commandFiles) {
 
 const rest = new REST({ version: "9" }).setToken(tokenId);
 
-console.log(commands);
-
 (async () => {
   try {
     await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
