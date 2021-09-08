@@ -2,12 +2,7 @@ const fs = require("fs");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
-const {
-  clientId,
-  tokenId,
-  tokenIdBeta,
-  clientIdBeta,
-} = require("./config.json");
+const { clientId, tokenId } = require("./config.json");
 
 const commands = [];
 const commandFiles = fs
@@ -19,13 +14,11 @@ for (const file of commandFiles) {
   commands.push(command.data.toJSON());
 }
 
-const rest = new REST({ version: "9" }).setToken(tokenIdBeta);
+const rest = new REST({ version: "9" }).setToken(tokenId);
 
 (async () => {
   try {
-    await rest.put(Routes.applicationCommands(clientIdBeta), {
-      body: commands,
-    });
+    await rest.put(Routes.applicationCommands(clientId), { body: commands });
 
     console.log("Successfully registered application commands.");
   } catch (error) {
