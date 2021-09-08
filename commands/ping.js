@@ -1,4 +1,3 @@
-//literally all copy-pasted
 var __awaiter =
   (this && this.__awaiter) ||
   function (thisArg, _arguments, P, generator) {
@@ -132,67 +131,22 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
-var _this = this;
-var fs = require("fs");
-var _a = require("discord.js"),
-  Client = _a.Client,
-  Collection = _a.Collection,
-  Intents = _a.Intents;
-var _b = require("./config.json"),
-  tokenId = _b.tokenId,
-  tokenIdBeta = _b.tokenIdBeta;
-var client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-client.commands = new Collection();
-var commandFiles = fs.readdirSync("./commands").filter(function (file) {
-  return file.endsWith(".js");
-});
-for (
-  var _i = 0, commandFiles_1 = commandFiles;
-  _i < commandFiles_1.length;
-  _i++
-) {
-  var file = commandFiles_1[_i];
-  var command = require("./commands/" + file);
-  // Set a new item in the Collection
-  // With the key as the command name and the value as the exported module
-  client.commands.set(command.data.name, command);
-}
-client.once("ready", function () {
-  console.log("Logged in as " + client.user.tag + "!");
-});
-client.on("interactionCreate", function (interaction) {
-  return __awaiter(_this, void 0, void 0, function () {
-    var command, error_1;
-    return __generator(this, function (_a) {
-      switch (_a.label) {
-        case 0:
-          if (!interaction.isCommand()) return [2 /*return*/];
-          command = client.commands.get(interaction.commandName);
-          if (!command) return [2 /*return*/];
-          _a.label = 1;
-        case 1:
-          _a.trys.push([1, 3, , 5]);
-          return [4 /*yield*/, command.execute(interaction)];
-        case 2:
-          _a.sent();
-          return [3 /*break*/, 5];
-        case 3:
-          error_1 = _a.sent();
-          console.error(error_1);
-          return [
-            4 /*yield*/,
-            interaction.reply({
-              content: "There was an error while executing this command!",
-              ephemeral: true,
-            }),
-          ];
-        case 4:
-          _a.sent();
-          return [3 /*break*/, 5];
-        case 5:
-          return [2 /*return*/];
-      }
+var SlashCommandBuilder = require("@discordjs/builders").SlashCommandBuilder;
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName("ping")
+    .setDescription("Replies with Pong!"),
+  execute: function (interaction) {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            return [4 /*yield*/, interaction.reply("Pong!")];
+          case 1:
+            _a.sent();
+            return [2 /*return*/];
+        }
+      });
     });
-  });
-});
-client.login(tokenIdBeta);
+  },
+};
