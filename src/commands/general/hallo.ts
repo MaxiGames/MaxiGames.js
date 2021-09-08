@@ -13,7 +13,7 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction) {
-    let length: Int = interaction.options.getInteger("length") || 5;
+    let length: number = interaction.options.getInteger("length") || 5;
     if (length < 5 || length >= 2000) {
       await interaction.reply({
         content: "Invalid length!!! Length must be between 5 and 2000",
