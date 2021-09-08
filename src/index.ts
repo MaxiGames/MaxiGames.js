@@ -1,15 +1,22 @@
-//literally all copy-pasted
+export {};
 
 const fs = require("fs");
+const path = require("path");
 const { Client, Collection, Intents } = require("discord.js");
 const { tokenId, tokenIdBeta } = require("./config.json");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
-const commandFiles = fs
+const commandFiles: Array<[string, Array<string>]> = fs
   .readdirSync("./commands")
-  .filter((file) => file.endsWith(".js"));
+  .map((file: string) => "./commands/" + file)
+  .filter((file: string) => fs.lstatSync(file).isDirectory())
+  .map((dir: string) => [
+    dir,
+    fs.readdirSync(dir).filter((file: string) => file.endsWith(".js")),
+  ]);
+
 const eventFiles = fs
   .readdirSync("./events")
   .filter((file) => file.endsWith(".js"));
