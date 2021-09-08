@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter =
   (this && this.__awaiter) ||
   function (thisArg, _arguments, P, generator) {
@@ -131,6 +132,7 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
+exports.__esModule = true;
 var SlashCommandBuilder = require("@discordjs/builders").SlashCommandBuilder;
 module.exports = {
   data: new SlashCommandBuilder()

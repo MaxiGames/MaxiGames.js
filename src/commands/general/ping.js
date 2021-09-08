@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter =
   (this && this.__awaiter) ||
   function (thisArg, _arguments, P, generator) {
@@ -131,17 +132,21 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
+exports.__esModule = true;
 var SlashCommandBuilder = require("@discordjs/builders").SlashCommandBuilder;
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Replies with Pong!"),
+  data: new SlashCommandBuilder().setName("ping").setDescription("man ping"),
   execute: function (interaction) {
     return __awaiter(this, void 0, void 0, function () {
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
-            return [4 /*yield*/, interaction.reply("Pong!")];
+            return [
+              4 /*yield*/,
+              interaction.reply(
+                "69 bytes from localhost (0.0.0.0): icmp_seq=1 ttl=107 time=3.14 ms"
+              ),
+            ];
           case 1:
             _a.sent();
             return [2 /*return*/];

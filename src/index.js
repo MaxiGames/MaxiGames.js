@@ -1,4 +1,4 @@
-//literally all copy-pasted
+"use strict";
 var __awaiter =
   (this && this.__awaiter) ||
   function (thisArg, _arguments, P, generator) {
@@ -132,8 +132,9 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
-var _this = this;
+exports.__esModule = true;
 var fs = require("fs");
+var path = require("path");
 var _a = require("discord.js"),
   Client = _a.Client,
   Collection = _a.Collection,
@@ -143,9 +144,22 @@ var _b = require("./config.json"),
   tokenIdBeta = _b.tokenIdBeta;
 var client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 client.commands = new Collection();
-var commandFiles = fs.readdirSync("./commands").filter(function (file) {
-  return file.endsWith(".js");
-});
+var commandFiles = fs
+  .readdirSync("./commands")
+  .map(function (file) {
+    return "./commands/" + file;
+  })
+  .filter(function (file) {
+    return fs.lstatSync(file).isDirectory();
+  })
+  .map(function (dir) {
+    return [
+      dir,
+      fs.readdirSync(dir).filter(function (file) {
+        return file.endsWith(".js");
+      }),
+    ];
+  });
 var eventFiles = fs.readdirSync("./events").filter(function (file) {
   return file.endsWith(".js");
 });
@@ -185,7 +199,7 @@ for (
   client.commands.set(command.data.name, command);
 }
 client.on("interactionCreate", function (interaction) {
-  return __awaiter(_this, void 0, void 0, function () {
+  return __awaiter(void 0, void 0, void 0, function () {
     var command, error_1;
     return __generator(this, function (_a) {
       switch (_a.label) {

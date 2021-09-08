@@ -1,3 +1,5 @@
+export {};
+
 const fs = require("fs");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { REST } = require("@discordjs/rest");

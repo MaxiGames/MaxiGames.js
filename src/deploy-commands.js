@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter =
   (this && this.__awaiter) ||
   function (thisArg, _arguments, P, generator) {
@@ -131,12 +132,12 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
-var _this = this;
+exports.__esModule = true;
 var fs = require("fs");
 var SlashCommandBuilder = require("@discordjs/builders").SlashCommandBuilder;
 var REST = require("@discordjs/rest").REST;
 var Routes = require("discord-api-types/v9").Routes;
-var _a = require("../config.json"),
+var _a = require("./config.json"),
   clientId = _a.clientId,
   clientIdBeta = _a.clientIdBeta,
   tokenId = _a.tokenId,
@@ -156,7 +157,7 @@ for (
 }
 var rest = new REST({ version: "9" }).setToken(tokenIdBeta);
 (function () {
-  return __awaiter(_this, void 0, void 0, function () {
+  return __awaiter(void 0, void 0, void 0, function () {
     var error_1;
     return __generator(this, function (_a) {
       switch (_a.label) {
