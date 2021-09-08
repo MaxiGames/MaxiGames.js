@@ -1,8 +1,11 @@
-import { Client, Message } from "discord.js";
-export class Bot {
-  public listen(): Promise<string> {
-    let client = new Client();
-    client.on("message", (message: Message) => {});
-    return client.login("token should be here");
-  }
-}
+import { Bot } from "./bot"; //from ./bot import Bot
+
+let bot = new Bot();
+bot
+  .listen()
+  .then(() => {
+    console.log("Logged in!");
+  })
+  .catch((error) => {
+    console.log("Oh no! This is so depressing! ", error);
+  });
