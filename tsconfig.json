@@ -6,6 +6,7 @@
     "lib": ["es5", "dom"],
     "sourceMap": true,
     "types": ["node"],
+    "outDir": "js",
     "typeRoots": [
       // add path to @types
       "node_modules/@types"
@@ -14,6 +15,5 @@
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules"],
-  "outDir": "/js"
+  "exclude": ["node_modules"]
 }
