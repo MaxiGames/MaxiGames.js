@@ -138,9 +138,9 @@ var REST = require("@discordjs/rest").REST;
 var Routes = require("discord-api-types/v9").Routes;
 var _a = require("./config.json"),
   clientId = _a.clientId,
+  clientIdBeta = _a.clientIdBeta,
   tokenId = _a.tokenId,
-  tokenIdBeta = _a.tokenIdBeta,
-  clientIdBeta = _a.clientIdBeta;
+  tokenIdBeta = _a.tokenIdBeta;
 var commands = [];
 var commandFiles = fs.readdirSync("./commands").filter(function (file) {
   return file.endsWith(".js");

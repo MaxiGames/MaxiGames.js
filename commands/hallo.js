@@ -134,15 +134,37 @@ var __generator =
 var SlashCommandBuilder = require("@discordjs/builders").SlashCommandBuilder;
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Replies with Pong!"),
+    .setName("hallo")
+    .setDescription("Say hallo to Maxigames :D")
+    .addIntegerOption(function (option) {
+      return option
+        .setName("length")
+        .setDescription("Length of the hallo message")
+        .setRequired(false);
+    }),
   execute: function (interaction) {
     return __awaiter(this, void 0, void 0, function () {
+      var length, numberOfO;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
-            return [4 /*yield*/, interaction.reply("Pong!")];
+            length = interaction.options.getInteger("length") || 5;
+            if (!(length < 5 || length >= 2000)) return [3 /*break*/, 2];
+            return [
+              4 /*yield*/,
+              interaction.reply({
+                content: "Invalid length!!! Length must be between 5 and 2000",
+                ephemeral: true,
+              }),
+            ];
           case 1:
+            _a.sent();
+            return [2 /*return*/];
+          case 2:
+            length -= 3;
+            numberOfO = "o".repeat(length);
+            return [4 /*yield*/, interaction.reply("Hall" + numberOfO)];
+          case 3:
             _a.sent();
             return [2 /*return*/];
         }

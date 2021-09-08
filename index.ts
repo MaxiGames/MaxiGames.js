@@ -46,4 +46,4 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-client.login(tokenId);
+client.login(tokenIdBeta);

@@ -138,7 +138,9 @@ var _a = require("discord.js"),
   Client = _a.Client,
   Collection = _a.Collection,
   Intents = _a.Intents;
-var tokenId = require("./config.json").tokenId;
+var _b = require("./config.json"),
+  tokenId = _b.tokenId,
+  tokenIdBeta = _b.tokenIdBeta;
 var client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 client.commands = new Collection();
 var commandFiles = fs.readdirSync("./commands").filter(function (file) {
@@ -172,11 +174,11 @@ for (var _i = 0, eventFiles_1 = eventFiles; _i < eventFiles_1.length; _i++) {
   _loop_1(file);
 }
 for (
-  var _b = 0, commandFiles_1 = commandFiles;
-  _b < commandFiles_1.length;
-  _b++
+  var _c = 0, commandFiles_1 = commandFiles;
+  _c < commandFiles_1.length;
+  _c++
 ) {
-  var file = commandFiles_1[_b];
+  var file = commandFiles_1[_c];
   var command = require("./commands/" + file);
   // Set a new item in the Collection
   // With the key as the command name and the value as the exported module
@@ -217,4 +219,4 @@ client.on("interactionCreate", function (interaction) {
     });
   });
 });
-client.login(tokenId);
+client.login(tokenIdBeta);
