@@ -7,8 +7,7 @@
     "sourceMap": true,
     "types": [
       // add node as an option
-      "node",
-      "reflect-metadata"
+      "node"
     ],
     "typeRoots": [
       // add path to @types
