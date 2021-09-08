@@ -7,7 +7,7 @@ const { tokenId } = require("./config.json");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-const commands: Map<string, JSON> = new Map();
+client.commands = new Collection();
 
 // NOTE: The directory "commands" should contain subdirectories to organise js commands.
 const commandFiles: Array<[string, Array<string>]> = fs
@@ -35,7 +35,7 @@ for (const file of eventFiles) {
 for (const filecol of commandFiles) {
   for (const name of filecol[1]) {
     const command = require(`./${path.join(filecol[0], name)}`);
-    commands.set(command.data.name, command);
+    client.commands.set(command.data.name, command);
   }
 }
 
