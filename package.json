@@ -4,7 +4,7 @@
   "description": "Your one and only discord bot that includes all forms of minigames you will ever want. Have a suggestion for another? Open an issue!",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "tsc; node src/index.js",
     "watch": "tsc -p tsconfig.json -w",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\""
   },

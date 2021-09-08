@@ -10,6 +10,8 @@ client.on("interactionCreate", async (interaction) => {
 
   if (interaction.commandName === "ping") {
     await interaction.reply("Pong!");
+  } else if (interaction.commandName === "pog") {
+    await interaction.reply("Pog\nyay");
   }
 });
 
