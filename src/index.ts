@@ -3,7 +3,7 @@ export {};
 const fs = require("fs");
 const path = require("path");
 const { Client, Collection, Intents } = require("discord.js");
-const { tokenId } = require("./config.json");
+const { tokenId, tokenIdBeta } = require("./config.json");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -55,4 +55,4 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-client.login(tokenId);
+client.login(tokenIdBeta);

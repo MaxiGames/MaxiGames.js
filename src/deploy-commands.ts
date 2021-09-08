@@ -4,7 +4,14 @@ const fs = require("fs");
 const path = require("path");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
-const { clientId, guildId, tokenId } = require("./config.json");
+const {
+  clientId,
+  clientIdBeta,
+  guildId,
+  guildIdBeta,
+  tokenId,
+  tokenIdBeta,
+} = require("./config.json");
 
 const commands = [];
 
@@ -21,15 +28,16 @@ const commandFiles: Array<[string, Array<string>]> = fs
 for (const filecol of commandFiles) {
   for (const name of filecol[1]) {
     const command = require(`./${path.join(filecol[0], name)}`);
+    console.log(name);
     commands.push(command.data.toJSON());
   }
 }
 
-const rest = new REST({ version: "9" }).setToken(tokenId);
+const rest = new REST({ version: "9" }).setToken(tokenIdBeta);
 
 (async () => {
   try {
-    await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+    await rest.put(Routes.applicationCommands(clientIdBeta), {
       body: commands,
     });
 
