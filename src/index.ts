@@ -12,7 +12,7 @@ const commands: Map<string, JSON> = new Map();
 // NOTE: The directory "commands" should contain subdirectories to organise js commands.
 const commandFiles: Array<[string, Array<string>]> = fs
   .readdirSync("./commands")
-  .map((file: string) => "./commands/" + file)
+  .map((file: string) => path.join("./commands", file))
   .filter((file: string) => fs.lstatSync(file).isDirectory())
   .map((dir: string) => [
     dir,
