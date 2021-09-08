@@ -131,22 +131,50 @@ var __generator =
       return { value: op[0] ? op[1] : void 0, done: true };
     }
   };
+var _this = this;
+var fs = require("fs");
 var SlashCommandBuilder = require("@discordjs/builders").SlashCommandBuilder;
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Replies with Pong!"),
-  execute: function (interaction) {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            return [4 /*yield*/, interaction.reply("Pong!")];
-          case 1:
-            _a.sent();
-            return [2 /*return*/];
-        }
-      });
+var REST = require("@discordjs/rest").REST;
+var Routes = require("discord-api-types/v9").Routes;
+var _a = require("./config.json"),
+  clientId = _a.clientId,
+  tokenId = _a.tokenId;
+var commands = [];
+var commandFiles = fs.readdirSync("./commands").filter(function (file) {
+  return file.endsWith(".js");
+});
+for (
+  var _i = 0, commandFiles_1 = commandFiles;
+  _i < commandFiles_1.length;
+  _i++
+) {
+  var file = commandFiles_1[_i];
+  var command = require("./commands/" + file);
+  commands.push(command.data.toJSON());
+}
+var rest = new REST({ version: "9" }).setToken(tokenId);
+(function () {
+  return __awaiter(_this, void 0, void 0, function () {
+    var error_1;
+    return __generator(this, function (_a) {
+      switch (_a.label) {
+        case 0:
+          _a.trys.push([0, 2, , 3]);
+          return [
+            4 /*yield*/,
+            rest.put(Routes.applicationCommands(clientId), { body: commands }),
+          ];
+        case 1:
+          _a.sent();
+          console.log("Successfully registered application commands.");
+          return [3 /*break*/, 3];
+        case 2:
+          error_1 = _a.sent();
+          console.error(error_1);
+          return [3 /*break*/, 3];
+        case 3:
+          return [2 /*return*/];
+      }
     });
-  },
-};
+  });
+})();
