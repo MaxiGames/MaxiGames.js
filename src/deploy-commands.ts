@@ -32,6 +32,7 @@ for (const filecol of commandFiles) {
     commands.push(command.data.toJSON());
   }
 }
+console.log(commands);
 
 const rest = new REST({ version: "9" }).setToken(tokenIdBeta);
 
