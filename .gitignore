@@ -3,4 +3,5 @@ node_modules
 config.json
 serviceAccountKey.json
 serviceAccountKey2.json
-**.js**
+*.js
+*.js.map

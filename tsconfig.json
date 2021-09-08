@@ -2,13 +2,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es2016",
-    "lib": ["es6", "dom"],
+    "target": "es5",
+    "lib": ["es5", "dom"],
     "sourceMap": true,
-    "types": [
-      // add node as an option
-      "node"
-    ],
+    "types": ["node"],
     "typeRoots": [
       // add path to @types
       "node_modules/@types"
