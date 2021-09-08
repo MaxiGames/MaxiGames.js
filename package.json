@@ -4,7 +4,8 @@
   "description": "Your one and only discord bot that includes all forms of minigames you will ever want. Have a suggestion for another? Open an issue!",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,8 @@
   },
   "homepage": "https://github.com/MaxiGames/MaxiGames.js#readme",
   "devDependencies": {
+    "husky": "^7.0.0",
+    "pretty-quick": "^3.1.1",
     "typescript": "^4.4.2"
   },
   "dependencies": {
