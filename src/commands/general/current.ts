@@ -9,13 +9,27 @@ const current: MyCommand = {
 
   async execute(interaction) {
     const now = new Date();
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
     const embed = new MessageEmbed()
       .setColor("#009090")
       .setTitle("Current Date and Time")
       .setDescription("Find the current date and time below :D")
       .addFields(
-        { name: "Date", value: now.toDateString(), inline: true }
-        // { name: 'Day', value: now.to}
+        { name: "Date", value: now.toDateString(), inline: true },
+        { name: "Day", value: days[now.getDay()], inline: true },
+        {
+          name: "Time",
+          value: `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`,
+          inline: true,
+        }
       );
     await interaction.reply({ embeds: [embed] });
   },
