@@ -1,5 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run check-commands
+npm run --silent check-commands
 npx pretty-quick --staged
