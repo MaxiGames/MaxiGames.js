@@ -1,4 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+npm run check-commands >/dev/null 2>&1 || { echo "Invalid command(s) exist(s)!"; exit 1; }
 npx pretty-quick --staged
