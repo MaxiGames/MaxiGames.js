@@ -1,5 +1,5 @@
 import { Client, Intents } from "discord.js";
-import { tokenIdBeta } from "../config.json"; // TODO switch to dotenv
+import config from "./config"; // TODO switch to dotenv
 
 import commands from "./commands";
 import events from "./events";
@@ -30,4 +30,4 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-client.login(tokenIdBeta);
+client.login(config.tokenId);
