@@ -2,11 +2,14 @@
   "name": "maxigames",
   "version": "1.0.0",
   "description": "Your one and only discord bot that includes all forms of minigames you will ever want. Have a suggestion for another? Open an issue!",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "tsc; node src/index.js",
-    "watch": "tsc -p tsconfig.json -w",
-    "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\""
+    "prepare": "husky install",
+    "start": "node dist/src/index.js",
+    "dev": "ts-node-dev src",
+    "build": "tsc",
+    "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
+    "deploy-commands": "ts-node scripts/deploy-commands.ts"
   },
   "repository": {
     "type": "git",
@@ -27,6 +30,7 @@
     "pretty-quick": "^3.1.1",
     "ts-mockito": "^2.6.1",
     "ts-node": "^10.2.1",
+    "ts-node-dev": "^1.1.8",
     "typescript": "^4.4.2"
   },
   "dependencies": {

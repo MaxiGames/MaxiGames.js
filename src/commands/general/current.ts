@@ -1,9 +1,8 @@
-export {};
+import { SlashCommandBuilder } from "@discordjs/builders";
+import { MessageEmbed } from "discord.js";
+import type MyCommand from "../../types/command";
 
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const { MessageEmbed } = require("discord.js");
-
-module.exports = {
+const current: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("current")
     .setDescription("Get the current date and time"),
@@ -21,3 +20,5 @@ module.exports = {
     await interaction.reply({ embeds: [embed] });
   },
 };
+
+export default current;

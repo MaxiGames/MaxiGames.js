@@ -1,50 +1,24 @@
-export {};
+import { Client, Intents } from "discord.js";
+import { tokenIdBeta } from "../config.json"; // TODO switch to dotenv
 
-const fs = require("fs");
-const path = require("path");
-const process = require("process");
-const { Client, Collection, Intents } = require("discord.js");
-const { tokenId, tokenIdBeta } = require("./config.json");
+import commands from "./commands";
+import events from "./events";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-client.commands = new Collection();
-
-// NOTE: The directory "commands" should contain subdirectories to organise js commands.
-const commandFiles: Array<[string, Array<string>]> = fs
-  .readdirSync("./commands")
-  .map((file: string) => path.join("./commands", file))
-  .filter((file: string) => fs.lstatSync(file).isDirectory())
-  .map((dir: string) => [
-    dir,
-    fs.readdirSync(dir).filter((file: string) => file.endsWith(".js")),
-  ]);
-
-const eventFiles = fs
-  .readdirSync("./events")
-  .filter((file) => file.endsWith(".js"));
-
-for (const file of eventFiles) {
-  const event = require(`./events/${file}`);
-  if (event.once) {
-    client.once(event.name, (...args) => event.execute(...args));
-  } else {
-    client.on(event.name, (...args) => event.execute(...args));
-  }
+// Register event handlers
+for (const event of events) {
+  if (event.once) client.once(event.name, event.execute);
+  else client.on(event.name, event.execute);
 }
 
-for (const filecol of commandFiles) {
-  for (const name of filecol[1]) {
-    const command = require(`./${path.join(filecol[0], name)}`);
-    client.commands.set(command.data.name, command);
-  }
-}
-
+// Handle commands
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
-  const command = client.commands.get(interaction.commandName);
+  const command = commands[interaction.commandName];
   if (!command) return;
+
   try {
     await command.execute(interaction);
   } catch (error) {
