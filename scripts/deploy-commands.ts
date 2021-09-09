@@ -1,7 +1,30 @@
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v9";
+export {};
+
+const fs = require("fs");
+const path = require("path");
+const { REST } = require("@discordjs/rest");
+const { Routes } = require("discord-api-types/v9");
 import config from "../src/config";
-import commands from "../src/commands";
+
+const commands: Array<JSON> = [];
+
+// NOTE: The directory "commands" should contain subdirectories to organise js commands.
+const commandFiles: Array<[string, Array<string>]> = fs
+  .readdirSync("./dist/src/commands")
+  .map((file: string) => path.join("./dist/src/commands", file))
+  .filter((file: string) => fs.lstatSync(file).isDirectory())
+  .map((dir: string) => [
+    dir,
+    fs.readdirSync(dir).filter((file: string) => file.endsWith(".js")),
+  ]);
+
+for (const filecol of commandFiles) {
+  for (const name of filecol[1]) {
+    const command = require(`../${path.join(filecol[0], name)}`); // funny path-fu
+    commands.push(command.default.data.toJSON());
+    console.log(`Registered ${name}`);
+  }
+}
 
 const rest = new REST({ version: "9" }).setToken(config.tokenId);
 
@@ -10,7 +33,7 @@ const rest = new REST({ version: "9" }).setToken(config.tokenId);
     await rest.put(
       Routes.applicationGuildCommands(config.clientId, config.guildId),
       {
-        body: Object.values(commands).map((v) => v.data.toJSON!()),
+        body: commands,
       }
     );
 

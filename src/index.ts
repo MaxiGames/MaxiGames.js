@@ -16,7 +16,7 @@ for (const event of events) {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
-  const command = commands[interaction.commandName];
+  const command = commands.get(interaction.commandName);
   if (!command) return;
 
   try {
