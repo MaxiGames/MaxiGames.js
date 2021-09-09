@@ -7,6 +7,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("current")
     .setDescription("Get the current date and time"),
+
   async execute(interaction) {
     const now = new Date();
     const embed = new MessageEmbed()

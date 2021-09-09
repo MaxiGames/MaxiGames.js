@@ -28,17 +28,15 @@ const commandFiles: Array<[string, Array<string>]> = fs
 for (const filecol of commandFiles) {
   for (const name of filecol[1]) {
     const command = require(`./${path.join(filecol[0], name)}`);
-    console.log(name);
     commands.push(command.data.toJSON());
   }
 }
-console.log(commands);
 
 const rest = new REST({ version: "9" }).setToken(tokenIdBeta);
 
 (async () => {
   try {
-    await rest.put(Routes.applicationCommands(clientIdBeta), {
+    await rest.put(Routes.applicationGuildCommands(clientIdBeta, guildIdBeta), {
       body: commands,
     });
 
