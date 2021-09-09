@@ -1,7 +1,8 @@
 node_modules
 .DS_Store
 dist/
+js/
 
-config-*.json
+config*.json
 serviceAccountKey.json
 serviceAccountKey2.json
