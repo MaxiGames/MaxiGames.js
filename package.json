@@ -2,9 +2,8 @@
   "name": "maxigames",
   "version": "1.0.0",
   "description": "Your one and only discord bot that includes all forms of minigames you will ever want. Have a suggestion for another? Open an issue!",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "test",
     "prepare": "husky install"
   },
   "repository": {
