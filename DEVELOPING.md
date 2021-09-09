@@ -1,6 +1,6 @@
-# Notes for developers
+# Notes for developers or contributors
 
-## Scripts
+## **Scripts**
 
 **build**  
 Compiles the typescript to javascript. The compiled JS is in `dist/`
