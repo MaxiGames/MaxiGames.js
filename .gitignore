@@ -3,6 +3,6 @@ node_modules
 dist/
 js/
 
-config-*.json
+config*.json
 serviceAccountKey.json
 serviceAccountKey2.json
