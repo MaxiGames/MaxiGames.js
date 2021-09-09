@@ -1,15 +1,13 @@
 // import fs from "fs";
 // import path from "path";
 import { Client, Intents } from "discord.js";
-import { tokenId, tokenIdBeta } from "../config.json"; // TODO switch to dotenv
-
-import type MyCommand from "./types/command";
-import hallo from "./commands/general/hallo";
+import { tokenIdBeta } from "../config.json"; // TODO switch to dotenv
 import current from "./commands/general/current";
+import hallo from "./commands/general/hallo";
 import ping from "./commands/general/ping";
-
-import type MyEvent from "./types/event";
 import ready from "./events/ready";
+import type MyCommand from "./types/command";
+import type MyEvent from "./types/event";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -20,38 +18,6 @@ const commands: { [k: string]: MyCommand } = {
 };
 
 const events: MyEvent[] = [ready];
-
-// {{{
-// NOTE: The directory "commands" should contain subdirectories to organise js commands.
-// const commandFiles: Array<[string, Array<string>]> = fs
-//   .readdirSync("./commands")
-//   .map((file: string) => "./commands/" + file)
-//   .filter((file: string) => fs.lstatSync(file).isDirectory())
-//   .map((dir: string) => [
-//     dir,
-//     fs.readdirSync(dir).filter((file: string) => file.endsWith(".js")),
-//   ]);
-
-// const eventFiles = fs
-//   .readdirSync("./events")
-//   .filter((file) => file.endsWith(".js"));
-
-// for (const file of eventFiles) {
-//   const event = require(`./events/${file}`);
-//   if (event.once) {
-//     client.once(event.name, (...args) => event.execute(...args));
-//   } else {
-//     client.on(event.name, (...args) => event.execute(...args));
-//   }
-// }
-
-// for (const filecol of commandFiles) {
-//   for (const name of filecol[1]) {
-//     const command = require(`./${path.join(filecol[0], name)}`);
-//     client.commands.set(command.data.name, command);
-//   }
-// }
-// }}}
 
 // Register event handlers
 for (const event of events) {
