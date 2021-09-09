@@ -4,11 +4,11 @@ const fs = require("fs");
 const path = require("path");
 const process = require("process");
 const { Client, Collection, Intents } = require("discord.js");
-const { tokenId } = require("./config.json");
+const { tokenId, tokenIdBeta } = require("./config.json");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-const commands: Map<string, JSON> = new Map();
+client.commands = new Collection();
 
 // NOTE: The directory "commands" should contain subdirectories to organise js commands.
 const commandFiles: Array<[string, Array<string>]> = fs
@@ -20,37 +20,40 @@ const commandFiles: Array<[string, Array<string>]> = fs
     fs.readdirSync(dir).filter((file: string) => file.endsWith(".js")),
   ]);
 
-for (const filecol of commandFiles) {
-  for (const name of filecol[1]) {
-    const command = require(`./${path.join(filecol[0], name)}`);
-    commands.set(command.data.name, command);
+const eventFiles = fs
+  .readdirSync("./events")
+  .filter((file) => file.endsWith(".js"));
+
+for (const file of eventFiles) {
+  const event = require(`./events/${file}`);
+  if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args));
+  } else {
+    client.on(event.name, (...args) => event.execute(...args));
   }
 }
 
-client.once("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
+for (const filecol of commandFiles) {
+  for (const name of filecol[1]) {
+    const command = require(`./${path.join(filecol[0], name)}`);
+    client.commands.set(command.data.name, command);
+  }
+}
 
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) {
-    return;
-  }
+  if (!interaction.isCommand()) return;
 
-  const command = commands.get(interaction.commandName);
-
-  if (!command) {
-    return;
-  }
-
+  const command = client.commands.get(interaction.commandName);
+  if (!command) return;
   try {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    return interaction.reply({
+    await interaction.reply({
       content: "There was an error while executing this command!",
       ephemeral: true,
     });
   }
 });
 
-client.login(require(`../config.json`)["tokenIdBeta"]);
+client.login(tokenIdBeta);
