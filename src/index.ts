@@ -1,25 +1,10 @@
 import { Client, Intents } from "discord.js";
 import { tokenIdBeta } from "../config.json"; // TODO switch to dotenv
 
-import type MyCommand from "./types/command";
-import current from "./commands/general/current";
-import hallo from "./commands/general/hallo";
-import pog from "./commands/general/pog";
-import ping from "./commands/general/ping";
-
-import type MyEvent from "./types/event";
-import ready from "./events/ready";
+import commands from "./commands";
+import events from "./events";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-
-const commands: { [k: string]: MyCommand } = {
-  hallo,
-  current,
-  ping,
-  pog,
-};
-
-const events: MyEvent[] = [ready];
 
 // Register event handlers
 for (const event of events) {

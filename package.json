@@ -8,7 +8,8 @@
     "start": "node dist/src/index.js",
     "dev": "ts-node-dev src",
     "build": "tsc",
-    "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\""
+    "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
+    "deploy-commands": "ts-node scripts/deploy-commands.ts"
   },
   "repository": {
     "type": "git",
