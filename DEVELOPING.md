@@ -6,12 +6,14 @@
 Compiles the typescript to javascript. The compiled JS is in `dist/`
 
 **start**  
-Runs the production code in dist/. Remember to build first!
+Runs the production code in `dist/`. Remember to build first!
 
-**dev** Use this when developing. It auto-reloads when a file changes.
+**dev**  
+Use this when developing. It auto-reloads when a file changes.
 
-**deploy-commands** Deploys the commands to discord's servers. Run this after
-updating the name of a command or when adding a new command.
+**deploy-commands**  
+Deploys the commands to discord's servers. Run this after updating the name of a
+command or when adding a new command.
 
 ## config.json
 
