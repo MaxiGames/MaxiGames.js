@@ -21,14 +21,19 @@ const hallo: MyCommand = {
     const love: number = interaction.options.getInteger("love") || 1;
     const name: string =
       interaction.options.getString("name") || interaction.user.username;
-    if (love < 1 || love >= 1800) {
+    if (love > 1800) {
       await interaction.reply({
-        content: "Invalid length!!! Length must be between 1 and 1800",
+        content: "Ono we only have 1800 love to give ;_;",
         ephemeral: true,
       });
-      return;
+    } else if (love < 1) {
+      await interaction.reply({
+        content: "No hate! >:(",
+        ephemeral: true,
+      });
+    } else {
+      await interaction.reply(`Hall${"o".repeat(love)} ${name}!!!`);
     }
-    await interaction.reply(`Hall${"o".repeat(love)} ${name}!!!`);
   },
 };
 
