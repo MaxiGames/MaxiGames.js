@@ -7,8 +7,8 @@ const hallo: MyCommand = {
     .setDescription("Say hallo to someone :D")
     .addIntegerOption((option) =>
       option
-        .setName("length")
-        .setDescription("Length of the hallo message")
+        .setName("love")
+        .setDescription("How much hallo can you give? :D")
         .setRequired(false)
     )
     .addStringOption((option) =>
@@ -18,20 +18,17 @@ const hallo: MyCommand = {
         .setRequired(false)
     ),
   async execute(interaction) {
-    let length: number = interaction.options.getInteger("length") || 8;
-    let name: string =
+    const love: number = interaction.options.getInteger("love") || 1;
+    const name: string =
       interaction.options.getString("name") || interaction.user.username;
-    length += name.length;
-    if (length < 5 || length >= 2000) {
+    if (love < 1 || love >= 1800) {
       await interaction.reply({
-        content: "Invalid length!!! Length must be between 5 and 2000",
+        content: "Invalid length!!! Length must be between 1 and 1800",
         ephemeral: true,
       });
       return;
     }
-    length -= 7 + name.length;
-    const numberOfO = "o".repeat(length);
-    await interaction.reply(`Hall${numberOfO} ${name}!!!`);
+    await interaction.reply(`Hall${"o".repeat(love)} ${name}!!!`);
   },
 };
 
