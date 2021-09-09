@@ -19,7 +19,7 @@ const current: MyCommand = {
       "Saturday",
     ];
     const embed = new MessageEmbed()
-      .setColor("#009090")
+      .setColor("#57F287")
       .setTitle("Current Date and Time")
       .setDescription("Find the current date and time below :D")
       .addFields(

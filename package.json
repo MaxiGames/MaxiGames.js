@@ -5,12 +5,13 @@
   "main": "src/index.js",
   "scripts": {
     "prepare": "husky install",
-    "start": "node dist/src/index.js",
+    "init": "node dist/src/index.js",
     "dev": "ts-node-dev src",
     "build": "tsc",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
     "deploy-commands": "ts-node scripts/deploy-commands.ts",
-    "deploy": "./scripts/heroku-deploy.sh"
+    "deploy": "./scripts/heroku-deploy.sh",
+    "start": "npm run build; npm run deploy-commands; npm run init"
   },
   "repository": {
     "type": "git",

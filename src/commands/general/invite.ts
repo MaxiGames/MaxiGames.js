@@ -12,7 +12,7 @@ const invite: MyCommand = {
       .setDescription(
         "https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=399397481590&scope=bot%20applications.commands"
       )
-      .setColor("#009090");
+      .setColor("#57F287");
     await interaction.reply({ embeds: [embed] });
   },
 };
