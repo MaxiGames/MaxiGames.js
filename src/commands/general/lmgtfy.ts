@@ -53,15 +53,15 @@ const lmgtfy: MyCommand = {
 
     const iie = interaction.options.getBoolean("insult") ? "&iie=1" : "";
     const idiot = interaction.options.getUser("whichidiot");
-    const idiotstr = idiot ? `<@${idiot.id}>, ` : "";
+    const prefixstr = idiot ? `<@${idiot.id}>, [f` : "[F";
 
     const embed = new MessageEmbed()
       .setColor("#57F287")
       .setTitle(`${searchstr}?`)
       .setDescription(
-        `${idiotstr}[Find ye answer](https://lmgtfy.app/?q=${encodeURI(
+        `${prefixstr}ind ye answer](https://lmgtfy.app/?q=${encodeURI(
           searchstr
-        )}${iie})`
+        )}${iie}).`
       );
 
     await interaction.reply({ embeds: [embed] });
