@@ -2,8 +2,6 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
 import MyCommand from "../../types/command";
 
-// TODO: mention the person who couldn't be bothered to STFW?
-
 const lmgtfy: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("lmgtfy")
@@ -13,6 +11,12 @@ const lmgtfy: MyCommand = {
         .setName("searchstring")
         .setDescription("what to search for")
         .setRequired(true)
+    )
+    .addUserOption((option) =>
+      option
+        .setName("whichidiot")
+        .setDescription("which idiot didn't know how to STFW?")
+        .setRequired(false)
     )
     .addBooleanOption((option) =>
       option.setName("bruhmode").setDescription("very bruh").setRequired(false)
@@ -25,6 +29,7 @@ const lmgtfy: MyCommand = {
         )
         .setRequired(false)
     ),
+
   async execute(interaction) {
     let searchstr: string = interaction.options.getString("searchstring")!;
 
@@ -47,12 +52,16 @@ const lmgtfy: MyCommand = {
     }
 
     const iie = interaction.options.getBoolean("insult") ? "&iie=1" : "";
+    const idiot = interaction.options.getUser("whichidiot");
+    const idiotstr = idiot ? `<@${idiot.id}>, ` : "";
 
     const embed = new MessageEmbed()
       .setColor("#57F287")
       .setTitle(`${searchstr}?`)
       .setDescription(
-        `[Find ye answer](https://lmgtfy.app/?q=${encodeURI(searchstr)}${iie})`
+        `${idiotstr}[Find ye answer](https://lmgtfy.app/?q=${encodeURI(
+          searchstr
+        )}${iie})`
       );
 
     await interaction.reply({ embeds: [embed] });
