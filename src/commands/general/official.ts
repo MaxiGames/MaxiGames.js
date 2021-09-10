@@ -9,8 +9,10 @@ const official: MyCommand = {
   async execute(interaction) {
     const embed = new MessageEmbed()
       .setColor("#57F287")
-      .setTitle(`Official Server Invite Link :D`)
-      .setDescription("https://discord.gg/nGWhxNG2sf");
+      .setTitle("Official Server Invite Link :D")
+      .setDescription(
+        "[Clicke ye here to join!](https://discord.gg/nGWhxNG2sf)"
+      );
 
     await interaction.reply({ embeds: [embed] });
   },
