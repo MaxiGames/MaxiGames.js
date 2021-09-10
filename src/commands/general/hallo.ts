@@ -23,7 +23,7 @@ const hallo: MyCommand = {
       interaction.options.getString("name") || interaction.user.username;
     if (love > 1800) {
       await interaction.reply({
-        content: "Ono we only have 1800 love to give ;_;",
+        content: "Ono we only have 1800 love to give ;-;",
         ephemeral: true,
       });
     } else if (love < 1) {
