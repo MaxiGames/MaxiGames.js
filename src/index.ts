@@ -1,12 +1,13 @@
 import { Client, Intents } from "discord.js";
-import config from "./config"; // TODO switch to dotenv
-
+import myConfig from "./config";
 import commands from "./commands";
 import events from "./events";
-
+import * as admin from "firebase-admin";
+import current from "./commands/general/current";
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const { config, firebaseConfig } = myConfig;
 
-// Register event handlers
+// Register event handler
 for (const event of events) {
   if (event.once) client.once(event.name, event.execute);
   else client.on(event.name, event.execute);
@@ -30,4 +31,42 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-client.login(config.tokenId);
+// firebase and maxigames bot login
+admin.initializeApp(firebaseConfig);
+client.login(config.tokenId).then(() => {
+  // set activity
+  let user = client.user;
+  let currentServerCount = client.guilds.cache.size;
+
+  if (user === null) {
+    throw "User is null and this is very bad!!!";
+  }
+  user.setActivity(`m!help on ${currentServerCount} servers!`, {
+    type: "WATCHING",
+  });
+
+  //set activity to change on guild join
+  client.on("guildCreate", (guild) => {
+    console.log("Joined a new guild: " + guild.name);
+    currentServerCount--;
+
+    if (user === null) {
+      throw "User is null and this is very bad!!!";
+    }
+    user.setActivity(`m!help on ${currentServerCount} servers!`, {
+      type: "WATCHING",
+    });
+  });
+
+  client.on("guildDelete", (guild) => {
+    console.log("Left a guild: " + guild.name);
+    currentServerCount++;
+
+    if (user === null) {
+      throw "User is null and this is very bad!!!";
+    }
+    user.setActivity(`m!help on ${currentServerCount} servers!`, {
+      type: "WATCHING",
+    });
+  });
+});
