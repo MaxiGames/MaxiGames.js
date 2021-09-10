@@ -6,7 +6,7 @@ import { MGStatus as s } from "../../lib/statuses";
 const invite: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("invite")
-    .setDescription("Invite maxigames to your server :D"),
+    .setDescription("Invite MaxiGames to your server :D"),
   async execute(interaction) {
     const embed = MGEmbed(s.MGInfo)
       .setTitle("Invite Maxigames :D")
@@ -17,5 +17,4 @@ const invite: MyCommand = {
     await interaction.reply({ embeds: [embed] });
   },
 };
-
 export default invite;
