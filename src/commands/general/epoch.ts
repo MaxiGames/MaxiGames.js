@@ -1,14 +1,15 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { MessageEmbed } from "discord.js";
 import MyCommand from "../../types/command";
 
-const whoami: MyCommand = {
+import { MGEmbed } from "../../lib/flavoured";
+import { MGStatus as s } from "../../lib/statuses";
+
+const epoch: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("epoch")
     .setDescription("How many seconds have elapsed since the epoch?"),
   async execute(interaction) {
-    const embed = new MessageEmbed()
-      .setColor("#57F287")
+    const embed = MGEmbed(s.MGInfo)
       .setTitle(`Time elapsed since the epoch:D`)
       .setDescription(
         "Find out more on what an epoch is here: https://searchdatacenter.techtarget.com/definition/epoch :D"
@@ -22,4 +23,4 @@ const whoami: MyCommand = {
   },
 };
 
-export default whoami;
+export default epoch;

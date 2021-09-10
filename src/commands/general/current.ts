@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { MessageEmbed } from "discord.js";
 import type MyCommand from "../../types/command";
+import { MGEmbed } from "../../lib/flavoured";
+import { MGStatus as s } from "../../lib/statuses";
 
 const current: MyCommand = {
   data: new SlashCommandBuilder()
@@ -18,8 +19,7 @@ const current: MyCommand = {
       "Friday",
       "Saturday",
     ];
-    const embed = new MessageEmbed()
-      .setColor("#57F287")
+    const embed = MGEmbed(s.MGInfo)
       .setTitle("Current Date and Time")
       .setDescription("Find the current date and time below :D")
       .addFields(

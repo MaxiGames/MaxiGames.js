@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { MGEmbed } from "../../lib/flavoured";
-import * as s from "../../lib/statuses";
+import { MGStatus as s } from "../../lib/statuses";
 import MyCommand from "../../types/command";
 
 const lmgtfy: MyCommand = {
@@ -37,7 +37,6 @@ const lmgtfy: MyCommand = {
     // the bruh mode
     if (interaction.options.getBoolean("bruhmode")) {
       const embed = MGEmbed()
-        .setColor("#57F287")
         .setTitle(`${searchstr}?`)
         .setDescription(`[Find ye answer](https://www.google.com)`);
 
@@ -64,7 +63,7 @@ const lmgtfy: MyCommand = {
 
     await interaction.reply({
       embeds: [
-        MGEmbed()
+        MGEmbed(s.MGInfo)
           .setTitle(`${searchstr}?`)
           .setDescription(
             `${prefixstr}ind ye answer](https://lmgtfy.app/?q=${encodeURI(
