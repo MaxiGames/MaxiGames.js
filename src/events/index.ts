@@ -1,5 +1,5 @@
-import MyEvent from "../types/event";
+import MGEvent from "../types/event";
 import ready from "./ready";
 
-const events: MyEvent[] = [ready];
+const events: MGEvent[] = [ready];
 export default events;

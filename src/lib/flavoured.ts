@@ -1,6 +1,7 @@
 import { MessageEmbed } from "discord.js";
-import { MGStatus as s } from "./statuses";
+import MGStatus from "./statuses";
 import COLOR_PALETTE from "./colors";
 
-export const MGEmbed = (stat: s = s.MGDefault) =>
-  new MessageEmbed().setColor(COLOR_PALETTE[stat]);
+export function MGEmbed(stat: MGStatus = MGStatus.Default): MessageEmbed {
+  return new MessageEmbed().setColor(COLOR_PALETTE[stat]);
+}

@@ -1,16 +1,16 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { GuildMember } from "discord.js";
 
-import MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
-import { MGStatus as s } from "../../lib/statuses";
+import MGStatus from "../../lib/statuses";
+import MGCommand from "../../types/command";
 
-const whoami: MyCommand = {
+const whoami: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("whoami")
     .setDescription("Analyse ur statistics! :D"),
   async execute(interaction) {
-    const embed = MGEmbed(s.MGInfo)
+    const embed = MGEmbed(MGStatus.Info)
       .setTitle(
         `You are ${interaction.user.username}#${interaction.user.discriminator} :D`
       )

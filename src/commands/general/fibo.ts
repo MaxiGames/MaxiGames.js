@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import MyCommand from "../../types/command";
+import MGCommand from "../../types/command";
 
 const Discord = require("discord.js");
-const fibo: MyCommand = {
+const fibo: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("fibo")
     .setDescription("Find the Nth fibonacci number! :D")

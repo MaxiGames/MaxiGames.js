@@ -1,13 +1,13 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import MyCommand from "../../types/command";
+import MGCommand from "../../types/command";
+import { ColorResolvable, MessageEmbed } from "discord.js";
 
-const Discord = require("discord.js");
-const color: MyCommand = {
+const color: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("randcolor")
     .setDescription("Get a random color :D"),
   async execute(interaction) {
-    var arr = [
+    const arr = [
       "0",
       "1",
       "2",
@@ -25,14 +25,14 @@ const color: MyCommand = {
       "e",
       "f",
     ];
-    var color = "#";
-    for (var i = 0; i < 6; i++) {
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
       const randomChar = arr[Math.floor(Math.random() * arr.length)];
       //append this hex character to our color code
       color += randomChar;
     }
-    const colorEmbed = new Discord.MessageEmbed()
-      .setColor(color)
+    const colorEmbed = new MessageEmbed()
+      .setColor(color as ColorResolvable)
       .setTitle(`Your random color was: ${color}`);
     await interaction.reply({
       embeds: [colorEmbed],

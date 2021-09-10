@@ -1,6 +1,6 @@
 import type { Client } from "discord.js";
 
-export default interface MyEvent {
+export default interface MGEvent {
   name: string;
   once: boolean;
   execute(client: Client): void;

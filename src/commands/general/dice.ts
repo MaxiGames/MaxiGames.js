@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import MyCommand from "../../types/command";
+import MGCommand from "../../types/command";
 
 const Discord = require("discord.js");
-const dice: MyCommand = {
+const dice: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("dice")
     .setDescription("Roll some dice :O")

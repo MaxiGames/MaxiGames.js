@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import MyCommand from "../../types/command";
+import MGCommand from "../../types/command";
 
-const hallo: MyCommand = {
+const hallo: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("hallo")
     .setDescription("Say hallo to someone :D")

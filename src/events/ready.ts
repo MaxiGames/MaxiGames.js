@@ -1,7 +1,7 @@
-import type MyEvent from "../types/event";
+import type MGEvent from "../types/event";
 import { Client } from "discord.js";
 
-const ready: MyEvent = {
+const ready: MGEvent = {
   name: "ready",
   once: true,
   execute(client) {

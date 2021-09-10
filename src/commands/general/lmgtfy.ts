@@ -1,9 +1,9 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { MGEmbed } from "../../lib/flavoured";
-import { MGStatus as s } from "../../lib/statuses";
-import MyCommand from "../../types/command";
+import MGStatus from "../../lib/statuses";
+import MGCommand from "../../types/command";
 
-const lmgtfy: MyCommand = {
+const lmgtfy: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("lmgtfy")
     .setDescription("For people who don't know how to STFW")
@@ -46,7 +46,7 @@ const lmgtfy: MyCommand = {
     if (searchstr.length > 128) {
       await interaction.reply({
         embeds: [
-          MGEmbed(s.MGError)
+          MGEmbed(MGStatus.Error)
             .setTitle(`Search string too long...`)
             .setDescription(
               "search string should be less than or equal to 128 chars"
@@ -63,7 +63,7 @@ const lmgtfy: MyCommand = {
 
     await interaction.reply({
       embeds: [
-        MGEmbed(s.MGInfo)
+        MGEmbed(MGStatus.Info)
           .setTitle(`${searchstr}?`)
           .setDescription(
             `${prefixstr}ind ye answer](https://lmgtfy.app/?q=${encodeURI(

@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
-import type MyCommand from "../types/command";
+import type MGCommand from "../types/command";
 
-const commands: Map<string, MyCommand> = new Map();
+const commands: Map<string, MGCommand> = new Map();
 
 // NOTE: The directory "commands" should contain subdirectories to organise js commands.
 const commandFiles: [string, string[]][] = fs
