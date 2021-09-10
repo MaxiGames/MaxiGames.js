@@ -2,18 +2,20 @@
 
 ## **Scripts**
 
+These should usually be run in order.
+
 **build**  
 Compiles the typescript to javascript. The compiled JS is in `dist/`
 
-**start**  
-Runs the production code in `dist/`. Remember to build first!
-
-**dev**  
-Use this when developing. It auto-reloads when a file changes.
+**check-commands**
+Check that the commands won't crash the build...
 
 **deploy-commands**  
 Deploys the commands to discord's servers. Run this after updating the name of a
 command or when adding a new command.
+
+**start**  
+Runs the production code in `dist/`. Remember to build first!
 
 ## config.json
 
@@ -44,3 +46,10 @@ exported object/array.
 
 After updating the name of a command/adding a new command, remember to run
 `npm run deploy-commands` to push the changes.
+
+## Style guide
+
+- use common sense
+- `// spaces after comment markers`
+- descriptive variable names... most of the time
+- write useful comments; don't write any if unneeded
