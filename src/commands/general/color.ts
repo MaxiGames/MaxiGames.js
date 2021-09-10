@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import MyCommand from "../../types/command";
 
 const Discord = require("discord.js");
-const fibo: MyCommand = {
+const color: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("randcolor")
     .setDescription("Get a random color :D"),
@@ -53,4 +53,4 @@ const fibo: MyCommand = {
   },
 };
 
-export default fibo;
+export default color;
