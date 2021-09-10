@@ -49,7 +49,7 @@ const gamble: MyCommand = {
         .setTitle(
           `You won! You rolled ${player_roll} and the bot rolled ${bot_roll}`
         )
-        .setDescription(`You won ${gain} money!`);
+        .setDescription(`You bet ${amt} money and won ${gain} money!`);
       await interaction.reply({
         embeds: [Embed],
       });
@@ -60,7 +60,7 @@ const gamble: MyCommand = {
         .setTitle(
           `You lost! You rolled ${player_roll} and the bot rolled ${bot_roll}`
         )
-        .setDescription(`You lost ${amt} money!`);
+        .setDescription(`You bet ${amt} money and lost all of it!`);
       await interaction.reply({
         embeds: [Embed],
       });
@@ -70,7 +70,9 @@ const gamble: MyCommand = {
         .setTitle(
           `You drawed! You rolled ${player_roll} and the bot also rolled ${bot_roll}`
         )
-        .setDescription(`You didn't gain or lose any money!`);
+        .setDescription(
+          `You bet ${amt} money and didn't gain or lose any money!`
+        );
       await interaction.reply({
         embeds: [Embed],
       });
