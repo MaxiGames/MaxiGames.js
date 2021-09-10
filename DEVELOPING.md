@@ -1,13 +1,13 @@
 # Notes for developers or contributors
 
-## IMPORTANT NOTES
+## Style guide
 
-- You should NEVER commit directly to master! All work should be done in Beta,
-  before being rebased into master.
-- You should NEVER merge Beta into anything! Only _rebase_, even if there are
-  many conflicts.
-- For big features/changes, please branch of Beta. The feature branch should
-  then be _merged_ back into Beta when it's done, NOT master.
+- Use common sense
+- Use `string[]` instead of `Array<string>`
+- Use `let` instead of `var`, and `const` whenever possible
+- `// spaces after comment markers`
+- Descriptive variable names... most of the time
+- Write useful comments; don't write any if unneeded
 
 ## Git Guidelines
 
@@ -70,11 +70,3 @@ exported object/array.
 
 After updating the name of a command/adding a new command, remember to run
 `npm run deploy-commands` to push the changes.
-
-## Style guide
-
-- Use common sense
-- `// spaces after comment markers`
-- Descriptive variable names... most of the time
-- Write useful comments; don't write any if unneeded
-- Use `string[]` instead of `Array<string>`
