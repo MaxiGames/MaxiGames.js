@@ -73,7 +73,8 @@ After updating the name of a command/adding a new command, remember to run
 
 ## Style guide
 
-- use common sense
+- Use common sense
 - `// spaces after comment markers`
-- descriptive variable names... most of the time
-- write useful comments; don't write any if unneeded
+- Descriptive variable names... most of the time
+- Write useful comments; don't write any if unneeded
+- Use `string[]` instead of `Array<string>`
