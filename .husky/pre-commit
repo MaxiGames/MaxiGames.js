@@ -1,5 +1,12 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+set -e
+
 npm run --silent check-commands
+
+# Ensure that the project compiles
+npm run build
+
+# Format files
 npx pretty-quick --staged
