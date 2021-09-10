@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { MessageEmbed } from "discord.js";
+import { MGEmbed } from "../../lib/flavoured";
+import * as s from "../../lib/statuses";
 import MyCommand from "../../types/command";
 
 const lmgtfy: MyCommand = {
@@ -35,7 +36,7 @@ const lmgtfy: MyCommand = {
 
     // the bruh mode
     if (interaction.options.getBoolean("bruhmode")) {
-      const embed = new MessageEmbed()
+      const embed = MGEmbed()
         .setColor("#57F287")
         .setTitle(`${searchstr}?`)
         .setDescription(`[Find ye answer](https://www.google.com)`);
@@ -45,7 +46,13 @@ const lmgtfy: MyCommand = {
 
     if (searchstr.length > 128) {
       await interaction.reply({
-        content: "Search string too long; must be less than 128 chars.",
+        embeds: [
+          MGEmbed(s.MGError)
+            .setTitle(`Search string too long...`)
+            .setDescription(
+              "search string should be less than or equal to 128 chars"
+            ),
+        ],
         ephemeral: true,
       });
       return;
@@ -55,16 +62,17 @@ const lmgtfy: MyCommand = {
     const idiot = interaction.options.getUser("whichidiot");
     const prefixstr = idiot ? `<@${idiot.id}>, [f` : "[F";
 
-    const embed = new MessageEmbed()
-      .setColor("#57F287")
-      .setTitle(`${searchstr}?`)
-      .setDescription(
-        `${prefixstr}ind ye answer](https://lmgtfy.app/?q=${encodeURI(
-          searchstr
-        )}${iie}).`
-      );
-
-    await interaction.reply({ embeds: [embed] });
+    await interaction.reply({
+      embeds: [
+        MGEmbed()
+          .setTitle(`${searchstr}?`)
+          .setDescription(
+            `${prefixstr}ind ye answer](https://lmgtfy.app/?q=${encodeURI(
+              searchstr
+            )}${iie}).`
+          ),
+      ],
+    });
   },
 };
 
