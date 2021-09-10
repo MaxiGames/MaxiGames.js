@@ -5,6 +5,7 @@ import commands from "./commands";
 import events from "./events";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+//
 // Register event handlers
 for (const event of events) {
   if (event.once) client.once(event.name, event.execute);
