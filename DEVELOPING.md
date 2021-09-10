@@ -2,22 +2,37 @@
 
 ## IMPORTANT NOTES
 
-- You should NEVER commit directly to master! All work should be done
-  in Beta, before being rebased into master.
-- You should NEVER merge Beta into anything! Only _rebase_, even if
-  there are many conflicts.
-- For big features/changes, please branch of Beta. The feature branch
-  should then be _merged_ back into Beta when it's done, NOT master.
+- You should NEVER commit directly to master! All work should be done in Beta,
+  before being rebased into master.
+- You should NEVER merge Beta into anything! Only _rebase_, even if there are
+  many conflicts.
+- For big features/changes, please branch of Beta. The feature branch should
+  then be _merged_ back into Beta when it's done, NOT master.
 
-## **Scripts**
+## Git Guidelines
+
+- _NEVER force push unless dire circumstances_.
+- _NEVER commit directly to master_.
+- Commit _early_ and _often_. You can interactive rebase to clean everything up
+  before pushing.
+- When pulling, _rebase instead of merge_: `git pull --rebase`.
+- _Don't push incomplete/partial code to master or beta branch._ Understand that
+  other people will be pulling those changes every once in a while, and if those
+  changes include partial stuff, then they suddenly can't run their code anymore
+  after pulling those changes.
+- _Don't merge beta/master into a feature branch_. Rebase instead.
+- Do everything on a _feature branch_. In order to avoid merge conflicts later,
+  frequently rebase the feature branch back onto master/beta:
+  `git rebase master`.
+
+## Scripts
 
 These should usually be run in order.
 
 **build**  
 Compiles the typescript to javascript. The compiled JS is in `dist/`
 
-**check-commands**
-Check that the commands won't crash the build...
+**check-commands** Check that the commands won't crash the build...
 
 **deploy-commands**  
 Deploys the commands to discord's servers. Run this after updating the name of a
