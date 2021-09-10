@@ -9,9 +9,9 @@
     "dev": "ts-node-dev src",
     "build": "tsc",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
-    "check-commands": "node scripts/check-commands.js",
-    "deploy-commands": "ts-node scripts/deploy-commands.ts",
-    "deploy": "./scripts/heroku-deploy.sh",
+    "check-commands": "node .scripts/check-commands.js",
+    "deploy-commands": "node .scripts/deploy-commands.js",
+    "deploy": "./.scripts/heroku-deploy.sh",
     "start": "npm run build; npm run deploy-commands; npm run init"
   },
   "repository": {
