@@ -1,5 +1,14 @@
 # Notes for developers or contributors
 
+## IMPORTANT NOTES
+
+- You should NEVER commit directly to master! All work should be done
+  in Beta, before being rebased into master.
+- You should NEVER merge Beta into anything! Only _rebase_, even if
+  there are many conflicts.
+- For big features/changes, please branch of Beta. The feature branch
+  should then be _merged_ back into Beta when it's done, NOT master.
+
 ## **Scripts**
 
 These should usually be run in order.
