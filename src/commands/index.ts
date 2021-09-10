@@ -5,7 +5,7 @@ import type MyCommand from "../types/command";
 const commands: Map<string, MyCommand> = new Map();
 
 // NOTE: The directory "commands" should contain subdirectories to organise js commands.
-const commandFiles: Array<[string, Array<string>]> = fs
+const commandFiles: [string, string[]][] = fs
   .readdirSync("./dist/src/commands")
   .map((file: string) => path.join("./dist/src/commands", file))
   .filter((file: string) => fs.lstatSync(file).isDirectory())
