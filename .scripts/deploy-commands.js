@@ -4,9 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
-const myConfig = require("../dist/src/config.js");
-
-const { config } = myConfig.default;
+const { config } = require("../dist/src/config.js");
 
 const commands = [];
 
