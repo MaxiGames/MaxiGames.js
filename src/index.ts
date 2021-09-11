@@ -1,11 +1,10 @@
 import { Client, Intents } from "discord.js";
-import myConfig from "./config";
+import { config, firebaseConfig } from "./config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
-import current from "./commands/general/current";
+
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-const { config, firebaseConfig } = myConfig;
 
 // Register event handler
 for (const event of events) {
