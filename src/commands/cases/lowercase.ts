@@ -3,12 +3,12 @@ import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 
-let camelCaseFunc = require("lodash/camelCase") as (param: string) => string;
+let lowerCaseFunc = require("lodash/lowerCase") as (param: string) => string;
 
-const camelCase: MyCommand = {
+const lowercase: MyCommand = {
   data: new SlashCommandBuilder()
-    .setName("camelcase")
-    .setDescription("Convert some text into camelcase")
+    .setName("lowercase")
+    .setDescription("Convert some text into lowercase")
     .addStringOption((option) =>
       option
         .setName("string")
@@ -20,11 +20,11 @@ const camelCase: MyCommand = {
     const str = interaction.options.getString("string");
     if (str === null) return;
     let embed = MGEmbed(MGStatus.Success)
-      .setTitle("Succesfully camelCased!")
-      .setDescription(`camelCased Result: ${camelCaseFunc(str)}`);
+      .setTitle("Succesfully lowercased!")
+      .setDescription(`lowercased Result: ${lowerCaseFunc(str)}`);
 
     await interaction.reply({ embeds: [embed] });
   },
 };
 
-export default camelCase;
+export default lowercase;

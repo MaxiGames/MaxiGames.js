@@ -3,12 +3,12 @@ import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 
-let camelCaseFunc = require("lodash/camelCase") as (param: string) => string;
+let lispCaseFunc = require("lodash/kebabCase") as (param: string) => string;
 
-const camelCase: MyCommand = {
+const lispCase: MyCommand = {
   data: new SlashCommandBuilder()
-    .setName("camelcase")
-    .setDescription("Convert some text into camelcase")
+    .setName("lispcase")
+    .setDescription("Convert some text into lispcase")
     .addStringOption((option) =>
       option
         .setName("string")
@@ -20,11 +20,11 @@ const camelCase: MyCommand = {
     const str = interaction.options.getString("string");
     if (str === null) return;
     let embed = MGEmbed(MGStatus.Success)
-      .setTitle("Succesfully camelCased!")
-      .setDescription(`camelCased Result: ${camelCaseFunc(str)}`);
+      .setTitle("Succesfully lispcased!")
+      .setDescription(`lisp-case Result: ${lispCaseFunc(str)}`);
 
     await interaction.reply({ embeds: [embed] });
   },
 };
 
-export default camelCase;
+export default lispCase;

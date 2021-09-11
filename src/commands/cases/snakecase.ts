@@ -3,12 +3,12 @@ import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 
-let camelCaseFunc = require("lodash/camelCase") as (param: string) => string;
+let snakeCaseFunc = require("lodash/snakeCase") as (param: string) => string;
 
-const camelCase: MyCommand = {
+const snakeCase: MyCommand = {
   data: new SlashCommandBuilder()
-    .setName("camelcase")
-    .setDescription("Convert some text into camelcase")
+    .setName("snakecase")
+    .setDescription("Convert some text into snakecase")
     .addStringOption((option) =>
       option
         .setName("string")
@@ -20,11 +20,11 @@ const camelCase: MyCommand = {
     const str = interaction.options.getString("string");
     if (str === null) return;
     let embed = MGEmbed(MGStatus.Success)
-      .setTitle("Succesfully camelCased!")
-      .setDescription(`camelCased Result: ${camelCaseFunc(str)}`);
+      .setTitle("Succesfully snakedcased!")
+      .setDescription(`sanke_cased Result: ${snakeCaseFunc(str)}`);
 
     await interaction.reply({ embeds: [embed] });
   },
 };
 
-export default camelCase;
+export default snakeCase;
