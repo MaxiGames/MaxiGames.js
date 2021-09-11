@@ -5,6 +5,8 @@
 - Use common sense
 - Use `string[]` instead of `Array<string>`
 - Use `let` instead of `var`, and `const` whenever possible
+- Use `camelCase` for variables, `PascalCase` for classes, types, interfaces,
+  enums.
 - `// spaces after comment markers`
 - Descriptive variable names... most of the time
 - Write useful comments; don't write any if unneeded
@@ -15,6 +17,9 @@
 - _NEVER commit directly to master_.
 - Commit _early_ and _often_. You can interactive rebase to clean everything up
   before pushing.
+- Keep commits as small as possible, don't do a bunch of work then commit
+  everything at once
+- Use descriptive commit messages.
 - When pulling, _rebase instead of merge_: `git pull --rebase`.
 - _Don't push incomplete/partial code to master or beta branch._ Understand that
   other people will be pulling those changes every once in a while, and if those
