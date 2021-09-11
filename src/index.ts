@@ -1,5 +1,5 @@
 import { Client, Intents } from "discord.js";
-import { config, firebaseConfig } from "./config";
+import { config, firebaseConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
