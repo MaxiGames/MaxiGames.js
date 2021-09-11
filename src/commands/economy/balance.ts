@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
+import * as admin from "firebase-admin";
 
 const current: MyCommand = {
   data: new SlashCommandBuilder()

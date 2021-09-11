@@ -4,7 +4,7 @@ import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+export const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 // Register event handler
 for (const event of events) {
