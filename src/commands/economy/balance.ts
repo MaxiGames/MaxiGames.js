@@ -1,8 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
-import { MGStatus as s } from "../../lib/statuses";
-import * as admin from "firebase-admin";
+import MGStatus from "../../lib/statuses";
 
 const current: MyCommand = {
   data: new SlashCommandBuilder()
@@ -16,7 +15,7 @@ const current: MyCommand = {
     ),
 
   async execute(interaction) {
-    const embed = MGEmbed(s.MGInfo)
+    const embed = MGEmbed(MGStatus.Info)
       .setTitle("Balance!")
       .setDescription("'s balance")
       .addFields();

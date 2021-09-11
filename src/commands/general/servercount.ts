@@ -1,8 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import MyCommand from "../../types/command";
-import { MGEmbed } from "../../lib/flavoured";
-import { MGStatus as s } from "../../lib/statuses";
-import { Client } from "discord.js";
 
 const servercount: MyCommand = {
   data: new SlashCommandBuilder()
