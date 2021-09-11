@@ -8,6 +8,8 @@
 - Use `camelCase` for variables, `PascalCase` for classes, types, interfaces,
   enums.
 - `// spaces after comment markers`
+- When only exporting one item, use a default export, otherwise named exports.
+- Always use ES module syntax
 - Descriptive variable names... most of the time
 - Write useful comments; don't write any if unneeded
 
