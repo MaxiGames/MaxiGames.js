@@ -3,7 +3,7 @@ import { config, firebaseConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
-import { FirebaseManager } from "./utils/fireabse";
+import { FirebaseManager } from "./utils/firebase";
 
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -33,6 +33,7 @@ client.on("interactionCreate", async (interaction) => {
 
 //!firebase and maxigames bot login
 admin.initializeApp(firebaseConfig);
+
 client.login(config.tokenId).then(() => {
   // set activity
   let user = client.user;
