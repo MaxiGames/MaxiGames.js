@@ -11,7 +11,9 @@ const current: MyCommand = {
     .addUserOption((option) =>
       option
         .setName("user")
-        .setDescription("U can use this option to check another users' balance")
+        .setDescription(
+          "You can use this option to check another users' balance"
+        )
         .setRequired(false)
     ),
 

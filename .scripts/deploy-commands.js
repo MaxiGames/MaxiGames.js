@@ -21,6 +21,7 @@ const commandFiles = fs
 for (const filecol of commandFiles) {
   for (const name of filecol[1]) {
     const command = require(`../${path.join(filecol[0], name)}`); // funny path-fu
+    console.log(`Adding ${name}`);
     commands.push(command.default.data.toJSON());
     console.log(`Registered ${name}`);
   }
