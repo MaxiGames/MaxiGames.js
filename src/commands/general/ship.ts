@@ -13,14 +13,16 @@ const ship: MGCommand = {
     .addStringOption((option) =>
       option
         .setName("object")
-        .setDescription("First object (Any string)")
+        .setDescription(
+          "First object (Any string, use ASCII characters if possible)"
+        )
         .setRequired(true)
     )
     .addStringOption((option) =>
       option
         .setName("object2")
         .setDescription(
-          "Second object (if left blank, default set as your username)"
+          "Second object (use ASCII characters if possible. Default set as your username)"
         )
         .setRequired(false)
     )
