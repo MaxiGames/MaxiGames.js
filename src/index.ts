@@ -32,7 +32,14 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 //!firebase and maxigames bot login
-admin.initializeApp(firebaseConfig);
+console.log({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: firebaseConfig,
+});
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: firebaseConfig,
+});
 
 client.login(config.tokenId).then(() => {
   // set activity

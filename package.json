@@ -12,7 +12,8 @@
     "check-commands": "node .scripts/check-commands.js",
     "deploy-commands": "node .scripts/deploy-commands.js",
     "deploy": "./.scripts/heroku-deploy.sh",
-    "start": "npm run build; npm run deploy-commands; npm run init"
+    "set-env": "GOOGLE_APPLICATION_CREDENTIALS=\"`realpath serviceAccountKey-dev.json`\"",
+    "start": "npm run set-env; npm run build; npm run deploy-commands; npm run init"
   },
   "repository": {
     "type": "git",
