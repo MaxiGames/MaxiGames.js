@@ -13,21 +13,24 @@ for (const event of events) {
   else client.on(event.name, event.execute);
 }
 
-// Handle commands
+// Wait for interaction wo handle commands
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) return;
+  if (!interaction.isCommand()) return; // do nothing if the interaction isn't a command
 
   const command = commands.get(interaction.commandName);
-  if (!command) return;
+  if (!command) return; // same ^
 
   try {
-    await command.execute(interaction);
+    await command.execute(interaction); // try to execute function associated with command
+    
   } catch (error) {
-    console.error(error);
+    console.error(error); // Error encountered! log it ;)
+    
     await interaction.reply({
       content: "There was an error while executing this command!",
       ephemeral: true,
-    });
+    }); // this should be self-explanatory
+    
   }
 });
 
@@ -37,16 +40,17 @@ admin.initializeApp({
   databaseURL: firebaseConfig,
 });
 
+// Log in bot...
 client.login(config.tokenId).then(() => {
   // set activity
   let user = client.user;
   let currentServerCount = client.guilds.cache.size;
 
   if (user === null) {
-    throw "User is null and this is very bad!!!";
+    throw "User is null and this is very bad!!!"; // corner case where user is null (and this is very bad!!!)
   }
   user.setActivity(`m!help on ${currentServerCount} servers!`, {
-    type: "WATCHING",
+    type: "WATCHING", // ???
   });
 
   //set activity to change on guild join
@@ -55,7 +59,7 @@ client.login(config.tokenId).then(() => {
     currentServerCount--;
 
     if (user === null) {
-      throw "User is null and this is very bad!!!";
+      throw "User is null and this is very bad!!!"; // corner case again
     }
     user.setActivity(`m!help on ${currentServerCount} servers!`, {
       type: "WATCHING",
