@@ -4,5 +4,4 @@ dist/
 js/
 
 config*.json
-serviceAccountKey.json
-serviceAccountKey2.json
+serviceAccountKey*.json
