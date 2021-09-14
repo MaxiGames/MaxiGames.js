@@ -3,11 +3,11 @@ import { config, firebaseConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
-import { FirebaseManager, MGfirebase } from "./utils/firebase";
+import { MGfirebase } from "./utils/firebase";
 
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-
-// Register event handler
+//
+// Register event handlers
 for (const event of events) {
   if (event.once) client.once(event.name, event.execute);
   else client.on(event.name, event.execute);
