@@ -6,7 +6,7 @@
   in Beta, before being rebased into master.
 - You should NEVER merge Beta into anything! Only _rebase_, even if
   there are many conflicts.
-- For big features/changes, please branch of Beta. The feature branch
+- For big features/changes, please branch off Beta. The feature branch
   should then be _merged_ back into Beta when it's done, NOT master.
 
 ## **Scripts**
