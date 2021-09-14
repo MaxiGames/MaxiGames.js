@@ -10,25 +10,21 @@ const money: MGCommand = {
     .setDescription("Get more money!!!"),
 
   async execute(interaction) {
+    let data = MGfirebase.getData(`user/${interaction.user.id}`);
+    let toAdd = Math.ceil(Math.random() * 30);
+    data.money += toAdd;
+
+    await MGfirebase.setData(`user/${interaction.user.id}`, data);
+
     const embed = MGEmbed(MGStatus.Success)
       .setTitle("You have successfully earned MaxiCoins!")
       .setDescription("Yay!")
-      .addFields();
+      .addFields(
+        { name: "Added:", value: `${toAdd}` },
+        { name: "Balance:", value: `${data["money"]}` }
+      );
     await interaction.reply({ embeds: [embed] });
-    await MGfirebase.setData(`user/${interaction.user.id}`, {
-      money: 100,
-    }).then((value) => {
-      console.log(value);
-    });
   },
 };
 
 export default money;
-/*
-    const embed = MGEmbed(MGStatus.Info)
-      .setTitle("Balance!")
-      .setDescription("'s balance")
-      .addFields();
-    await interaction.reply({ embeds: [embed] });
-  },
-  */

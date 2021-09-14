@@ -56,7 +56,7 @@ export class FirebaseManager {
     try {
       //valid location?
       let temp = referencedData;
-      for (let i in referencePoints) {
+      for (let i of referencePoints) {
         temp = referencedData[i];
       }
       let result = this.setDeepArray(referencePoints, referencedData, data);
@@ -85,6 +85,25 @@ export class FirebaseManager {
         return "Something went wrong while uploading to firebase";
       });
     return "Success";
+  }
+
+  public getData(ref: string): any {
+    if (!this.initDone) return "init not done";
+    let referencePoints = ref.split("/");
+    if (referencePoints.length < 1) {
+      return "Need at least 1 slash to work!";
+    }
+    try {
+      //valid location?
+      let temp = this.data as any;
+      for (let i of referencePoints) {
+        console.log(i);
+        temp = temp[i];
+      }
+      return temp;
+    } catch {
+      return "Invalid reference";
+    }
   }
 
   private setDeepArray(referencePoint: string[], loopedArr: any, data: any) {
