@@ -20,8 +20,8 @@ const money: MGCommand = {
       .setTitle("You have successfully earned MaxiCoins!")
       .setDescription("Yay!")
       .addFields(
-        { name: "Added:", value: `${toAdd}` },
-        { name: "Balance:", value: `${data["money"]}` }
+        { name: "Added:", value: `${toAdd}`, inline: true },
+        { name: "Balance:", value: `${data.money}`, inline: true }
       );
     await interaction.reply({ embeds: [embed] });
   },

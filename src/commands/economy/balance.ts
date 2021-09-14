@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import * as admin from "firebase-admin";
+import { MGfirebase } from "../../utils/firebase";
 
 const current: MyCommand = {
   data: new SlashCommandBuilder()
@@ -18,10 +18,14 @@ const current: MyCommand = {
     ),
 
   async execute(interaction) {
+    let user = interaction.options.getUser("user");
+    if (user === null) user = interaction.user;
+    let data = MGfirebase.getData(`user/${interaction.user.id}`);
+
     const embed = MGEmbed(MGStatus.Info)
       .setTitle("Balance!")
-      .setDescription("'s balance")
-      .addFields();
+      .setDescription(`${user.username} #${user.discriminator}'s balance`)
+      .addFields({ name: "Balance", value: `${data.money} MaxiCoins` });
     await interaction.reply({ embeds: [embed] });
   },
 };
