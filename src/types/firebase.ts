@@ -3,7 +3,7 @@ export default interface DataModel {
 }
 
 interface User {
-  [id: number]: {
+  [id: string]: {
     money: number;
   };
 }

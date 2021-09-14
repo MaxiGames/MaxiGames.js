@@ -118,6 +118,15 @@ export class FirebaseManager {
     }
   }
 
+  public async initialisePerson(id: string) {
+    //initialized someone's money and properties if its not already is initialised
+    if (this.data.user[id] === undefined) {
+      this.data.user[id] = { money: 0 };
+      if (this.db === undefined) return;
+      await this.db.ref(`user/${id}`).set(this.data.user[id]);
+    }
+  }
+
   private setDeepArray(referencePoint: string[], loopedArr: any, data: any) {
     //recursive function to use the reference to the data array and set the data at the back of the function
     try {

@@ -65,6 +65,26 @@ In development, the bot uses `config-dev.json`, and in production it uses
 `config-prod.json`. It determines prod vs dev via the `NODE_ENV` environment
 variable.
 
+## serviceAccountKeys.json
+
+You will also need a `serviceAccountKey-dev.json` in the root directory.
+The serviceAccountKey should look something like this. You can get this from the firebase project > Project Settings > Service Accounts > Create Key/Generate a new private key.
+
+```json
+{
+  "type": "xxx",
+  "project_id": "xxx",
+  "private_key_id": "xxx",
+  "private_key": "xxx",
+  "client_email": "xxx",
+  "client_id": "114283896720536374549",
+  "auth_uri": "xxx",
+  "token_uri": "xxx",
+  "auth_provider_x509_cert_url": "xxx",
+  "client_x509_cert_url": "xxx"
+}
+```
+
 ## Commands and Events
 
 Each command and event is put in a separate file, which exports a `MyCommand` or

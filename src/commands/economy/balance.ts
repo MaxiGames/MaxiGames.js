@@ -4,7 +4,7 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGfirebase } from "../../utils/firebase";
 
-const current: MyCommand = {
+const balance: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("balance")
     .setDescription("Check your balance? Do you have money to spare? :D")
@@ -18,6 +18,8 @@ const current: MyCommand = {
     ),
 
   async execute(interaction) {
+    await MGfirebase.initialisePerson(interaction.user.id);
+
     let user = interaction.options.getUser("user");
     if (user === null) user = interaction.user;
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
@@ -30,4 +32,4 @@ const current: MyCommand = {
   },
 };
 
-export default current;
+export default balance;
