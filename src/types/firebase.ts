@@ -1,7 +1,9 @@
 export default interface DataModel {
-  user: {
-    [id: number]: {
-      money: number;
-    };
+  user: User;
+}
+
+interface User {
+  [id: number]: {
+    money: number;
   };
 }
