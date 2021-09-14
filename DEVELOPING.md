@@ -97,3 +97,7 @@ exported object/array.
 
 After updating the name of a command/adding a new command, remember to run
 `npm run deploy-commands` to push the changes.
+
+# Command to run to initialise Firebase (temporary)
+
+- For neon_paradox: GOOGLE_APPLICATION_CREDENTIALS=/Users/wenyuan/Documents/GitHub/MaxiGames.js/serviceAccountKey-dev.json npm run start
