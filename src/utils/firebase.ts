@@ -120,6 +120,7 @@ export class FirebaseManager {
 
   public async initialisePerson(id: string) {
     //initialized someone's money and properties if its not already is initialised
+    console.log(this.data);
     if (this.data.user[id] === undefined) {
       this.data.user[id] = { money: 0 };
       if (this.db === undefined) return;
@@ -131,12 +132,13 @@ export class FirebaseManager {
     //recursive function to use the reference to the data array and set the data at the back of the function
     try {
       let ref = referencePoint[0];
-      let popped = referencePoint.shift();
+
       if (referencePoint.length === 1) {
         //if there is only one more object left to go into
         loopedArr[ref] = data;
         return "Operation Successful";
       }
+      let popped = referencePoint.shift();
       //recurse
       this.setDeepArray(referencePoint, loopedArr[ref], data);
     } catch {
