@@ -13,7 +13,7 @@ export class FirebaseManager {
       throw "cannot find database";
     }
 
-    //! Initalise and cast data!!
+    //! Initialise and cast data!!
     let data = this.db
       .ref(`/`)
       .get()
@@ -26,6 +26,7 @@ export class FirebaseManager {
             console.log("No DB AVALIABLE");
             return;
           }
+          //if db doesn't exist, get data set on the server
           this.db
             .ref(`/`)
             .set(this.data)
@@ -35,6 +36,7 @@ export class FirebaseManager {
         } else {
           let data = snapshot.val();
           try {
+            //casting data
             let castedData = data as DataModel;
             this.data = castedData;
             console.log("Database successfully initialised!");
@@ -49,16 +51,21 @@ export class FirebaseManager {
   public async setData(ref: string, data: any): Promise<string> {
     if (!this.initDone) return "init not done";
     let referencePoints = ref.split("/");
+
+    //validate reference input
     if (referencePoints.length < 1) {
       return "Need at least 1 slash to work!";
     }
+
     let referencedData = this.data as any;
     try {
-      //valid location?
+      //valid reference checking, first check by seeing if its possible to go into the endpoint of the reference
       let temp = referencedData;
       for (let i of referencePoints) {
         temp = referencedData[i];
       }
+
+      //then try setting and casting the data into the DataModel
       let result = this.setDeepArray(referencePoints, referencedData, data);
 
       if (result !== "Operation Successful") return "Data couldn't be set";
@@ -73,6 +80,7 @@ export class FirebaseManager {
       return "Data is invalid, therefore unable to be set";
     }
 
+    // set the data on firebase
     ref = "/" + ref;
     if (this.db === undefined) return "No DB";
     await this.db
@@ -89,17 +97,21 @@ export class FirebaseManager {
 
   public getData(ref: string): any {
     if (!this.initDone) return "init not done";
+
+    //reference validation
     let referencePoints = ref.split("/");
     if (referencePoints.length < 1) {
       return "Need at least 1 slash to work!";
     }
+
     try {
-      //valid location?
+      //Check if its valid just by seeing if the reference exists
       let temp = this.data as any;
       for (let i of referencePoints) {
-        console.log(i);
         temp = temp[i];
       }
+
+      //return the data if it does
       return temp;
     } catch {
       return "Invalid reference";
@@ -107,13 +119,16 @@ export class FirebaseManager {
   }
 
   private setDeepArray(referencePoint: string[], loopedArr: any, data: any) {
+    //recursive function to use the reference to the data array and set the data at the back of the function
     try {
       let ref = referencePoint[0];
       let popped = referencePoint.shift();
       if (referencePoint.length === 1) {
+        //if there is only one more object left to go into
         loopedArr[ref] = data;
         return "Operation Successful";
       }
+      //recurse
       this.setDeepArray(referencePoint, loopedArr[ref], data);
     } catch {
       return "Invalid Operation";
