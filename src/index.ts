@@ -3,7 +3,7 @@ import { config, firebaseConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
-import { FirebaseManager } from "./utils/firebase";
+import { FirebaseManager, MGfirebase } from "./utils/firebase";
 
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -32,10 +32,6 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 //!firebase and maxigames bot login
-console.log({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: firebaseConfig,
-});
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
   databaseURL: firebaseConfig,
@@ -80,4 +76,4 @@ client.login(config.tokenId).then(() => {
 });
 
 //! Firebase init
-let firebase = new FirebaseManager();
+MGfirebase.init();
