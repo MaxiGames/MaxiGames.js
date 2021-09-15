@@ -49,7 +49,7 @@ client.login(config.tokenId).then(() => {
     type: "WATCHING",
   });
 
-  //set activity to change on guild join
+  // set activity to change on guild join
   client.on("guildCreate", (guild) => {
     console.log("Joined a new guild: " + guild.name);
     currentServerCount--;
@@ -75,5 +75,5 @@ client.login(config.tokenId).then(() => {
   });
 });
 
-//! Firebase init
+// Firebase init
 MGfirebase.init();
