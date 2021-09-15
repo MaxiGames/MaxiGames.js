@@ -6,7 +6,7 @@ import * as admin from "firebase-admin";
 import { MGfirebase } from "./utils/firebase";
 
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-//
+
 // Register event handlers
 for (const event of events) {
   if (event.once) client.once(event.name, event.execute);
@@ -31,7 +31,7 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-//!firebase and maxigames bot login
+// firebase and maxigames bot login
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
   databaseURL: firebaseConfig,
