@@ -44,7 +44,6 @@ export class FirebaseManager {
             throw "Data could not be casted properly during initialisation";
           }
         }
-        console.log(this.data);
       });
   }
 
@@ -120,7 +119,6 @@ export class FirebaseManager {
 
   public async initialisePerson(id: string) {
     //initialized someone's money and properties if its not already is initialised
-    console.log(this.data);
     if (this.data.user[id] === undefined) {
       this.data.user[id] = { money: 0 };
       if (this.db === undefined) return;

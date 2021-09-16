@@ -36,6 +36,8 @@ const gamble: MyCommand = {
     const option = interaction.options.getString("option");
     if (amt === null || option === null) return;
 
+    await MGfirebase.initialisePerson(interaction.user.id);
+
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
     if (data["money"] < amt) {
       interaction.reply({

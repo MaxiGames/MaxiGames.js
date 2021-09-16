@@ -4,7 +4,6 @@ import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
 import { MGfirebase } from "../../utils/firebase";
 
-const Discord = require("discord.js");
 const gamble: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("gamble")
@@ -31,6 +30,8 @@ const gamble: MyCommand = {
       });
       return;
     }
+
+    await MGfirebase.initialisePerson(interaction.user.id);
     //check if player has enough money to pay for what they are gambling
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
     if (data["money"] < amt) {
@@ -58,8 +59,7 @@ const gamble: MyCommand = {
       gain *= amt;
       gain = Math.ceil(gain);
       data["money"] += gain;
-      const Embed = new Discord.MessageEmbed()
-        .setColor("#00ff00")
+      const Embed = MGEmbed(MGStatus.Success)
         .setTitle(
           `You won! You rolled ${player_roll} and the bot rolled ${bot_roll}`
         )
@@ -72,8 +72,7 @@ const gamble: MyCommand = {
       MGfirebase.setData(`user/${interaction.user.id}`, data);
     } else if (player_roll < bot_roll) {
       data["money"] -= amt;
-      const Embed = new Discord.MessageEmbed()
-        .setColor("#ff0000")
+      const Embed = MGEmbed(MGStatus.Success)
         .setTitle(
           `You lost! You rolled ${player_roll} and the bot rolled ${bot_roll}`
         )
@@ -85,8 +84,7 @@ const gamble: MyCommand = {
 
       MGfirebase.setData(`user/${interaction.user.id}`, data);
     } else {
-      const Embed = new Discord.MessageEmbed()
-        .setColor("#ffff00")
+      const Embed = MGEmbed(MGStatus.Success)
         .setTitle(
           `You drawed! You rolled ${player_roll} and the bot also rolled ${bot_roll}`
         )
