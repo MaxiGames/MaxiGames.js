@@ -13,7 +13,7 @@
     "deploy-commands": "node .scripts/deploy-commands.js",
     "deploy": "./.scripts/heroku-deploy.sh",
     "_start": "npm run build; npm run deploy-commands; npm run init",
-    "start": "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/serviceAccountKey-dev.json npm run _start"
+    "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run _start"
   },
   "repository": {
     "type": "git",
