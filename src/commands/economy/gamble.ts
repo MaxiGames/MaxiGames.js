@@ -1,7 +1,9 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
+import { MGfirebase } from "../../utils/firebase";
 
-const Discord = require("discord.js");
 const gamble: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("gamble")
@@ -9,9 +11,7 @@ const gamble: MyCommand = {
     .addIntegerOption((option) =>
       option
         .setName("amount")
-        .setDescription(
-          "How much money are you going to gamble :O [default = 5]"
-        )
+        .setDescription("How much money are you going to gamble [default = 5]")
         .setRequired(false)
     ),
   async execute(interaction) {
@@ -30,56 +30,72 @@ const gamble: MyCommand = {
       });
       return;
     }
-    //check if player has enough money to pay for what they are gambling
 
-    //waiting for firebase to be implemented, so all firebase-related code below will be commented out.
+    await MGfirebase.initialisePerson(interaction.user.id);
+    //check if player has enough money to pay for what they are gambling
+    let data = MGfirebase.getData(`user/${interaction.user.id}`);
+    if (data["money"] < amt) {
+      interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle("You do not have enough money to gamble!!")
+            .addFields(
+              { name: "Gambling:", value: `${amt}` },
+              { name: "Balance", value: `${data["money"]}` }
+            ),
+        ],
+      });
+      return;
+    }
 
     let bot_roll = Math.ceil(Math.random() * 12);
     if (bot_roll < 3) {
       bot_roll = Math.ceil(Math.random() * 12);
     }
     let player_roll = Math.ceil(Math.random() * 12);
+
     if (player_roll > bot_roll) {
       let gain = ((player_roll - bot_roll) / bot_roll) * 1.5;
       gain *= amt;
       gain = Math.ceil(gain);
-      //interaction.author["balance"] += gain;
-      const Embed = new Discord.MessageEmbed()
-        .setColor("#00ff00")
+      data["money"] += gain;
+      const Embed = MGEmbed(MGStatus.Success)
         .setTitle(
           `You won! You rolled ${player_roll} and the bot rolled ${bot_roll}`
         )
-        .setDescription(`You bet ${amt} money and won ${gain} money!`);
+        .setDescription(`You bet ${amt} money and won ${gain} money!`)
+        .addField("Your balance:", `${data["money"]}`);
       await interaction.reply({
         embeds: [Embed],
       });
+
+      MGfirebase.setData(`user/${interaction.user.id}`, data);
     } else if (player_roll < bot_roll) {
-      //interaction.author["balance"] -= amt;
-      const Embed = new Discord.MessageEmbed()
-        .setColor("#ff0000")
+      data["money"] -= amt;
+      const Embed = MGEmbed(MGStatus.Success)
         .setTitle(
           `You lost! You rolled ${player_roll} and the bot rolled ${bot_roll}`
         )
-        .setDescription(`You bet ${amt} money and lost all of it!`);
+        .setDescription(`You bet ${amt} money and lost all of it!`)
+        .addField("Your balance:", `${data["money"]}`);
       await interaction.reply({
         embeds: [Embed],
       });
+
+      MGfirebase.setData(`user/${interaction.user.id}`, data);
     } else {
-      const Embed = new Discord.MessageEmbed()
-        .setColor("#ffff00")
+      const Embed = MGEmbed(MGStatus.Success)
         .setTitle(
           `You drawed! You rolled ${player_roll} and the bot also rolled ${bot_roll}`
         )
         .setDescription(
           `You bet ${amt} money and didn't gain or lose any money!`
-        );
+        )
+        .addField("Your balance:", `${data["money"]}`);
       await interaction.reply({
         embeds: [Embed],
       });
     }
-    // HUGE DISCLAIMER: I HAVE NO IDEA IF THIS SYSTEM FOR HOW MUCH MONEY YOU WIN
-    // IS BALANCED. IT COULD MEAN YOU WIN A LOT OF MONEY, OR IT COULD MEAN
-    // YOU LOSE A LOT OF MONEY. I WILL CHECK THO.
   },
 };
 

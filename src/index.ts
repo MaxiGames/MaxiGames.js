@@ -6,7 +6,7 @@ import * as admin from "firebase-admin";
 import { MGfirebase } from "./utils/firebase";
 
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-//
+
 // Register event handlers
 for (const event of events) {
   if (event.once) client.once(event.name, event.execute);
@@ -34,7 +34,7 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-//!firebase and maxigames bot login
+// firebase and maxigames bot login
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
   databaseURL: firebaseConfig,
@@ -53,7 +53,7 @@ client.login(config.tokenId).then(() => {
     type: "WATCHING", // ???
   });
 
-  //set activity to change on guild join
+  // set activity to change on guild join
   client.on("guildCreate", (guild) => {
     console.log("Joined a new guild: " + guild.name);
     currentServerCount--;
@@ -79,5 +79,5 @@ client.login(config.tokenId).then(() => {
   });
 });
 
-//! Firebase init
+// Firebase init
 MGfirebase.init();

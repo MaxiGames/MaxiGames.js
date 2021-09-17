@@ -7,11 +7,15 @@
 - Use `let` instead of `var`, and `const` whenever possible
 - Use `camelCase` for variables, `PascalCase` for classes, types, interfaces,
   enums.
+- Fully annoate function signatures, including return types
+- Try to avoid the use of `any` type.
+- Prefer async/await to promise callbacks
 - `// spaces after comment markers`
 - When only exporting one item, use a default export, otherwise named exports.
 - Always use ES module syntax
-- Descriptive variable names... most of the time
+- Descriptive variable names. Use plural for arrays.
 - Write useful comments; don't write any if unneeded
+- Use JSDoc style comments for functions
 
 ## Git Guidelines
 
@@ -67,8 +71,10 @@ variable.
 
 ## serviceAccountKeys.json
 
-You will also need a `serviceAccountKey-dev.json` in the root directory.
-The serviceAccountKey should look something like this. You can get this from the firebase project > Project Settings > Service Accounts > Create Key/Generate a new private key.
+You will also need a `serviceAccountKey-dev.json` in the root directory. The
+serviceAccountKey should look something like this. You can get this from the
+firebase project > Project Settings > Service Accounts > Create Key/Generate a
+new private key.
 
 ```json
 {
@@ -100,4 +106,6 @@ After updating the name of a command/adding a new command, remember to run
 
 # Command to run to initialise Firebase (temporary)
 
-- For neon_paradox: GOOGLE_APPLICATION_CREDENTIALS=/Users/wenyuan/Documents/GitHub/MaxiGames.js/serviceAccountKey-dev.json npm run start
+- For neon_paradox:
+  GOOGLE_APPLICATION_CREDENTIALS=/Users/wenyuan/Documents/GitHub/MaxiGames.js/serviceAccountKey-dev.json
+  npm run start
