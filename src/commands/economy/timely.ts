@@ -5,16 +5,16 @@ import MyCommand from "../../types/command";
 import { MGfirebase } from "../../utils/firebase";
 
 function convertSecondsToDay(n: number) {
-  let day = Number(n / (24 * 3600));
+  let day = Math.floor(n / (24 * 60 * 60));
+  n -= day * 24 * 60 * 60;
 
-  n = n % (24 * 3600);
-  let hour = Number(n / 3600);
+  let hour = Math.floor(n / (60 * 60));
+  n -= hour * 60 * 60;
 
-  n %= 3600;
-  let minutes = n / 60;
+  let minutes = Math.floor(n / 60);
+  n -= minutes * 60;
 
-  n %= 60;
-  let seconds = n;
+  let seconds = Math.floor(n);
 
   return (
     day +
@@ -89,18 +89,20 @@ const timely: MyCommand = {
 
     //lazy
     let interval: number;
+    let date = Math.ceil(new Date().getTime() / 1000);
     if (subCommand === "hourly") interval = 36000;
     else if (subCommand === "daily") interval = 86400;
     else if (subCommand === "weekly") interval = 604800;
-    else if (subCommand === "monthly") interval = 18144100;
-    else interval = 220752000;
+    else if (subCommand === "monthly") interval = 2592000;
+    else interval = 31536000;
 
-    if (data["timelyClaims"][subCommand] - interval < Date.now()) {
+    if (
+      data["timelyClaims"][subCommand] - date > interval ||
+      data["timelyClaims"][subCommand] === 0
+    ) {
       data["money"] += moneyAdd;
-      data["timelyClaims"][subCommand] = Date.now();
-      await MGfirebase.setData(`user/${interaction.user.id}`, data).then(() => {
-        console.log(data);
-      });
+      data["timelyClaims"][subCommand] = date;
+      await MGfirebase.setData(`user/${interaction.user.id}`, data);
       interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Success)
@@ -117,12 +119,12 @@ const timely: MyCommand = {
       interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Error)
-            .setTitle(`Cannot claim ${subCommand} yet!`)
+            .setTitle(`You can't claim ${subCommand} yet!`)
             .setDescription(`Be patient :)`)
             .addFields({
               name: "Time left:",
               value: `${convertSecondsToDay(
-                Date.now() - data["timelyClaims"][subCommand]
+                Math.floor(data["timelyClaims"][subCommand] + interval - date)
               )}`,
             }),
         ],

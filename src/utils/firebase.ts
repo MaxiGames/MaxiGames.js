@@ -72,7 +72,8 @@ export class FirebaseManager {
       //then try setting and casting the data into the DataModel
       let result = this.setDeepArray(referencePoints, referencedData, data);
 
-      if (result !== "Operation Successful") return "Data couldn't be set";
+      if (result !== "Operation Successful")
+        return `Data couldn't be set : ${result}`;
 
       let newData: DataModel;
       try {
@@ -133,6 +134,7 @@ export class FirebaseManager {
 
   private setDeepArray(referencePoint: string[], loopedArr: any, data: any) {
     //recursive function to use the reference to the data array and set the data at the back of the function
+    let result: string;
     try {
       let ref = referencePoint[0];
 
@@ -143,11 +145,11 @@ export class FirebaseManager {
       }
       let popped = referencePoint.shift();
       //recurse
-      this.setDeepArray(referencePoint, loopedArr[ref], data);
+      result = this.setDeepArray(referencePoint, loopedArr[ref], data);
     } catch {
       return "Invalid Operation";
     }
-    return "Something went wrong";
+    return result;
   }
 
   private initData() {
