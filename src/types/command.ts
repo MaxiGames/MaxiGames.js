@@ -1,7 +1,10 @@
 import type { CommandInteraction } from "discord.js";
-import type { SlashCommandBuilder } from "@discordjs/builders";
+import type {
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from "@discordjs/builders";
 
 export default interface MGCommand {
-  data: Partial<SlashCommandBuilder>;
+  data: Partial<SlashCommandBuilder> | SlashCommandSubcommandsOnlyBuilder;
   execute(interaction: CommandInteraction): Promise<void>;
 }

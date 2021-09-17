@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
-import DataModel from "../types/firebase";
+import { firestore } from "firebase-admin";
+import DataModel, { initialData, initialUser } from "../types/firebase";
 
 export class FirebaseManager {
   db: admin.database.Database | undefined = undefined;
@@ -20,7 +21,10 @@ export class FirebaseManager {
       .then((snapshot) => {
         if (!snapshot.exists()) {
           console.log("no database found :(");
-          this.data = { user: { 1234: { money: 0 } } } as DataModel;
+          this.data = initialData as DataModel;
+
+          //set it on firebase
+          this.db?.ref(`/`).set(this.data);
 
           if (this.db === undefined) {
             console.log("No DB AVALIABLE");
@@ -39,6 +43,7 @@ export class FirebaseManager {
             //casting data
             let castedData = data as DataModel;
             this.data = castedData;
+            this.initData();
             console.log("Database successfully initialised!");
           } catch {
             throw "Data could not be casted properly during initialisation";
@@ -120,7 +125,7 @@ export class FirebaseManager {
   public async initialisePerson(id: string) {
     //initialized someone's money and properties if its not already is initialised
     if (this.data.user[id] === undefined) {
-      this.data.user[id] = { money: 0 };
+      this.data.user[id] = initialUser;
       if (this.db === undefined) return;
       await this.db.ref(`user/${id}`).set(this.data.user[id]);
     }
@@ -143,6 +148,22 @@ export class FirebaseManager {
       return "Invalid Operation";
     }
     return "Something went wrong";
+  }
+
+  private initData() {
+    for (let i in this.data["user"]) {
+      if (!this.data["user"][i]["timelyClaims"]) {
+        console.log(`Updating timelyClaims for ${i}`);
+        this.data["user"][i]["timelyClaims"] = initialUser.timelyClaims;
+      }
+    }
+    this.db
+      ?.ref(`/`)
+      .set(this.data)
+      .then(() => {
+        console.log("Timely data initialised for users");
+        console.log(this.data);
+      });
   }
 }
 
