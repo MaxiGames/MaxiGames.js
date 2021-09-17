@@ -16,10 +16,11 @@
 - Descriptive variable names. Use plural for arrays.
 - Write useful comments; don't write any if unneeded
 - Use JSDoc style comments for functions
+- One newline between file header and code begin; 4 newlines between chunks (e.g. imports and code); 2 newlines between blocks (e.g. functions)
 
 ## Git Guidelines
 
-- _NEVER force push unless dire circumstances_.
+- _NEVER force push unless under dire circumstances_.
 - _NEVER commit directly to master_.
 - Commit _early_ and _often_. You can interactive rebase to clean everything up
   before pushing.
