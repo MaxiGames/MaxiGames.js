@@ -1,6 +1,6 @@
 /*
-* File: src/commands/cases/snakecase.ts
-* Description: snakecase handler
+* File: src/commands/cases/pascalcase.ts
+* Description: pascalcase handler
 */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
