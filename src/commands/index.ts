@@ -3,8 +3,6 @@
 * Description: indexes all commands in this folder.
 */
 
-
-
 import fs from "fs";
 import path from "path";
 import type MGCommand from "../types/command";
