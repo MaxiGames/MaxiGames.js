@@ -1,7 +1,7 @@
 /*
-* File: src/commands/economy/coinflip.ts
-* Description: 
-*/
+ * File: src/commands/economy/coinflip.ts
+ * Description:
+ */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { MGEmbed } from "../../lib/flavoured";
@@ -11,20 +11,19 @@ import { MGfirebase } from "../../utils/firebase";
 
 const Discord = require("discord.js");
 
-
-
-
 function otherOption(name: string) {
   if (name === "heads") return "tails";
   else return "heads";
 }
 
-
 const gamble: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("coinflip")
-    .setDescription("Would you like to try your luck and see if the coins are in your favour?")
-    .addStringOption((option) => option
+    .setDescription(
+      "Would you like to try your luck and see if the coins are in your favour?"
+    )
+    .addStringOption((option) =>
+      option
         .setName("option")
         .setDescription("Heads or Tails?")
         .setRequired(true)
@@ -39,7 +38,7 @@ const gamble: MyCommand = {
     ),
 
   async execute(interaction) {
-    const abet = interaction.options.getInteger("amount"); // read bet amt
+    const amt = interaction.options.getInteger("amount"); // read bet amt
     const option = interaction.options.getString("option"); // read bet on which coin side
     if (amt === null || option === null) return;
 
@@ -47,7 +46,7 @@ const gamble: MyCommand = {
 
     let data = MGfirebase.getData(`user/${interaction.user.id}`); // get user balance
 
-    if (data["money"] < bet) {
+    if (data["money"] < amt) {
       // not enough mony
       interaction.reply({
         embeds: [
@@ -62,23 +61,28 @@ const gamble: MyCommand = {
     }
 
     const compOption = Math.ceil(Math.random() * 2);
-    
+
     // confusing indentation ahead!
-    if ((option === "heads" && compOption === 1) || (option === "tails" && compOption === 2)) {
+    if (
+      (option === "heads" && compOption === 1) ||
+      (option === "tails" && compOption === 2)
+    ) {
       data["money"] += amt;
       MGfirebase.setData(`user/${interaction.user.id}`, data); // update user balance
-                            
-      interaction.reply({											
+
+      interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Success)
             .setTitle("You won!")
-            .setDescription(`You guessed the coin flip right! :) it flipped on **${option}**`)
+            .setDescription(
+              `You guessed the coin flip right! :) it flipped on **${option}**`
+            )
             .addFields(
               { name: "Balance", value: `${data["money"]}` },
               { name: "Amount earned:", value: `${amt}` }
             ),
-        ]										
-      });									
+        ],
+      });
     } else {
       data["money"] -= amt;
       MGfirebase.setData(`user/${interaction.user.id}`, data);
@@ -86,7 +90,11 @@ const gamble: MyCommand = {
         embeds: [
           MGEmbed(MGStatus.Success)
             .setTitle("You lost!")
-            .setDescription(`You guessed the coin flip wrong! :( it flipped on **${otherOption(option)}**`)
+            .setDescription(
+              `You guessed the coin flip wrong! :( it flipped on **${otherOption(
+                option
+              )}**`
+            )
             .addFields(
               { name: "Balance", value: `${data["money"]}` },
               { name: "Amount earned:", value: `${amt}` }
