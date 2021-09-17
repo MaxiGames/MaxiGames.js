@@ -3,8 +3,6 @@
 * Description: Handles convert to lispcase command
 */
 
-
-
 import { SlashCommandBuilder } from "@discordjs/builders";
 import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
