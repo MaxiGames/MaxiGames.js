@@ -3,8 +3,6 @@
 * Description: Handles command for converting text to camelcase
 */
 
-
-
 import { SlashCommandBuilder } from "@discordjs/builders";
 import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
@@ -20,8 +18,7 @@ const camelCase: MyCommand = {
   data: new SlashCommandBuilder()
     .setName("camelcase") 
     .setDescription("Convert some text into camelcase")
-    .addStringOption((option) =>
-      option
+    .addStringOption((option) => option
         .setName("string")
         .setDescription("Text that you want to change")
         .setRequired(true)
