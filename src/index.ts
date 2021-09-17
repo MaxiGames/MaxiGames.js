@@ -1,3 +1,10 @@
+/*
+* File: <src root>/index.ts
+* Description: Main file of MaxiGames
+*/
+
+
+
 import { Client, Intents } from "discord.js";
 import { config, firebaseConfig } from "./utils/config";
 import commands from "./commands";
