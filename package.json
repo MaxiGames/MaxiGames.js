@@ -13,7 +13,8 @@
     "deploy": "./.scripts/heroku-deploy.sh",
     "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
     "postinstall": "npm run build",
-    "heroku-postbuild": "npm run deploy-commands"
+    "heroku-postbuild": "npm run deploy-commands",
+    "buildStart": "npm run build; npm run deploy-commands; npm run start;"
   },
   "engines": {
     "node": "16.x"
