@@ -6,14 +6,17 @@
   "scripts": {
     "prepare": "husky install",
     "init": "node dist/src/index.js",
-    "dev": "ts-node-dev src",
     "build": "rm -rf dist; tsc",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
     "check-commands": "node .scripts/check-commands.js",
     "deploy-commands": "node .scripts/deploy-commands.js",
     "deploy": "./.scripts/heroku-deploy.sh",
     "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
-    "postinstall": "npm run build; npm run deploy-commands"
+    "postinstall": "npm run build",
+    "postbuild": "npm run deploy-commands"
+  },
+  "engines": {
+    "node": "16.x"
   },
   "repository": {
     "type": "git",
