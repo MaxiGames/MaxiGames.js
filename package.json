@@ -18,6 +18,7 @@
   },
   "engines": {
     "node": "16.x"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MaxiGames/MaxiGames.js.git"
