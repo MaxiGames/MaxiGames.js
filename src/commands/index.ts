@@ -33,7 +33,7 @@ const commandFiles: Array<Array<string>> = fs
 // load 'em in!
 for (const filecol of commandFiles) {
   for (const name of filecol) {
-    const command = require(`./${name}`);
+    const command = require(`../../../${name}`);
     commands.set(command.default.data.name, command.default);
   }
 }
