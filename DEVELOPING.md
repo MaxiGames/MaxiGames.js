@@ -3,11 +3,13 @@
 ## Style guide
 
 - Use common sense
-- Use `string[]` instead of `Array<string>`
-- Use `let` instead of `var`, and `const` whenever possible
+- Use `datatype[]` instead of `Array<datatype>`
+- Use `const` wherever possible, but `let` over `var` otherwise.
 - Use `camelCase` for variables, `PascalCase` for classes, types, interfaces,
-  enums.
-- Fully annoate function signatures, including return types
+  and enums.
+- Fully annoate function signatures, including return types (except for toplevel
+  commands for which no-one really knows :p)
+
 - Try to avoid the use of `any` type.
 - Prefer async/await to promise callbacks
 - `// spaces after comment markers`
@@ -16,13 +18,14 @@
 - Descriptive variable names. Use plural for arrays.
 - Write useful comments; don't write any if unneeded
 - Use JSDoc style comments for functions
-- One newline between file header and code begin; 4 newlines between chunks (e.g. imports and code); 2 newlines between blocks (e.g. functions)
+- One newline between file header and code begin; 4 newlines between chunks (e.g.
+  imports and code); 2 newlines between blocks (e.g. functions)
 
 ---
 
 ## Git Guidelines
 
-- _NEVER force push unless under dire circumstances_.
+- _NEVER force push unless in dire circumstances_.
 - _NEVER commit directly to master_.
 - Commit _early_ and _often_. You can interactive rebase to clean everything up
   before pushing.
@@ -35,9 +38,10 @@
   changes include partial stuff, then they suddenly can't run their code anymore
   after pulling those changes.
 - _Don't merge beta/master into a feature branch_. Rebase instead.
-- Do everything on a _feature branch_. In order to avoid merge conflicts later,
+- Do all major features on a _feature branch_. In order to avoid merge conflicts later,
   frequently rebase the feature branch back onto master/beta:
   `git rebase master`.
+- You can merge small feature branches into Beta.
 
 ## Scripts
 
@@ -46,7 +50,7 @@ These should usually be run in order.
 **build**  
 Compiles the typescript to javascript. The compiled JS is in `dist/`
 
-**check-commands** Check that the commands won't crash the build...
+**check-commands** Check that the commands (probably) won't crash the build...
 
 **deploy-commands**  
 Deploys the commands to discord's servers. Run this after updating the name of a
@@ -102,13 +106,10 @@ new private key.
 
 ## Commands and Events
 
-Each command and event is put in a separate file, which exports a `MyCommand` or
-a `MyEvent` respectively.
+Each command and event is put in a separate file, which exports an `MGCommand` or
+`MGEvent` respectively.
 
-Commands go in `src/commands/`, and events go in `src/events/`. When adding a
-new command/event, remember to update
-`src/commands/index.ts`/`src/events.index.ts` to include the new event in the
-exported object/array.
+Commands go in `src/commands/`, and events go in `src/events/`.
 
 After updating the name of a command/adding a new command, remember to run
 `npm run deploy-commands` to push the changes.
