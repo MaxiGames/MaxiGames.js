@@ -49,7 +49,7 @@ fi
 if [ $s1 -eq 0 ]; then
     heroku restart --remote $remote >/dev/null 2>&1
     heroku builds:clear --remote $remote >/dev/null 2>&1 
-    git push -fq $remote main 2>&1 | sed 's/^remote: //g; s/^-----//g; s/^     //g; /^[ \t]*$/d'
+    git push -fq $remote master 2>&1 | sed 's/^remote: //g; s/^-----//g; s/^     //g; /^[ \t]*$/d'
     cleanup
     exit 0
 else
