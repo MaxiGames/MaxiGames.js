@@ -1,4 +1,4 @@
-# Notes for developers or contributors
+# Guidelines for developers or contributors
 
 ## Style guide
 
@@ -17,6 +17,8 @@
 - Write useful comments; don't write any if unneeded
 - Use JSDoc style comments for functions
 - One newline between file header and code begin; 4 newlines between chunks (e.g. imports and code); 2 newlines between blocks (e.g. functions)
+
+---
 
 ## Git Guidelines
 
@@ -53,6 +55,8 @@ command or when adding a new command.
 **start**  
 Runs the production code in `dist/`. Remember to build first!
 
+# Required files
+
 ## config.json
 
 You need a `config-dev.json` in the root directory (same directory as this file)
@@ -69,6 +73,8 @@ in order to run this. The `config-*.json` looks something like this.
 In development, the bot uses `config-dev.json`, and in production it uses
 `config-prod.json`. It determines prod vs dev via the `NODE_ENV` environment
 variable.
+
+---
 
 ## serviceAccountKeys.json
 
@@ -92,6 +98,8 @@ new private key.
 }
 ```
 
+---
+
 ## Commands and Events
 
 Each command and event is put in a separate file, which exports a `MyCommand` or
@@ -105,8 +113,10 @@ exported object/array.
 After updating the name of a command/adding a new command, remember to run
 `npm run deploy-commands` to push the changes.
 
-# Command to run to initialise Firebase (temporary)
+---
 
-- For neon_paradox:
-  GOOGLE_APPLICATION_CREDENTIALS=/Users/wenyuan/Documents/GitHub/MaxiGames.js/serviceAccountKey-dev.json
-  npm run start
+## Key Scripts/Commands to use:
+
+1. `npm run build`: builds it using the `tsc` command and stores the js in a directory named `dist`
+2. `npm run deploy-commands`: deploy the updated slash commands
+3. `npm run buildStart`: builds it, deploys slash commands and runs the bot
