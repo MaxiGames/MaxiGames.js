@@ -18,7 +18,6 @@
   },
   "engines": {
     "node": "16.x"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MaxiGames/MaxiGames.js.git"
@@ -51,10 +50,7 @@
     "firebase": "^9.0.2",
     "firebase-admin": "^9.11.1",
     "inversify": "^5.1.1",
-<<<<<<< HEAD
     "lodash": "^4.17.21",
-=======
->>>>>>> 5d760a7 (Heroku!!!!)
     "reflect-metadata": "^0.1.13",
     "typescript": "^4.4.2"
   }
