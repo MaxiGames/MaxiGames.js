@@ -8,22 +8,29 @@ const { config } = require("../dist/src/utils/config.js");
 
 const commands = [];
 
-// NOTE: The directory "commands" should contain subdirectories to organise js commands.
+// NOTE: The directory "commands" should contain subdirectories to organise commands.
 const commandFiles = fs
-  .readdirSync("./dist/src/commands")
-  .map((file) => path.join("./dist/src/commands", file))
+  .readdirSync("./dist/src/commands") // list of dirs in path
+  .map((file) => path.join("./dist/src/commands", file)) // ./dist/src/commands/dir
   .filter((file) => fs.lstatSync(file).isDirectory())
-  .map((dir) => [
-    dir,
-    fs.readdirSync(dir).filter((file) => file.endsWith(".js")),
-  ]);
+  .map((dir) =>
+    fs
+      .readdirSync(dir)
+      .filter((cdir) => fs.lstatSync(path.join(dir, cdir)).isDirectory())
+      .flatMap((cdir) =>
+        fs
+          .readdirSync(path.join(dir, cdir))
+          .filter((file) => file.endsWith(".js"))
+          .map((file) => path.join(cdir, file))
+      )
+      .map((file) => path.join(dir, file))
+  );
 
 for (const filecol of commandFiles) {
-  for (const name of filecol[1]) {
-    const command = require(`../${path.join(filecol[0], name)}`); // funny path-fu
-    console.log(`Adding ${name}`);
+  for (const name of filecol) {
+    const command = require(`../${name}`); // funny path-fu
     commands.push(command.default.data.toJSON());
-    console.log(`Registered ${name}`);
+    console.log(`Registered ${name}.`);
   }
 }
 

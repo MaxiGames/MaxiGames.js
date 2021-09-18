@@ -4,34 +4,44 @@ const path = require("path");
 const process = require("process");
 
 const commandFiles = fs
-  .readdirSync("./dist/src/commands")
-  .map((file) => path.join("./dist/src/commands", file))
+  .readdirSync("./dist/src/commands") // list of dirs in path
+  .map((file) => path.join("./dist/src/commands", file)) // ./dist/src/commands/dir
   .filter((file) => fs.lstatSync(file).isDirectory())
-  .map((dir) => [
-    dir,
-    fs.readdirSync(dir).filter((file) => file.endsWith(".js")),
-  ]);
+  .map((dir) =>
+    fs
+      .readdirSync(dir)
+      .filter((cdir) => fs.lstatSync(path.join(dir, cdir)).isDirectory())
+      .flatMap((cdir) =>
+        fs
+          .readdirSync(path.join(dir, cdir))
+          .filter((file) => file.endsWith(".js"))
+          .map((file) => path.join(cdir, file))
+      )
+      .map((file) => path.join(dir, file))
+  );
 
 const commandexps = [];
 
 for (const filecol of commandFiles) {
-  for (const fname of filecol[1]) {
-    const command = require(`../${path.join(filecol[0], fname)}`); // funny path-fu
+  for (const fname of filecol) {
+    const command = require(`../${fname}`); // funny path-fu
     try {
-      commandexps.push([
-        command.default.data.name,
-        path.join(filecol[0], fname),
-      ]);
+      commandexps.push([command.default.data.name, fname]);
       command.default.data;
       command.default.execute;
     } catch {
-      console.error(`Invalid command file: ${path.join(filecol[0], fname)}`);
-      console.error("Error: file containst no default export, or the default");
-      console.error("       export does not contain attributes 'data' and");
-      console.error("       'execute'.");
-      console.error("Hint: delete it and its corresponding typescript source");
-      console.error("      file, or export placeholder data (e.g. an empty");
-      console.error("      execute function with a bare newSlashCommand).");
+      console.error(`Invalid command file: ${fname}`);
+      console.error(
+        "Error: file containst no default export, or the default export"
+      );
+      console.error("       does not contain attributes 'data' or 'execute'.");
+      console.error(
+        "Hint: delete it and its corresponding typescript source file,"
+      );
+      console.error(
+        "      or export placeholder data (e.g. an empty execute function"
+      );
+      console.error("      with a bare newSlashCommand).");
       process.exit(1);
     }
   }
