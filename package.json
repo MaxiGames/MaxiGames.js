@@ -12,9 +12,8 @@
     "check-commands": "node .scripts/check-commands.js",
     "deploy-commands": "node .scripts/deploy-commands.js",
     "deploy": "./.scripts/heroku-deploy.sh",
-    "_start": "npm run build; npm run deploy-commands; npm run init",
-    "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run _start",
-    "herokuStart": "npm install typescript --save-dev -g; npm run start"
+    "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
+    "postinstall": "npm run build; npm run deploy-commands"
   },
   "repository": {
     "type": "git",
@@ -35,8 +34,7 @@
     "pretty-quick": "^3.1.1",
     "ts-mockito": "^2.6.1",
     "ts-node": "^10.2.1",
-    "ts-node-dev": "^1.1.8",
-    "typescript": "^4.4.2"
+    "ts-node-dev": "^1.1.8"
   },
   "dependencies": {
     "@discordjs/builders": "^0.6.0",
@@ -49,6 +47,7 @@
     "firebase": "^9.0.2",
     "firebase-admin": "^9.11.1",
     "inversify": "^5.1.1",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^4.4.2"
   }
 }
