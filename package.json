@@ -12,6 +12,7 @@
     "deploy-commands": "node .scripts/deploy-commands.js",
     "deploy": "./.scripts/heroku-deploy.sh",
     "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
+    "start-prod": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-prod.json\" npm run init",
     "postinstall": "npm run build",
     "heroku-postbuild": "npm run deploy-commands",
     "buildStart": "npm run build; npm run deploy-commands; npm run start;"
