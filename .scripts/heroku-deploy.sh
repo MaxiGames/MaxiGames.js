@@ -6,8 +6,8 @@ hps=$(heroku ps --remote heroku 2>&1)
 
 echo "Deploying from branch $(git branch --show-current) to remote $remote."
 
-if [ ! $(git branch --show-current) = "main" ]; then
-    echo "Can only deploy from branch main. Abort."
+if [ ! $(git branch --show-current) = "master" ]; then
+    echo "Can only deploy from branch master. Abort."
     exit 1
 fi
 
