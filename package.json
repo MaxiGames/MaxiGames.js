@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "prepare": "husky install",
-    "init": "node dist/src/index.js",
+    "init": "npm run build; npm run deploy-commands; node dist/src/index.js",
     "build": "rm -rf dist; tsc",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
     "check-commands": "node .scripts/check-commands.js",
