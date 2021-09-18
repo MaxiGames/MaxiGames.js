@@ -12,21 +12,13 @@ const commands: Map<string, MGCommand> = new Map();
 // NOTE: The directory "commands" should contain subdirectories to organise commands.
 // get command files
 const commandFiles: Array<Array<string>> = fs
-  .readdirSync("./dist/src/commands") // list of dirs in path
-  .map((file: string) => path.join("./dist/src/commands", file)) // ./dist/src/commands/dir
+  .readdirSync("./dist/src/commands")
+  .map((file: string) => path.join("./dist/src/commands", file))
   .filter((file: string) => fs.lstatSync(file).isDirectory())
   .map((dir: string) =>
     fs
       .readdirSync(dir)
-      .filter((cdir: string) =>
-        fs.lstatSync(path.join(dir, cdir)).isDirectory()
-      )
-      .flatMap((cdir: string) =>
-        fs
-          .readdirSync(path.join(dir, cdir))
-          .filter((file: string) => file.endsWith(".js"))
-          .map((file: string) => path.join(cdir, file))
-      )
+      .filter((file: string) => file.endsWith(".js"))
       .map((file: string) => path.join(dir, file))
   );
 
