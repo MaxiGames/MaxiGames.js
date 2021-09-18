@@ -10,19 +10,13 @@ const commands = [];
 
 // NOTE: The directory "commands" should contain subdirectories to organise commands.
 const commandFiles = fs
-  .readdirSync("./dist/src/commands") // list of dirs in path
-  .map((file) => path.join("./dist/src/commands", file)) // ./dist/src/commands/dir
+  .readdirSync("./dist/src/commands")
+  .map((file) => path.join("./dist/src/commands", file))
   .filter((file) => fs.lstatSync(file).isDirectory())
   .map((dir) =>
     fs
       .readdirSync(dir)
-      .filter((cdir) => fs.lstatSync(path.join(dir, cdir)).isDirectory())
-      .flatMap((cdir) =>
-        fs
-          .readdirSync(path.join(dir, cdir))
-          .filter((file) => file.endsWith(".js"))
-          .map((file) => path.join(cdir, file))
-      )
+      .filter((file) => file.endsWith(".js"))
       .map((file) => path.join(dir, file))
   );
 
