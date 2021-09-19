@@ -129,7 +129,7 @@ const timely: MyCommand = {
     let embed;
 
     if (
-      date - data["timelyClaims"][subCommand] < interval ||
+      date - data["timelyClaims"][subCommand] > interval ||
       data["timelyClaims"][subCommand] === 0
     ) {
       embed = MGEmbed(MGStatus.Success)
