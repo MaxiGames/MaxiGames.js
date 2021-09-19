@@ -110,7 +110,7 @@ const timely: MyCommand = {
 
     switch (subCommand) {
       case "hourly":
-        interval = 36000;
+        interval = 3600;
         break;
       case "daily":
         interval = 86400;
