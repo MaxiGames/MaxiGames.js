@@ -17,38 +17,11 @@
  */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
+import MGCooldownManager from "../../lib/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
 import { MGfirebase } from "../../utils/firebase";
-
-function convertSecondsToDay(n: number) {
-  let day = Math.floor(n / (24 * 60 * 60));
-  n -= day * 24 * 60 * 60;
-
-  let hour = Math.floor(n / (60 * 60));
-  n -= hour * 60 * 60;
-
-  let minutes = Math.floor(n / 60);
-  n -= minutes * 60;
-
-  let seconds = Math.floor(n);
-
-  return (
-    day +
-    " " +
-    "days " +
-    hour +
-    " " +
-    "hours " +
-    minutes.toFixed() +
-    " " +
-    "minutes " +
-    seconds.toFixed() +
-    " " +
-    "seconds "
-  );
-}
 
 const timely: MyCommand = {
   data: new SlashCommandBuilder()
@@ -106,7 +79,6 @@ const timely: MyCommand = {
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
 
     let interval: number;
-    let date = Math.ceil(new Date().getTime() / 1000);
 
     switch (subCommand) {
       case "hourly":
@@ -128,10 +100,8 @@ const timely: MyCommand = {
 
     let embed;
 
-    if (
-      date - data["timelyClaims"][subCommand] > interval ||
-      data["timelyClaims"][subCommand] === 0
-    ) {
+    if (MGCooldownManager.checkCooldown(interval, subCommand, interaction)) {
+      data["money"] += moneyAdd;
       embed = MGEmbed(MGStatus.Success)
         .setTitle(`Claimed ${subCommand}!`)
         .setDescription(`Yay! You claimed your ${subCommand}!`)
@@ -139,23 +109,10 @@ const timely: MyCommand = {
           { name: "Added:", value: `${moneyAdd}` },
           { name: "Balance", value: `${data["money"]}` }
         );
-
-      data["money"] += moneyAdd;
-      data["timelyClaims"][subCommand] = date;
+      MGCooldownManager.setLastUsedCooldown(subCommand, interaction);
       await MGfirebase.setData(`user/${interaction.user.id}`, data);
-    } else {
-      embed = MGEmbed(MGStatus.Error)
-        .setTitle(`You can't claim ${subCommand} yet!`)
-        .setDescription(`Be patient :)`)
-        .addFields({
-          name: "Time left:",
-          value: `${convertSecondsToDay(
-            Math.floor(data["timelyClaims"][subCommand] + interval - date)
-          )}`,
-        });
+      await interaction.reply({ embeds: [embed] });
     }
-
-    await interaction.reply({ embeds: [embed] });
   },
 };
 
