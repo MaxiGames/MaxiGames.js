@@ -34,10 +34,12 @@ const rest = new REST({ version: "9" }).setToken(config.tokenId);
 (async () => {
   try {
     if (env.NODE_ENV === "production") {
+      console.log("Deploying commands globally.");
       await rest.put(Routes.applicationCommands(config.clientId), {
         body: commands,
       });
     } else {
+      console.log("Deploying commands locally onto Beta.");
       await rest.put(
         Routes.applicationGuildCommands(config.clientId, config.guildId),
         {
