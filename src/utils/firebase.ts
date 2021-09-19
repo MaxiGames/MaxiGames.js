@@ -59,9 +59,9 @@ export class FirebaseManager {
           let data = snapshot.val();
           try {
             //casting data
+            data = this.initData(data);
             let castedData = data as DataModel;
             this.data = castedData;
-            this.initData();
             console.log("Database successfully initialised!");
           } catch {
             throw "Data could not be casted properly during initialisation";
@@ -170,20 +170,20 @@ export class FirebaseManager {
     return result;
   }
 
-  private initData() {
-    for (let i in this.data["user"]) {
-      if (!this.data["user"][i]["timelyClaims"]) {
-        console.log(`Updating timelyClaims for ${i}`);
-        this.data["user"][i]["timelyClaims"] = initialUser.timelyClaims;
+  private initData(data: any) {
+    for (let i in data["user"]) {
+      if (!data["user"][i]["cooldowns"]) {
+        console.log(`Updating timelyClaims to cooldowns for ${i}`);
+        data["user"][i]["timelyClaims"] = data["user"][i]["cooldowns"];
       }
     }
     this.db
       ?.ref(`/`)
-      .set(this.data)
+      .set(data)
       .then(() => {
         console.log("Timely data initialised for users");
-        console.log(this.data);
       });
+    return data;
   }
 }
 

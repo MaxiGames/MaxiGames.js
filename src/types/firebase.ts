@@ -23,7 +23,7 @@ export default interface DataModel {
 interface User {
   [id: string]: {
     money: number;
-    timelyClaims: {
+    cooldowns: {
       hourly: number | null;
       daily: number | null;
       weekly: number | null;
@@ -35,7 +35,7 @@ interface User {
 
 export let initialUser = {
   money: 0,
-  timelyClaims: {
+  cooldowns: {
     hourly: 0,
     daily: 0,
     weekly: 0,

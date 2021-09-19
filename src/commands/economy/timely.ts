@@ -17,38 +17,11 @@
  */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
+import MGCooldownManager from "../../lib/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
 import { MGfirebase } from "../../utils/firebase";
-
-function convertSecondsToDay(n: number) {
-  let day = Math.floor(n / (24 * 60 * 60));
-  n -= day * 24 * 60 * 60;
-
-  let hour = Math.floor(n / (60 * 60));
-  n -= hour * 60 * 60;
-
-  let minutes = Math.floor(n / 60);
-  n -= minutes * 60;
-
-  let seconds = Math.floor(n);
-
-  return (
-    day +
-    " " +
-    "days " +
-    hour +
-    " " +
-    "hours " +
-    minutes.toFixed() +
-    " " +
-    "minutes " +
-    seconds.toFixed() +
-    " " +
-    "seconds "
-  );
-}
 
 const timely: MyCommand = {
   data: new SlashCommandBuilder()
@@ -105,48 +78,40 @@ const timely: MyCommand = {
 
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
 
-    //lazy
     let interval: number;
-    let date = Math.ceil(new Date().getTime() / 1000);
-    if (subCommand === "hourly") interval = 36000;
-    else if (subCommand === "daily") interval = 86400;
-    else if (subCommand === "weekly") interval = 604800;
-    else if (subCommand === "monthly") interval = 2592000;
-    else interval = 31536000;
 
-    if (
-      data["timelyClaims"][subCommand] - date > interval ||
-      data["timelyClaims"][subCommand] === 0
-    ) {
+    switch (subCommand) {
+      case "hourly":
+        interval = 3600;
+        break;
+      case "daily":
+        interval = 86400;
+        break;
+      case "weekly":
+        interval = 604800;
+        break;
+      case "monthly":
+        interval = 2592000;
+        break;
+      default:
+        interval = 31536000;
+        break;
+    }
+
+    let embed;
+
+    if (MGCooldownManager.checkCooldown(interval, subCommand, interaction)) {
       data["money"] += moneyAdd;
-      data["timelyClaims"][subCommand] = date;
+      embed = MGEmbed(MGStatus.Success)
+        .setTitle(`Claimed ${subCommand}!`)
+        .setDescription(`Yay! You claimed your ${subCommand}!`)
+        .addFields(
+          { name: "Added:", value: `${moneyAdd}` },
+          { name: "Balance", value: `${data["money"]}` }
+        );
+      MGCooldownManager.setLastUsedCooldown(subCommand, interaction);
       await MGfirebase.setData(`user/${interaction.user.id}`, data);
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Success)
-            .setTitle(`Claimed ${subCommand}!`)
-            .setDescription(`Yay! You claimed your ${subCommand}!`)
-            .addFields(
-              { name: "Added:", value: `${moneyAdd}` },
-              { name: "Balance", value: `${data["money"]}` }
-            ),
-        ],
-      });
-    } else {
-      //still got time left
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Error)
-            .setTitle(`You can't claim ${subCommand} yet!`)
-            .setDescription(`Be patient :)`)
-            .addFields({
-              name: "Time left:",
-              value: `${convertSecondsToDay(
-                Math.floor(data["timelyClaims"][subCommand] + interval - date)
-              )}`,
-            }),
-        ],
-      });
+      await interaction.reply({ embeds: [embed] });
     }
   },
 };
