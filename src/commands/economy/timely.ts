@@ -105,49 +105,57 @@ const timely: MyCommand = {
 
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
 
-    //lazy
     let interval: number;
     let date = Math.ceil(new Date().getTime() / 1000);
-    if (subCommand === "hourly") interval = 36000;
-    else if (subCommand === "daily") interval = 86400;
-    else if (subCommand === "weekly") interval = 604800;
-    else if (subCommand === "monthly") interval = 2592000;
-    else interval = 31536000;
+
+    switch (subCommand) {
+      case "hourly":
+        interval = 36000;
+        break;
+      case "daily":
+        interval = 86400;
+        break;
+      case "weekly":
+        interval = 604800;
+        break;
+      case "monthly":
+        interval = 2592000;
+        break;
+      default:
+        interval = 31536000;
+        break;
+    }
+
+    let embed;
 
     if (
-      data["timelyClaims"][subCommand] - date > interval ||
+      date - data["timelyClaims"][subCommand] < interval ||
       data["timelyClaims"][subCommand] === 0
     ) {
+      embed = MGEmbed(MGStatus.Success)
+        .setTitle(`Claimed ${subCommand}!`)
+        .setDescription(`Yay! You claimed your ${subCommand}!`)
+        .addFields(
+          { name: "Added:", value: `${moneyAdd}` },
+          { name: "Balance", value: `${data["money"]}` }
+        );
+
       data["money"] += moneyAdd;
       data["timelyClaims"][subCommand] = date;
       await MGfirebase.setData(`user/${interaction.user.id}`, data);
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Success)
-            .setTitle(`Claimed ${subCommand}!`)
-            .setDescription(`Yay! You claimed your ${subCommand}!`)
-            .addFields(
-              { name: "Added:", value: `${moneyAdd}` },
-              { name: "Balance", value: `${data["money"]}` }
-            ),
-        ],
-      });
     } else {
-      //still got time left
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Error)
-            .setTitle(`You can't claim ${subCommand} yet!`)
-            .setDescription(`Be patient :)`)
-            .addFields({
-              name: "Time left:",
-              value: `${convertSecondsToDay(
-                Math.floor(data["timelyClaims"][subCommand] + interval - date)
-              )}`,
-            }),
-        ],
-      });
+      embed = MGEmbed(MGStatus.Error)
+        .setTitle(`You can't claim ${subCommand} yet!`)
+        .setDescription(`Be patient :)`)
+        .addFields({
+          name: "Time left:",
+          value: `${convertSecondsToDay(
+            Math.floor(data["timelyClaims"][subCommand] + interval - date)
+          )}`,
+        });
     }
+
+    await interaction.reply({ embeds: [embed] });
   },
 };
 
