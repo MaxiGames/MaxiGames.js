@@ -26,8 +26,12 @@ import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 
+
+
 const tocamel = require("lodash/camelCase") as (param: string) => string;
+
 const tolisp = require("lodash/kebabCase") as (param: string) => string;
+
 const topascal = function (string: string) {
   return `${string}`
     .replace(new RegExp(/[-_]+/, "g"), " ")
@@ -39,9 +43,13 @@ const topascal = function (string: string) {
     .replace(new RegExp(/\s/, "g"), "")
     .replace(new RegExp(/\w/), (s) => s.toUpperCase());
 };
+
 const tosnake = require("lodash/snakeCase") as (param: string) => string;
+
 const toupper = require("lodash/upperCase") as (param: string) => string;
+
 const tolower = require("lodash/lowerCase") as (param: string) => string;
+
 
 const convertCase: MGCommand = {
   // exports (self explanatory)
