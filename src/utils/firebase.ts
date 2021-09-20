@@ -175,8 +175,10 @@ export class FirebaseManager {
       if (!data["user"][i]["cooldowns"]) {
         console.log(`Updating timelyClaims to cooldowns for ${i}`);
         data["user"][i]["timelyClaims"] = data["user"][i]["cooldowns"];
+        delete data["user"][i]["timelyClaims"];
       }
     }
+    console.log(data);
     this.db
       ?.ref(`/`)
       .set(data)
