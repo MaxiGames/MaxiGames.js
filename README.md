@@ -2,7 +2,7 @@
 
 Your one and only discord bot that includes all forms of mini games you will ever want. Have a suggestion for another MiniGame? Open an issue, or use the `m!suggest <suggestion>` command on our bot! This bot is currently a work in progress.
 
-This project is licensed under the GNU AGPLv3 License - see the LICENSE.md file for exact details, but basically if you take my work, give me credit. You also need to have your application that uses my code under the same license.
+This project is licensed under the GNU AGPLv3 License - see the LICENSE.md file for exact details, but basically if you take our work, give us credit. You also need to have your application that uses our code under the same license.
 
 ---
 
