@@ -173,9 +173,8 @@ export class FirebaseManager {
   private initData(data: any) {
     for (let i in data["user"]) {
       if (!data["user"][i]["cooldowns"]) {
-        console.log(`Updating timelyClaims to cooldowns for ${i}`);
-        data["user"][i]["timelyClaims"] = data["user"][i]["cooldowns"];
-        delete data["user"][i]["timelyClaims"];
+        console.log(`Updating cooldowns for ${i}`);
+        data["user"][i]["cooldowns"] = initialUser.cooldowns;
       }
     }
     console.log(data);
