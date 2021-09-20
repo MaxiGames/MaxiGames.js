@@ -60,7 +60,6 @@ function givecooldown(
     async execute(interaction: CommandInteraction) {
       MGfirebase.initialisePerson(interaction.user.id);
       let data = MGfirebase.getData(`user/${interaction.user.id}`);
-      console.log(data);
       let lastDate = data["cooldowns"][command.data.name!];
       let date = Math.ceil(new Date().getTime() / 1000);
 
