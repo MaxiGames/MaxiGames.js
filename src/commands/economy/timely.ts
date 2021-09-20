@@ -151,6 +151,7 @@ const timely: MyCommand = givecooldown(
         data["timelyClaims"][subCommand] = date;
         await MGfirebase.setData(`user/${interaction.user.id}`, data);
       } else {
+        console.log(data["timelyClaims"][subCommand] + interval - date);
         embed = MGEmbed(MGStatus.Error)
           .setTitle(`You can't claim ${subCommand} yet!`)
           .setDescription(`Be patient :)`)
