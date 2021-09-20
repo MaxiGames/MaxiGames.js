@@ -84,15 +84,19 @@ const timely: MyCommand = {
       case "hourly":
         interval = 3600;
         break;
+        
       case "daily":
         interval = 86400;
         break;
+        
       case "weekly":
         interval = 604800;
         break;
+        
       case "monthly":
         interval = 2592000;
         break;
+        
       default:
         interval = 31536000;
         break;
