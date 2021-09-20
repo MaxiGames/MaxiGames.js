@@ -70,6 +70,9 @@ function givecooldown(
         await MGfirebase.setData(`user/${interaction.user.id}`, data);
         await command.execute(interaction); // Execute original
       } else {
+        console.log(lastDate);
+        console.log(cooldown);
+        console.log(date);
         await interaction.reply({
           embeds: [
             MGEmbed(MGStatus.Error)
