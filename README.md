@@ -36,3 +36,14 @@ Exact details are listed in LICENSE.md
 ---
 
 ## Commands
+
+### Cases
+
+- `/convertcase <camel | lisp | pascal | snake | lower | upper> <text>`: Converts specified text to specified case.
+
+### Economy
+
+- `/balance <user>`
+- 
+
+### General
