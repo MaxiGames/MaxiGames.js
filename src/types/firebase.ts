@@ -24,23 +24,22 @@ interface User {
   [id: string]: {
     money: number;
     cooldowns: {
-      hourly: number | null;
-      daily: number | null;
-      weekly: number | null;
-      monthly: number | null;
-      yearly: number | null;
+      timely: number | null;
     };
   };
 }
 
 export let initialUser = {
   money: 0,
-  cooldowns: {
+  timelyClaims: {
     hourly: 0,
     daily: 0,
     weekly: 0,
     monthly: 0,
     yearly: 0,
+  },
+  cooldowns: {
+    timely: null,
   },
 };
 

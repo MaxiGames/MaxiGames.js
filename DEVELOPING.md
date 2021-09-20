@@ -2,6 +2,8 @@
 
 ## Style guide
 
+- KEEP CODE AS SIMPLE AS POSSIBLE
+- Always use braces
 - Use common sense
 - Use `datatype[]` instead of `Array<datatype>`
 - Use `const` wherever possible, but `let` over `var` otherwise.
@@ -9,7 +11,6 @@
   and enums.
 - Fully annoate function signatures, including return types (except for toplevel
   commands for which no-one really knows :p)
-
 - Try to avoid the use of `any` type.
 - Prefer async/await to promise callbacks
 - `// spaces after comment markers`
