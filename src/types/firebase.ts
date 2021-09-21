@@ -24,7 +24,11 @@ interface User {
   [id: string]: {
     money: number;
     cooldowns: {
-      timely: number | null;
+      timely: number;
+      coinflip: number;
+      gamble: number;
+      money: number;
+      share: number;
     };
   };
 }
@@ -39,7 +43,11 @@ export let initialUser = {
     yearly: 0,
   },
   cooldowns: {
-    timely: null,
+    timely: 0,
+    coinflip: 0,
+    gamble: 0,
+    money: 0,
+    share: 0,
   },
 };
 
