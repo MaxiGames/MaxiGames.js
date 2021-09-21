@@ -19,8 +19,54 @@
 import { CommandInteraction } from "discord.js";
 import { MGfirebase } from "../utils/firebase";
 import { MGEmbed } from "./flavoured";
-import MGCommand from "../types/command";
+import type MGCmdTest from "../types/checks";
 import MGStatus from "./statuses";
+
+export default function cooldownTest(
+  cooldown: number,
+  validator: (interaction: CommandInteraction) => boolean = (_) => false
+) {
+  let ret: MGCmdTest = {
+    async check(command, interaction) {
+      MGfirebase.initialisePerson(interaction.user.id);
+      let data = MGfirebase.getData(`user/${interaction.user.id}`);
+      let lastDate = data["cooldowns"][command.data.name!];
+      let date = Math.ceil(new Date().getTime() / 1000);
+
+      return lastDate + cooldown < date || validator(interaction);
+    },
+
+    async succ(command, interaction) {
+      MGfirebase.initialisePerson(interaction.user.id);
+      let data = MGfirebase.getData(`user/${interaction.user.id}`);
+
+      data["cooldowns"][command.data.name!] = Math.ceil(
+        new Date().getTime() / 1000
+      );
+      await MGfirebase.setData(`user/${interaction.user.id}`, data);
+    },
+
+    async fail(command, interaction) {
+      let data = MGfirebase.getData(`user/${interaction.user.id}`);
+      let lastDate = data["cooldowns"][command.data.name!];
+      let date = Math.ceil(new Date().getTime() / 1000);
+
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle(`The command ${command.data.name} is on cooldown!`)
+            .setDescription("Be patient :)")
+            .addField(
+              "Time left",
+              `${convertSecondsToDay(lastDate + cooldown - date)}`
+            ),
+        ],
+      });
+    },
+  };
+
+  return ret;
+}
 
 function convertSecondsToDay(n: number) {
   let day = Math.floor(n / (24 * 60 * 60));
@@ -49,41 +95,3 @@ function convertSecondsToDay(n: number) {
     "seconds "
   );
 }
-
-function withcooldown(
-  command: MGCommand,
-  cooldown: number,
-  validator: (interaction: CommandInteraction) => boolean = (_) => false
-): MGCommand {
-  return {
-    data: command.data,
-    async execute(interaction: CommandInteraction) {
-      MGfirebase.initialisePerson(interaction.user.id);
-      let data = MGfirebase.getData(`user/${interaction.user.id}`);
-      let lastDate = data["cooldowns"][command.data.name!];
-      let date = Math.ceil(new Date().getTime() / 1000);
-
-      if (lastDate + cooldown < date || validator(interaction)) {
-        data["cooldowns"][command.data.name!] = Math.ceil(
-          new Date().getTime() / 1000
-        );
-        await MGfirebase.setData(`user/${interaction.user.id}`, data);
-        await command.execute(interaction); // Execute original
-      } else {
-        await interaction.reply({
-          embeds: [
-            MGEmbed(MGStatus.Error)
-              .setTitle(`The command ${command.data.name} is on cooldown!`)
-              .setDescription("Be patient :)")
-              .addField(
-                "Time left",
-                `${convertSecondsToDay(lastDate + cooldown - date)}`
-              ),
-          ],
-        });
-      }
-    },
-  };
-}
-
-export default withcooldown;
