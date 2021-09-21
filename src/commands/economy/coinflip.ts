@@ -22,7 +22,7 @@
  */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import givecooldown from "../../lib/cooldown";
+import withcooldown from "../../lib/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
@@ -35,7 +35,7 @@ function otherOption(name: string) {
   else return "heads";
 }
 
-const gamble = givecooldown(
+const gamble = withcooldown(
   {
     data: new SlashCommandBuilder()
       .setName("coinflip")

@@ -21,9 +21,9 @@ import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGfirebase } from "../../utils/firebase";
-import givecooldown from "../../lib/cooldown";
+import withcooldown from "../../lib/cooldown";
 
-const money = givecooldown(
+const money = withcooldown(
   {
     data: new SlashCommandBuilder()
       .setName("money")

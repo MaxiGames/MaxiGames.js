@@ -21,7 +21,7 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
 import { MGfirebase } from "../../utils/firebase";
-import givecooldown from "../../lib/cooldown";
+import withcooldown from "../../lib/cooldown";
 
 function convertSecondsToDay(n: number) {
   let day = Math.floor(n / (24 * 60 * 60));
@@ -51,7 +51,7 @@ function convertSecondsToDay(n: number) {
   );
 }
 
-const timely: MyCommand = givecooldown(
+const timely: MyCommand = withcooldown(
   {
     data: new SlashCommandBuilder()
       .setName("timely")

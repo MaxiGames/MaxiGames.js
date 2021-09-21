@@ -50,7 +50,7 @@ function convertSecondsToDay(n: number) {
   );
 }
 
-function givecooldown(
+function withcooldown(
   command: MGCommand,
   cooldown: number,
   validator: (interaction: CommandInteraction) => boolean = (_) => false
@@ -86,4 +86,4 @@ function givecooldown(
   };
 }
 
-export default givecooldown;
+export default withcooldown;
