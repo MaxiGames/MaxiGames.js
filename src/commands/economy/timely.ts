@@ -28,7 +28,7 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
   data: new SlashCommandBuilder()
     .setName("timely")
     .setDescription(
-      "Time and time again...you'll get to get richer and richer!!!"
+      "Time and time again :)...you'll get to get richer and richer!!!"
     )
     .addSubcommand((subcommand) =>
       subcommand
