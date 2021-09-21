@@ -41,7 +41,7 @@ const rest = new REST({ version: "9" }).setToken(config.tokenId);
     } else {
       console.log("Deploying commands locally onto Beta.");
       await rest.put(
-        Routes.applicationGuildCommands(config.clientId, config.guildId),
+        Routes.applicationCommands(config.clientId, config.guildId),
         {
           body: commands,
         }
