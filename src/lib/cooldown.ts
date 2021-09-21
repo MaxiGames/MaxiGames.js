@@ -80,18 +80,5 @@ function convertSecondsToDay(n: number) {
 
   let seconds = Math.floor(n);
 
-  return (
-    day +
-    " " +
-    "days " +
-    hour +
-    " " +
-    "hours " +
-    minutes.toFixed() +
-    " " +
-    "minutes " +
-    seconds.toFixed() +
-    " " +
-    "seconds "
-  );
+  return `${day} day(s), ${hour} hour(s), ${minutes.toFixed()} minute(s) and ${seconds.toFixed()} second(s) `;
 }
