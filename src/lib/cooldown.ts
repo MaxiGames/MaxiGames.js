@@ -61,7 +61,6 @@ function givecooldown(
       MGfirebase.initialisePerson(interaction.user.id);
       let data = MGfirebase.getData(`user/${interaction.user.id}`);
       let lastDate = data["cooldowns"][command.data.name!];
-      console.log(command.data.name!, lastDate);
       let date = Math.ceil(new Date().getTime() / 1000);
 
       if (lastDate + cooldown < date || validator(interaction)) {

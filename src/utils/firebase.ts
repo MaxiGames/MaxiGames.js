@@ -172,7 +172,7 @@ export class FirebaseManager {
 
   private initData(data: any) {
     for (let i in data["user"]) {
-      if (!data["user"][i]["cooldowns"]) {
+      if (!data["user"][i]["cooldowns"] || !data["user"][i]["coinflip"]) {
         data["user"][i]["cooldowns"] = initialUser.cooldowns;
         console.log(`Data changed for ${i}`);
       }
