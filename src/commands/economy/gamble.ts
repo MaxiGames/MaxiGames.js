@@ -110,7 +110,7 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
           `You drawed! You rolled ${player_roll} and the bot also rolled ${bot_roll}`
         )
         .setDescription(
-          `You bet ${amt} money and didn't gain or lose any money!`
+          `You bet ${amt} money and didn't win or lose any money!`
         )
         .addField("Your balance:", `${data["money"]}`);
       await interaction.reply({
