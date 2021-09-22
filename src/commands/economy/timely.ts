@@ -132,7 +132,7 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
     await interaction.reply({ embeds: [embed] });
   },
 });
-
+// utility function to convert seconds to a comprehendable value for user-friendly experience
 function convertSecondsToDay(n: number) {
   let day = Math.floor(n / (24 * 60 * 60));
   n -= day * 24 * 60 * 60;
