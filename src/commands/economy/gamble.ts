@@ -70,6 +70,7 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
     }
 
     let bot_roll = Math.ceil(Math.random() * 12);
+    // unfair setting that makes the bot tend to have a higher roll
     if (bot_roll < 3) {
       bot_roll = Math.ceil(Math.random() * 12);
     }

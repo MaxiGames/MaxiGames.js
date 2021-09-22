@@ -69,7 +69,7 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
       });
       return;
     }
-
+    //entered user is the same as the command user
     if (usr.id === interaction.user.id) {
       interaction.reply({
         embeds: [
@@ -92,7 +92,7 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
         MGEmbed(MGStatus.Success)
           .setTitle("Success!")
           .setDescription(
-            `Thanks for the donation, I\'m sure <@!${usr.id}> will appreciate it! `
+            `Thanks for the donation, I\'m sure ${usr.username} will appreciate it! `
           )
           .addFields(
             { name: "Shared:", value: `${amt}`, inline: false },

@@ -25,7 +25,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-
+// use the lodash library to do all the hard work for us 
 const tocamel = require("lodash/camelCase") as (param: string) => string;
 const tolisp = require("lodash/kebabCase") as (param: string) => string;
 const topascal = function (string: string) {

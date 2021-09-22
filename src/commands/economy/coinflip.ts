@@ -64,7 +64,6 @@ const gamble = withChecks([cooldownTest(10)], {
     let data = MGfirebase.getData(`user/${interaction.user.id}`); // get user balance
 
     if (data["money"] < amt) {
-      // not enough mony
       interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Success)
@@ -79,7 +78,7 @@ const gamble = withChecks([cooldownTest(10)], {
 
     const compOption = Math.ceil(Math.random() * 2);
 
-    // confusing indentation ahead!
+    // user's option is correct (really, it's unnecessary because you can just choose true/false randomly)
     if (
       (option === "heads" && compOption === 1) ||
       (option === "tails" && compOption === 2)
