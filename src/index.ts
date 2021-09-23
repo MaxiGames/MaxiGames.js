@@ -28,6 +28,10 @@ import events from "./events";
 import * as admin from "firebase-admin";
 import { MGfirebase } from "./utils/firebase";
 import { initialGuild } from "./types/firebase";
+import CouuntListen from "./listeners/counting";
+import { MGEmbed } from "./lib/flavoured";
+import MGStatus from "./lib/statuses";
+import math from "mathjs";
 
 export const client = new Client({
   intents: [
