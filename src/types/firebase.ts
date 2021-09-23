@@ -18,7 +18,7 @@
 
 export default interface DataModel {
   user: { [id: string]: User };
-  server: { [id: string]: Server };
+  guild: { [id: string]: Server };
 }
 
 interface Server {
@@ -73,7 +73,7 @@ export let initialData: DataModel = {
   user: {
     1234: initialUser,
   },
-  server: {
+  guild: {
     1234: initialServer,
   },
 };

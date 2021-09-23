@@ -31,7 +31,7 @@ import { CommandInteraction, Guild } from "discord.js";
 async function addChannel(
   interaction: CommandInteraction,
   guild: Guild,
-  serverData: any
+  guildData: any
 ) {
   let channel = interaction.options.getChannel("channel");
 
@@ -42,25 +42,23 @@ async function addChannel(
     return;
   }
 
-  if (serverData["countingChannels"] === 0) {
-    serverData["countingChannels"] = {};
+  if (guildData["countingChannels"] === 0) {
+    guildData["countingChannels"] = {};
   }
-  if (serverData["countingChannels"][channel.id] === undefined) {
-    serverData["countingChannels"][channel.id] = 0;
-    await MGfirebase.setData(`server/${guild.id}`, serverData).then(
-      async () => {
-        if (channel === null) return;
-        await interaction.reply({
-          embeds: [
-            MGEmbed(MGStatus.Success)
-              .setTitle("Success!")
-              .setDescription(
-                `**${channel.name}** is now a counting channel! You can further configure it to fit your needs :)`
-              ),
-          ],
-        });
-      }
-    );
+  if (guildData["countingChannels"][channel.id] === undefined) {
+    guildData["countingChannels"][channel.id] = 0;
+    await MGfirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
+      if (channel === null) return;
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Success)
+            .setTitle("Success!")
+            .setDescription(
+              `**${channel.name}** is now a counting channel! You can further configure it to fit your needs :)`
+            ),
+        ],
+      });
+    });
   } else {
     await interaction.reply({
       embeds: [
@@ -78,7 +76,7 @@ const counting: MGCommand = {
   // exports (self explanatory)
   data: new SlashCommandBuilder()
     .setName("counting")
-    .setDescription("configure your servers' counting games!")
+    .setDescription("configure your guilds' counting games!")
     .addSubcommand((subcommand) =>
       subcommand
         .setName("addchannel")
@@ -105,9 +103,9 @@ const counting: MGCommand = {
       });
       return;
     }
-    let serverData = MGfirebase.getData(`server/${guild.id}`);
+    let guildData = MGfirebase.getData(`guild/${guild.id}`);
     if (subcommand === "addchannel") {
-      addChannel(interaction, guild, serverData);
+      addChannel(interaction, guild, guildData);
     }
   },
 };

@@ -52,7 +52,7 @@ export class FirebaseManager {
             console.log("No DB AVALIABLE");
             return;
           }
-          //if db doesn't exist, get data set on the server
+          //if db doesn't exist, get data set on the guild
           this.db
             .ref(`/`)
             .set(this.data)
@@ -175,19 +175,19 @@ export class FirebaseManager {
   }
 
   private Data(data: any, client: Client) {
-    if (!data["server"]) {
-      data["server"] = {};
+    if (!data["guild"]) {
+      data["guild"] = {};
       if (client === undefined) return;
       client.guilds.cache.forEach((value) => {
-        data["server"][value.id] = initialServer;
+        data["guild"][value.id] = initialServer;
         console.log(`Data changed for ${value.id}`);
       });
     }
     this.db
-      ?.ref(`/server/`)
-      .set(data["server"])
+      ?.ref(`/guild/`)
+      .set(data["guild"])
       .then(() => {
-        console.log("Data initialised for servers");
+        console.log("Data initialised for guilds");
       });
     return data;
   }
