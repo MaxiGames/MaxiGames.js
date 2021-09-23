@@ -17,7 +17,7 @@
  */
 
 /*
- * File: src/commands/cases/convercase.ts
+ * File: src/commands/cases/counting.ts
  * Description: Handles command for converting text to another case
  */
 
