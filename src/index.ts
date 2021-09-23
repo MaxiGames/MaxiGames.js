@@ -28,7 +28,13 @@ import events from "./events";
 import * as admin from "firebase-admin";
 import { MGfirebase } from "./utils/firebase";
 
-export const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+export const client = new Client({
+  intents: [
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MEMBERS,
+    Intents.FLAGS.GUILD_PRESENCES,
+  ],
+});
 
 /*
  * Event Handlers
