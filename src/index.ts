@@ -27,6 +27,7 @@ import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
 import { MGfirebase } from "./utils/firebase";
+import { initialServer } from "./types/firebase";
 
 export const client = new Client({
   intents: [
@@ -87,7 +88,6 @@ client.login(config.tokenId).then(() => {
   user.setActivity(`m!help on ${currentServerCount} servers!`, {
     type: "WATCHING",
   }); // initialize activity as "Watching m!help on <number> servers!"
-  // @AJR Shouldn't this be updated to something like "/mghelp" bcos slash cmds? (AV3_08)
 
   // change activity on guild join
   client.on("guildCreate", (guild) => {
@@ -97,6 +97,8 @@ client.login(config.tokenId).then(() => {
     if (user === null) {
       throw "User is null and this is very bad!!!"; // corner case again
     }
+
+    MGfirebase.setData(`server/${guild.id}`, initialServer);
 
     user.setActivity(`m!help on ${currentServerCount} servers!`, {
       type: "WATCHING",
@@ -111,6 +113,7 @@ client.login(config.tokenId).then(() => {
     if (user === null) {
       throw "User is null and this is very bad!!!";
     }
+
     user.setActivity(`m!help on ${currentServerCount} servers!`, {
       type: "WATCHING",
     });
