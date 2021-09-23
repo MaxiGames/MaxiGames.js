@@ -37,7 +37,7 @@ async function addChannel(
 
   if (channel === null) {
     await interaction.reply({
-      embeds: [MGEmbed(MGStatus.Error).setTitle("Unable to detect channel!")],
+      embeds: [MGEmbed(MGStatus.Error).setTitle("Unable to find channel!")],
     });
     return;
   }
@@ -72,6 +72,51 @@ async function addChannel(
   }
 }
 
+async function removeChannel(
+  interaction: CommandInteraction,
+  guild: Guild,
+  serverData: any
+) {
+  let channel = interaction.options.getChannel("channel");
+
+  if (channel === null) {
+    await interaction.reply({
+      embeds: [MGEmbed(MGStatus.Error).setTitle("Unable to find channel!")],
+    });
+    return;
+  }
+
+  if (
+    serverData["countingChannels"] === 0 ||
+    serverData["countingChannels"][channel.id] === undefined
+  ) {
+    if (channel === null) return;
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Error)
+          .setTitle("Error!")
+          .setDescription(
+            `**${channel.name}** was not a counting channel in the first place... :( You can use it for other purposes!`
+          ),
+      ],
+    });
+  } else {
+    delete serverData["countingChannels"][channel.id];
+    await MGfirebase.setData(`guild/${guild.id}`, serverData).then(async () => {
+      if (channel === null) return;
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Success)
+            .setTitle("Success!")
+            .setDescription(
+              `**${channel.name}** is no longer a counting channel... :( You can use it for other purposes!`
+            ),
+        ],
+      });
+    });
+  }
+}
+
 const counting: MGCommand = {
   // exports (self explanatory)
   data: new SlashCommandBuilder()
@@ -85,6 +130,17 @@ const counting: MGCommand = {
           option
             .setName("channel")
             .setDescription("Channel you want to add")
+            .setRequired(true)
+        )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("removechannel")
+        .setDescription("remove a channel from being a counting channel :()")
+        .addChannelOption((option) =>
+          option
+            .setName("channel")
+            .setDescription("Channel you want to remove")
             .setRequired(true)
         )
     ),
@@ -106,6 +162,8 @@ const counting: MGCommand = {
     let guildData = MGfirebase.getData(`guild/${guild.id}`);
     if (subcommand === "addchannel") {
       addChannel(interaction, guild, guildData);
+    } else if (subcommand === "removechannel") {
+      removeChannel(interaction, guild, guildData);
     }
   },
 };
