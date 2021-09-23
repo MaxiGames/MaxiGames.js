@@ -17,23 +17,41 @@
  */
 
 export default interface DataModel {
-  user: User;
+  user: { [id: string]: User };
+  server: { [id: string]: Server };
 }
 
+interface Server {
+  countingChannels:
+    | {
+        [id: string]: number;
+      }
+    | number;
+}
+
+export let initialServer: Server = {
+  countingChannels: 0,
+};
+
 interface User {
-  [id: string]: {
+  money: number;
+  timelyClaims: {
+    hourly: number;
+    daily: number;
+    weekly: number;
+    monthly: number;
+    yearly: number;
+  };
+  cooldowns: {
+    timely: number;
+    coinflip: number;
+    gamble: number;
     money: number;
-    cooldowns: {
-      timely: number;
-      coinflip: number;
-      gamble: number;
-      money: number;
-      share: number;
-    };
+    share: number;
   };
 }
 
-export let initialUser = {
+export let initialUser: User = {
   money: 0,
   timelyClaims: {
     hourly: 0,
@@ -51,8 +69,11 @@ export let initialUser = {
   },
 };
 
-export let initialData = {
+export let initialData: DataModel = {
   user: {
     1234: initialUser,
+  },
+  server: {
+    1234: initialServer,
   },
 };

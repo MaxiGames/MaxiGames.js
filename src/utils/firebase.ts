@@ -16,16 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Client } from "discord.js";
 import * as admin from "firebase-admin";
-import { firestore } from "firebase-admin";
-import DataModel, { initialData, initialUser } from "../types/firebase";
+import DataModel, {
+  initialData,
+  initialServer,
+  initialUser,
+} from "../types/firebase";
 
 export class FirebaseManager {
   db: admin.database.Database | undefined = undefined;
-  data: DataModel = { user: {} };
+  data: DataModel = initialData;
   initDone = false;
 
-  init() {
+  init(client: Client) {
     this.initDone = true;
     this.db = admin.database();
     if (this.db === undefined) {
@@ -59,7 +63,7 @@ export class FirebaseManager {
           let data = snapshot.val();
           try {
             //casting data
-            data = this.initData(data);
+            data = this.Data(data, client);
             let castedData = data as DataModel;
             this.data = castedData;
             console.log("Database successfully initialised!");
@@ -170,19 +174,20 @@ export class FirebaseManager {
     return result;
   }
 
-  private initData(data: any) {
-    for (let i in data["user"]) {
-      if (!data["user"][i]["cooldowns"] || !data["user"][i]["coinflip"]) {
-        data["user"][i]["cooldowns"] = initialUser.cooldowns;
-        console.log(`Data changed for ${i}`);
-      }
+  private Data(data: any, client: Client) {
+    if (!data["server"]) {
+      data["server"] = {};
+      if (client === undefined) return;
+      client.guilds.cache.forEach((value) => {
+        data["server"][value.id] = initialServer;
+        console.log(`Data changed for ${value.id}`);
+      });
     }
-    console.log(data);
     this.db
-      ?.ref(`/`)
-      .set(data)
+      ?.ref(`/server/`)
+      .set(data["server"])
       .then(() => {
-        console.log("Timely data initialised for users");
+        console.log("Data initialised for servers");
       });
     return data;
   }

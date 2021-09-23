@@ -112,4 +112,4 @@ client.login(config.tokenId).then(() => {
 });
 
 // Firebase init
-MGfirebase.init();
+MGfirebase.init(client);
