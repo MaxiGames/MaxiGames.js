@@ -20,14 +20,14 @@ import { CommandInteraction } from "discord.js";
 import type MGCommand from "../types/command";
 import type MGCmdTest from "../types/checks";
 
-const tail = (l: any[]) => {
+function tail<a>(l: a[]) {
   // prettier-disable
   if (l.length === 0) {
     return l.slice(1);
   } else {
     return [];
   }
-};
+}
 
 export default function withChecks(
   tests: MGCmdTest[],
