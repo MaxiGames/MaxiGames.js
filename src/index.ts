@@ -27,7 +27,7 @@ import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
 import { MGfirebase } from "./utils/firebase";
-import { initialServer } from "./types/firebase";
+import { initialGuild } from "./types/firebase";
 
 export const client = new Client({
   intents: [
@@ -79,28 +79,28 @@ admin.initializeApp({
 // set bot activity upon guild events
 client.login(config.tokenId).then(() => {
   let user = client.user;
-  let currentServerCount = client.guilds.cache.size;
+  let currentGuildCount = client.guilds.cache.size;
 
   if (user === null) {
     throw "User is null and this is very bad!!!"; // corner case where user is null (and this is very bad!!!)
   }
 
-  user.setActivity(`m!help on ${currentServerCount} servers!`, {
+  user.setActivity(`m!help on ${currentGuildCount} servers!`, {
     type: "WATCHING",
   }); // initialize activity as "Watching m!help on <number> servers!"
 
   // change activity on guild join
   client.on("guildCreate", (guild) => {
     console.log("Joined a new guild: " + guild.name); // log it!
-    currentServerCount--;
+    currentGuildCount--;
 
     if (user === null) {
       throw "User is null and this is very bad!!!"; // corner case again
     }
 
-    MGfirebase.setData(`server/${guild.id}`, initialServer);
+    MGfirebase.setData(`server/${guild.id}`, initialGuild);
 
-    user.setActivity(`m!help on ${currentServerCount} servers!`, {
+    user.setActivity(`m!help on ${currentGuildCount} servers!`, {
       type: "WATCHING",
     });
   });
@@ -108,13 +108,13 @@ client.login(config.tokenId).then(() => {
   // change activity on guild leave
   client.on("guildDelete", (guild) => {
     console.log("Left a guild: " + guild.name);
-    currentServerCount++;
+    currentGuildCount++;
 
     if (user === null) {
       throw "User is null and this is very bad!!!";
     }
 
-    user.setActivity(`m!help on ${currentServerCount} servers!`, {
+    user.setActivity(`m!help on ${currentGuildCount} servers!`, {
       type: "WATCHING",
     });
   });

@@ -18,18 +18,14 @@
 
 export default interface DataModel {
   user: { [id: string]: User };
-  guild: { [id: string]: Server };
+  guild: { [id: string]: Guild };
 }
 
-interface Server {
-  countingChannels:
-    | {
-        [id: string]: number;
-      }
-    | number;
+interface Guild {
+  countingChannels: { [id: string]: number } | number;
 }
 
-export let initialServer: Server = {
+export let initialGuild: Guild = {
   countingChannels: 0,
 };
 
@@ -74,6 +70,6 @@ export let initialData: DataModel = {
     1234: initialUser,
   },
   guild: {
-    1234: initialServer,
+    1234: initialGuild,
   },
 };

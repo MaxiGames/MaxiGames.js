@@ -20,7 +20,7 @@ import { Client } from "discord.js";
 import * as admin from "firebase-admin";
 import DataModel, {
   initialData,
-  initialServer,
+  initialGuild,
   initialUser,
 } from "../types/firebase";
 
@@ -179,7 +179,7 @@ export class FirebaseManager {
       data["guild"] = {};
       if (client === undefined) return;
       client.guilds.cache.forEach((value) => {
-        data["guild"][value.id] = initialServer;
+        data["guild"][value.id] = initialGuild;
         console.log(`Data changed for ${value.id}`);
       });
     }
