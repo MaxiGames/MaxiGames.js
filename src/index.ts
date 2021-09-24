@@ -39,7 +39,7 @@ export const client = new Client({
     Intents.FLAGS.GUILD_PRESENCES,
     Intents.FLAGS.GUILD_MESSAGES,
   ],
-  partials: ["MESSAGE", "CHANNEL", "REACTION"],
+  // partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
 
 /*
