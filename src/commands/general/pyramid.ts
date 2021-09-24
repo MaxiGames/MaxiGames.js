@@ -30,16 +30,10 @@ const pyramid: MGCommand = {
         .setName("height")
         .setDescription("Height of pyramid")
         .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("character")
-        .setDescription("Character to use for the pyramid [Default set as *]")
-        .setRequired(false)
     ),
 
   async execute(interaction) {
-    // Function to replicate a string
+    // RePLiCate a string c n times
     function rplc(c: string, n: number) {
       let r: string = "";
       for (let i = 0; i < n; i++) {
@@ -49,26 +43,12 @@ const pyramid: MGCommand = {
     }
 
     const height: number = interaction.options.getInteger("height")!;
-    const pychar: string = interaction.options.getString("character") || "*";
-    if (pychar.length > 1) {
-      await interaction.reply({
-        content: "Use a character for the pyramid!",
-        ephemeral: true,
-      });
-      return;
-    }
-    if (height > 100) {
-      await interaction.reply({
-        content: "That pyramid's too big!",
-        ephemeral: true,
-      });
-      return;
-    }
-    // Construct pyramid
+
+    // ¡C°NSTRÜCT LE PYRÁMÏD!
     let pyr = "```";
     for (let i = 1; i <= height; i++) {
       pyr += rplc(" ", height - i);
-      pyr += rplc(pychar, 2 * i - 1);
+      pyr += rplc("*", 2 * i - 1);
       pyr += "\n";
     }
     pyr += "```";
