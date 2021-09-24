@@ -22,7 +22,7 @@ import MGStatus from "../../lib/statuses";
 import { MessageReaction, TextChannel, User } from "discord.js";
 
 const starboardwatch = {
-  name: "messageReactionAdd",
+  name: "messageReactionRemove",
   async execute(reaction: MessageReaction, user: User) {
     let guildData = MGfirebase.getData(`guild/${reaction.message.guildId}`);
 
@@ -46,13 +46,13 @@ const starboardwatch = {
     }
 
     if (!guildData["starboardMsgs"]) {
-      guildData["starboardMsgs"] = {};
+      return;
     }
     if (!guildData["starboardMsgs"][reaction.message.id]) {
-      guildData["starboardMsgs"][reaction.message.id] = { stars: 0, rxnid: "" };
+      return;
     }
 
-    guildData["starboardMsgs"][reaction.message.id]["stars"] += 1;
+    guildData["starboardMsgs"][reaction.message.id]["stars"] -= 1;
 
     try {
       await MGfirebase.setData(
@@ -60,8 +60,16 @@ const starboardwatch = {
         guildData
       );
 
+      let sbchan = reaction.client.channels.cache.get(
+        guildData["starboardChannel"].id
+      ) as TextChannel;
+
+      let oldmsg = await sbchan.messages.fetch(
+        guildData["starboardMsgs"][reaction.message.id]["rxnid"]
+      );
+
       if (reaction.count < guildData["starboardChannel"].thresh) {
-        return;
+        oldmsg.delete();
       }
 
       let embed = MGEmbed(MGStatus.Info)
@@ -72,30 +80,7 @@ const starboardwatch = {
         )
         .setFooter("React with ⭐ to star this message");
 
-      try {
-        reaction.client.channels.cache.get(
-          guildData["starboardMsgs"][reaction.message.id]["rxnid"]
-        );
-        // if that worked, edit the message
-        let sbchan = reaction.client.channels.cache.get(
-          guildData["starboardChannel"].id
-        ) as TextChannel;
-
-        let oldmsg = await sbchan.messages.fetch(
-          guildData["starboardMsgs"][reaction.message.id]["rxnid"]
-        );
-
-        await oldmsg.edit({ embeds: [embed] });
-      } catch {
-        // if that failed, (re)send
-        let sbchan = reaction.client.channels.cache.get(
-          guildData["starboardChannel"].id
-        ) as TextChannel;
-
-        let rxnsg = await sbchan.send({ embeds: [embed] });
-
-        guildData["starboardMsgs"][reaction.message.id]["rxnid"] = rxnsg.id;
-      }
+      await oldmsg.edit({ embeds: [embed] });
     } catch {
       // oops I guess?
     }
