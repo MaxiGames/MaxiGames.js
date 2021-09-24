@@ -64,13 +64,26 @@ const starboardwatch = {
         return;
       }
 
+      if (reaction.message.content!.trim() !== "") {
+        // if there's no message content don't show just a >; it's ugly
+        // yes I know this code is even uglier, but quite frankly, I don't care.
+        reaction.message.content =
+          "\n\n> " + reaction.message.content!.replace(/\n/g, "\n> ");
+      }
+
       let embed = MGEmbed(MGStatus.Info)
         .setTitle(`Starred ${reaction.count} times!`)
         .setDescription(
           `[Click to jump to message](${reaction.message.url})` +
-            `\n> ${reaction.message.content!.replace(/\n/g, "\n> ")}`
+            reaction.message.content
         )
-        .setFooter("React with ⭐ to star this message");
+        .setFooter("React with ⭐ to star this message")
+        .setAuthor(
+          reaction.message.author!.username,
+          reaction.message.author!.avatarURL() ??
+            reaction.message.author!.defaultAvatarURL
+        );
+      reaction.message.attachments.each((a) => embed.setImage(a.url));
 
       let sbchan = reaction.client.channels.cache.get(
         guildData["starboardChannel"].id
