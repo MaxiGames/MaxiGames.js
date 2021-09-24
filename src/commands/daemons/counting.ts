@@ -48,14 +48,11 @@ async function addChannel(
   if (guildData["countingChannels"][channel.id] === undefined) {
     guildData["countingChannels"][channel.id] = 0;
     await MGfirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
-      if (channel === null) return;
       await interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Success)
             .setTitle("Success!")
-            .setDescription(
-              `**${channel.name}** is now a counting channel! You can further configure it to fit your needs :)`
-            ),
+            .setDescription(`<#${channel!.id}> is now a counting channel.`),
         ],
       });
     });
@@ -64,9 +61,7 @@ async function addChannel(
       embeds: [
         MGEmbed(MGStatus.Error)
           .setTitle("That channel is already a counting channel!")
-          .setDescription(
-            `**${channel.name}** already a counting channel. You can further configure it to fit your needs :)`
-          ),
+          .setDescription(`<#${channel.name}> was already a counting channel.`),
       ],
     });
   }
@@ -96,7 +91,7 @@ async function removeChannel(
         MGEmbed(MGStatus.Error)
           .setTitle("Error!")
           .setDescription(
-            `**${channel.name}** was not a counting channel in the first place... :( You can use it for other purposes!`
+            `<#{channel.name}> was not a counting channel in the first place.`
           ),
       ],
     });
@@ -109,7 +104,7 @@ async function removeChannel(
           MGEmbed(MGStatus.Success)
             .setTitle("Success!")
             .setDescription(
-              `**${channel.name}** is no longer a counting channel... :( You can use it for other purposes!`
+              `<#${channel.name}> is no longer a counting channel.`
             ),
         ],
       });
@@ -121,26 +116,26 @@ const counting: MGCommand = {
   // exports (self explanatory)
   data: new SlashCommandBuilder()
     .setName("counting")
-    .setDescription("configure your guilds' counting games!")
+    .setDescription("configure your server' counting games!")
     .addSubcommand((subcommand) =>
       subcommand
         .setName("addchannel")
-        .setDescription("register a channel as a counting channel!")
+        .setDescription("register a channel as a counting channel")
         .addChannelOption((option) =>
           option
             .setName("channel")
-            .setDescription("Channel you want to add")
+            .setDescription("channel to be added")
             .setRequired(true)
         )
     )
     .addSubcommand((subcommand) =>
       subcommand
         .setName("removechannel")
-        .setDescription("remove a channel from being a counting channel :()")
+        .setDescription("unregister a channel as a counting channel")
         .addChannelOption((option) =>
           option
             .setName("channel")
-            .setDescription("Channel you want to remove")
+            .setDescription("channel you want to unregister")
             .setRequired(true)
         )
     ),
