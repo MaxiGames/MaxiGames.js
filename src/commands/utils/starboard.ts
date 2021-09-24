@@ -30,10 +30,11 @@ async function addchannel(
 ) {
   let channel = interaction.options.getChannel("channel")!;
   let oldc = guildData["starboardChannel"];
+  guildData["starboardChannel"] = { id: channel.id, thresh: 1 };
 
   await MGfirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
     let embed;
-    if (oldc === 0) {
+    if (!oldc) {
       embed = MGEmbed(MGStatus.Success)
         .setTitle("Success!")
         .setDescription(`**<#${channel.id}>** is now the starboard channel.`);
