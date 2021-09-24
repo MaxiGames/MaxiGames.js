@@ -5,3 +5,5 @@ js/
 
 config*.json
 serviceAccountKey*.json
+
+*.swp
