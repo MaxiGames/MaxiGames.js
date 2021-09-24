@@ -19,7 +19,7 @@
 import { MGfirebase } from "../../utils/firebase";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MessageReaction, User } from "discord.js";
+import { MessageReaction, TextChannel, User } from "discord.js";
 
 const starboardwatch = {
   name: "messageReactionAdd",
@@ -37,7 +37,7 @@ const starboardwatch = {
     }
     */
 
-    if (reaction.emoji.name !== "star") {
+    if (reaction.emoji.name !== "⭐") {
       return;
     }
 
@@ -45,8 +45,10 @@ const starboardwatch = {
       return; // no starboard channel set
     }
 
-    if (guildData["starboardMsgs"] === 0) {
+    if (!guildData["starboardMsgs"]) {
       guildData["starboardMsgs"] = {};
+    }
+    if (!guildData["starboardMsgs"][reaction.message.id]) {
       guildData["starboardMsgs"][reaction.message.id] = 0;
     }
 
@@ -58,20 +60,25 @@ const starboardwatch = {
         guildData
       );
       if (reaction.count >= guildData["starboardChannel"].thresh) {
-        await reaction.message.channel.send({
+        await (
+          reaction.client.channels.cache.get(
+            guildData["starboardChannel"].id
+          ) as TextChannel
+        ).send({
           embeds: [
             MGEmbed(MGStatus.Info)
               .setTitle(`Starred ${reaction.count} times!`)
               .setDescription(
                 `[Click to jump to message](${reaction.message.url})` +
-                  `
-               \n\n${reaction.message.content}`
+                  `\n> ${reaction.message.content!.replace(/\n/g, "\n> ")}`
               )
-              .setFooter("React with ⭐ to star this message")
-              .setAuthor(
-                reaction.message.author!.username,
-                reaction.message.author!.avatar!
-              ),
+              .setFooter("React with ⭐ to star this message"),
+            /*
+             .setAuthor(
+               reaction.message.author!.username,
+               reaction.message.author!.avatar!
+             ),
+             */
           ],
         });
       }
