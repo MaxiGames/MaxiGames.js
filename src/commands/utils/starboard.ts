@@ -64,13 +64,24 @@ const starboard: MGCommand = {
             .setDescription("channel you want to register")
             .setRequired(true)
         )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("threshold")
+        .setDescription("set the starboard threshold")
+        .addIntegerOption((option) =>
+          option
+            .setName("threshold")
+            .setDescription("desired threshold")
+            .setRequired(true)
+        )
     ),
 
   async execute(interaction) {
     let subcommand = interaction.options.getSubcommand();
     let guild = interaction.guild;
     if (guild === null) {
-      interaction.reply({
+      await interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Error).setTitle(
             "This command is not usable outside of a server channel."
@@ -84,6 +95,24 @@ const starboard: MGCommand = {
     switch (subcommand) {
       case "addchannel":
         addchannel(interaction, guild, guildData);
+        break;
+      case "threshold":
+        let newthresh = interaction.options.getInteger("threshold")!;
+        let embed;
+
+        if (newthresh < 1) {
+          embed = MGEmbed(MGStatus.Error).setTitle(
+            "Error: threshold must be greater than zero!"
+          );
+        } else {
+          embed = MGEmbed(MGStatus.Success).setTitle(
+            `Starboard threshold set to ${newthresh}.`
+          );
+          guildData["starboardChannel"]["thresh"] = newthresh;
+          await MGfirebase.setData(`guild/${guild.id}`, guildData);
+        }
+
+        await interaction.reply({ embeds: [embed] });
         break;
     }
   },
