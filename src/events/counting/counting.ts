@@ -73,3 +73,5 @@ const countingListener = {
     }
   },
 };
+
+export default countingListener;
