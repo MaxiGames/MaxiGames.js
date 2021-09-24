@@ -1,40 +1,63 @@
+import { Client } from "discord.js";
 import math from "mathjs";
-import { client } from "..";
 import { MGEmbed } from "../lib/flavoured";
 import MGStatus from "../lib/statuses";
 import { MGfirebase } from "../utils/firebase";
 
 // !Register event listeners for counting
-export default function CouuntListen() {
-  client.on(`message`, async (msg) => {
-    console.log("Working");
-    if (msg.guild === null) {
+export default function couuntListen(client: Client) {
+  let m = math;
+
+  client.on(`messageCreate`, async (msg) => {
+    if (msg.guild === null || msg.author.bot) {
       return;
     }
 
-    let guildData = MGfirebase.getData(`guild/${msg?.guild?.id}/`);
+    let guildData = MGfirebase.getData(`guild/${msg?.guild?.id}`);
     if (guildData["countingChannels"][msg.channel.id] !== undefined) {
       //parse string
       let content = msg.content;
       let number = parseInt(content);
-      if (number === NaN) {
+      if (isNaN(number)) {
         //do more checks
-        let arr = content.split(/[^0-9, +,\-, *, /]/g);
-        number = parseInt(math.evaluate(arr[0]));
-        if (number === NaN) return;
+        let arr = content.split(/[^0-9, +,\-, *, \/]/g);
+        if (arr[0] === "") return;
+        number = parseInt(m.evaluate(arr[0]));
+        if (isNaN(number)) return;
       }
 
       //Yay time to check if its right :)
-      let curCount: number = guildData["countingChannels"][msg.channel.id];
+      let curCount: number =
+        guildData["countingChannels"][msg.channel.id]["count"];
+      let id = guildData["countingChannels"][msg.channel.id]["id"];
+
+      //same person?
+      if (id === msg.author.id) {
+        await msg.react("❌");
+        await msg.reply({
+          embeds: [
+            MGEmbed(MGStatus.Error)
+              .setTitle(`${msg.author.username} ruined it!`)
+              .setDescription(
+                `${msg.author.username} counted twice! The counter has been reset to 0.`
+              ),
+          ],
+        });
+        return;
+      }
+
       if (number - 1 === curCount) {
         //correct!
         await msg.react("✅");
-        guildData["countingChannels"][msg.channel.id] = number;
+        guildData["countingChannels"][msg.channel.id] = {
+          count: number,
+          id: msg.author.id,
+        };
         await MGfirebase.setData(`guild/${msg?.guild?.id}`, guildData);
       } else {
         //wrong :(
         await msg.react("❌");
-        guildData["countingChannels"][msg.channel.id] = 0;
+        guildData["countingChannels"][msg.channel.id] = { count: 0, id: 0 };
         await MGfirebase.setData(`guild/${msg?.guild?.id}`, guildData).then(
           async () => {
             await msg.reply({

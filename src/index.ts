@@ -28,16 +28,14 @@ import events from "./events";
 import * as admin from "firebase-admin";
 import { MGfirebase } from "./utils/firebase";
 import { initialGuild } from "./types/firebase";
-import CouuntListen from "./listeners/counting";
-import { MGEmbed } from "./lib/flavoured";
-import MGStatus from "./lib/statuses";
-import math from "mathjs";
+import countListen from "./listeners/counting";
 
 export const client = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_PRESENCES,
+    Intents.FLAGS.GUILD_MESSAGES,
   ],
 });
 
@@ -122,6 +120,7 @@ client.login(config.tokenId).then(() => {
       type: "WATCHING",
     });
   });
+  countListen(client);
 });
 
 // Firebase init

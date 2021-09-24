@@ -61,7 +61,7 @@ async function addChannel(
       embeds: [
         MGEmbed(MGStatus.Error)
           .setTitle("That channel is already a counting channel!")
-          .setDescription(`<#${channel.name}> was already a counting channel.`),
+          .setDescription(`<#${channel.id}> was already a counting channel.`),
       ],
     });
   }
@@ -91,7 +91,7 @@ async function removeChannel(
         MGEmbed(MGStatus.Error)
           .setTitle("Error!")
           .setDescription(
-            `<#{channel.name}> was not a counting channel in the first place.`
+            `<#${channel.id}> was not a counting channel in the first place.`
           ),
       ],
     });
@@ -104,7 +104,7 @@ async function removeChannel(
           MGEmbed(MGStatus.Success)
             .setTitle("Success!")
             .setDescription(
-              `<#${channel.name}> is no longer a counting channel.`
+              `<#${channel.id}> is no longer a counting channel.`
             ),
         ],
       });

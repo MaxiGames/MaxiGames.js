@@ -22,11 +22,11 @@ export default interface DataModel {
 }
 
 interface Guild {
-  countingChannels: { [id: string]: number } | number;
+  countingChannels: { [id: string]: { count: number; id: number } } | number;
 }
 
 export let initialGuild: Guild = {
-  countingChannels: 0,
+  countingChannels: { 1234: { count: 0, id: 1234 } },
 };
 
 interface User {
