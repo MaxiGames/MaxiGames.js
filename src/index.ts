@@ -60,20 +60,24 @@ console.log();
 
 // Wait for interaction & handle commands
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) return; // do nothing if the interaction isn't a command
+  if (!interaction.isCommand()) {
+    return;
+  }
 
   const command = commands.get(interaction.commandName);
-  if (!command) return; // same ^
+  if (!command) {
+    return;
+  }
 
   try {
-    await command.execute(interaction); // try to execute function associated with command
+    await command.execute(interaction);
   } catch (error) {
-    console.error(error); // Error encountered! log it ;)
+    console.error(error);
 
     await interaction.reply({
       content: "There was an error while executing this command!",
       ephemeral: true,
-    }); // this should be self-explanatory
+    });
   }
 });
 
