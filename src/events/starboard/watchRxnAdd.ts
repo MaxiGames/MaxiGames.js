@@ -24,7 +24,6 @@ import { MessageReaction, User } from "discord.js";
 const starboardwatch = {
   name: "messageReactionAdd",
   async execute(reaction: MessageReaction, user: User) {
-    console.log(reaction);
     let guildData = MGfirebase.getData(`guild/${reaction.message.guildId}`);
 
     /*
