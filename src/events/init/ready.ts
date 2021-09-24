@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type MGEvent from "../types/event";
+import type MGEvent from "../../types/event";
 import { Client } from "discord.js";
 
 const ready: MGEvent = {
   name: "ready",
   once: true,
-  execute(client) {
+  async execute(client) {
     if (client.user === null) return;
     console.log(`Ready! Logged in as ${client.user.tag}`);
     // client.application.commands.set([])

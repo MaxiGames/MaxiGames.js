@@ -48,9 +48,15 @@ export const client = new Client({
 
 // Register event handlers
 for (const event of events) {
-  if (event.once) client.once(event.name, event.execute);
-  else client.on(event.name, event.execute);
+  if (event.once) {
+    client.once(event.name, event.execute);
+  } else {
+    client.on(event.name, event.execute);
+  }
+
+  console.log(`Registered event "${event.name}"`);
 }
+console.log();
 
 // Wait for interaction & handle commands
 client.on("interactionCreate", async (interaction) => {
