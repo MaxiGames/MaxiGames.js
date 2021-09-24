@@ -13,7 +13,10 @@ const countingListener = {
     }
 
     let guildData = MGfirebase.getData(`guild/${msg?.guild?.id}`);
-    if (guildData["countingChannels"][msg.channel.id] === undefined) {
+    if (!guildData["countingChannels"]) {
+      return;
+    }
+    if (!guildData["countingChannels"][msg.channel.id]) {
       return;
     }
     // parse string
@@ -27,7 +30,7 @@ const countingListener = {
       if (isNaN(number)) return;
     }
 
-    // Yay time to check if its right :)
+    // Yay time to check if it's right :)
     let curCount: number =
       guildData["countingChannels"][msg.channel.id]["count"];
     let id = guildData["countingChannels"][msg.channel.id]["id"];
