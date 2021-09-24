@@ -75,6 +75,7 @@ client.on("interactionCreate", async (interaction) => {
  */
 
 // firebase and maxigames bot login
+
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
   databaseURL: firebaseConfig,
