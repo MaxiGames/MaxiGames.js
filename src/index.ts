@@ -28,7 +28,6 @@ import events from "./events";
 import * as admin from "firebase-admin";
 import { MGfirebase } from "./utils/firebase";
 import { initialGuild } from "./types/firebase";
-import countListen from "./listeners/counting";
 
 export const client = new Client({
   intents: [
@@ -133,7 +132,6 @@ client.login(config.tokenId).then(() => {
       type: "WATCHING",
     });
   });
-  countListen(client);
 });
 
 // Firebase init
