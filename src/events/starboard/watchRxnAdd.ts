@@ -72,28 +72,19 @@ const starboardwatch = {
         )
         .setFooter("React with ⭐ to star this message");
 
+      let sbchan = reaction.client.channels.cache.get(
+        guildData["starboardChannel"].id
+      ) as TextChannel;
       try {
-        reaction.client.channels.cache.get(
-          guildData["starboardMsgs"][reaction.message.id]["rxnid"]
-        );
-        // if that worked, edit the message
-        let sbchan = reaction.client.channels.cache.get(
-          guildData["starboardChannel"].id
-        ) as TextChannel;
-
         let oldmsg = await sbchan.messages.fetch(
           guildData["starboardMsgs"][reaction.message.id]["rxnid"]
         );
 
+        // if that worked, edit the message
         await oldmsg.edit({ embeds: [embed] });
       } catch {
         // if that failed, (re)send
-        let sbchan = reaction.client.channels.cache.get(
-          guildData["starboardChannel"].id
-        ) as TextChannel;
-
         let rxnsg = await sbchan.send({ embeds: [embed] });
-
         guildData["starboardMsgs"][reaction.message.id]["rxnid"] = rxnsg.id;
       }
     } catch {
