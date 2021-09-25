@@ -6,8 +6,12 @@ import process from "process";
 export default function moan(status: MGStatus, ...where: string[]) {
   let e = "";
 
-  for (let i = 0; i < process.stderr.getWindowSize()[0]; i++) {
-    e += "-";
+  try {
+    for (let i = 0; i < process.stderr.getWindowSize()[0]; i++) {
+      e += "-";
+    }
+  } catch {
+    e += "-----";
   }
   e += "| ";
 
@@ -54,8 +58,12 @@ export default function moan(status: MGStatus, ...where: string[]) {
   }
 
   e += ".\n";
-  for (let i = 0; i < process.stderr.getWindowSize()[0]; i++) {
-    e += "-";
+  try {
+    for (let i = 0; i < process.stderr.getWindowSize()[0]; i++) {
+      e += "-";
+    }
+  } catch {
+    e += "-----";
   }
 
   e += "\n";
