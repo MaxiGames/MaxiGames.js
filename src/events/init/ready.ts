@@ -17,19 +17,18 @@
  */
 
 import type MGEvent from "../../types/event";
-import { Client } from "discord.js";
+import moan from "../../lib/moan";
+import MGS from "../../lib/statuses";
 
 const ready: MGEvent = {
   name: "ready",
   once: true,
   async execute(client) {
-    if (client.user === null) return;
-    console.log(`Ready! Logged in as ${client.user.tag}`);
-    // client.application.commands.set([])
-    // client.guilds.cache.map(guild => guild.commands.set([]));
-    // console.log(
-    //   client.application.commands.cache.map((command) => command.name)
-    // );
+    if (client.user === null) {
+      return;
+    }
+    moan(MGS.Success, "ready");
+    moan(MGS.Info, `logged in as ${client.user.tag}`);
   },
 };
 

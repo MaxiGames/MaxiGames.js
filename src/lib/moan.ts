@@ -1,11 +1,30 @@
 import path from "path";
+import MGStatus from "./statuses";
 
-// let out a dying moan and groan
-export default function moan(...where: string[]) {
+// let out a (dying?) moan
+export default function moan(status: MGStatus, ...where: string[]) {
   const stack = new Error().stack;
   let e = "";
+  switch (status) {
+    case MGStatus.Default:
+    case MGStatus.Error:
+      e = "\x1b[31mERROR    ";
+      break;
+    case MGStatus.Success:
+      e = "\x1b[32mSUCCESS  ";
+      break;
+    case MGStatus.Info:
+      e = "\x1b[34mINFO     ";
+      break;
+    case MGStatus.Warn:
+      e = "\x1b[33mWARN     ";
+      break;
+  }
+
+  e += "\x1b[0m@ ";
+
   if (stack === undefined) {
-    e = "ERROR @ ???";
+    e += "\x1b[1m???\x1b[0m";
   } else {
     const caller = stack
       .split("\n")
@@ -15,10 +34,13 @@ export default function moan(...where: string[]) {
       .map((x) => [x[0]![0].slice(1).split(":")[0], x[1]![1]])
       .filter((x) => x[0] !== __filename)[0];
 
-    e = `ERROR @ ${path.basename(caller[0])} in ${caller[1]}`;
+    e += `\x1b[1m${path.basename(caller[0])}\x1b[0m in \x1b[1m${
+      caller[1]
+    }\x1b[0m`;
   }
   for (let c of where) {
-    e += ` (${c})`;
+    e += ` (\x1b[7m${c}\x1b[0m)`;
   }
+
   console.error(e + ".");
 }

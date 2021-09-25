@@ -28,6 +28,8 @@ import events from "./events";
 import * as admin from "firebase-admin";
 import { MGFirebase } from "./utils/firebase";
 import { initialGuild } from "./types/firebase";
+import moan from "./lib/moan";
+import MGS from "./lib/statuses";
 
 export const client = new Client({
   intents: [
@@ -53,8 +55,9 @@ for (const event of events) {
     client.on(event.name, event.execute);
   }
 
-  console.log(`Registered event "${event.name}"`);
+  moan(MGS.Info, `registered event "${event.name}"`);
 }
+
 console.log();
 
 // Wait for interaction & handle commands
@@ -71,7 +74,7 @@ client.on("interactionCreate", async (interaction) => {
   try {
     await command.execute(interaction);
   } catch (error) {
-    console.error(error);
+    moan(MGS.Error, JSON.stringify(error));
 
     await interaction.reply({
       content: "There was an error while executing this command!",
@@ -96,7 +99,7 @@ client.login(config.tokenId).then(() => {
   let currentGuildCount = client.guilds.cache.size;
 
   if (user === null) {
-    throw "User is null and this is very bad!!!"; // corner case where user is null (and this is very bad!!!)
+    throw "User is null and this is very bad!!!";
   }
 
   user.setActivity(`m!help on ${currentGuildCount} servers!`, {
@@ -105,11 +108,11 @@ client.login(config.tokenId).then(() => {
 
   // change activity on guild join
   client.on("guildCreate", (guild) => {
-    console.log("Joined a new guild: " + guild.name); // log it!
+    moan(MGS.Info, `joined new guild "${guild.name}"`);
     currentGuildCount--;
 
     if (user === null) {
-      throw "User is null and this is very bad!!!"; // corner case again
+      throw "User is null and this is very bad!!!";
     }
 
     MGFirebase.setData(`server/${guild.id}`, initialGuild);
@@ -121,7 +124,7 @@ client.login(config.tokenId).then(() => {
 
   // change activity on guild leave
   client.on("guildDelete", (guild) => {
-    console.log("Left a guild: " + guild.name);
+    moan(MGS.Info, `left guild: "${guild.name}"`);
     currentGuildCount++;
 
     if (user === null) {

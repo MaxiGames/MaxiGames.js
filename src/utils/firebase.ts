@@ -25,6 +25,7 @@ import {
   initialUser,
 } from "../types/firebase";
 import moan from "../lib/moan";
+import MGS from "../lib/statuses";
 
 export class FirebaseManager {
   db: admin.database.Database | undefined = undefined;
@@ -41,19 +42,19 @@ export class FirebaseManager {
     // initialise and cast data
     const snapshot = await this.db.ref("/").get();
     if (!snapshot.exists()) {
-      moan("no database found");
+      moan(MGS.Error, "no database found");
       this.data = initialData as DataModel;
 
       // set it on firebase
       this.db?.ref("/").set(this.data);
 
       if (this.db === undefined) {
-        moan("no database available");
+        moan(MGS.Error, "no database available");
         return;
       }
       // if db doesn't exist, get data set on the guild
       await this.db.ref("/").set(this.data);
-      console.log("Initialised data.");
+      moan(MGS.Success, "initialised data");
     } else {
       let data = snapshot.val();
       try {
@@ -61,9 +62,9 @@ export class FirebaseManager {
         data = await this.initData(data, client);
         let castedData = data as DataModel;
         this.data = castedData;
-        console.log("Database successfully initialised.");
+        moan(MGS.Success, "initialised database");
       } catch {
-        moan("data casting failed");
+        moan(MGS.Error, "data casting failed");
         return;
       }
     }
@@ -71,7 +72,7 @@ export class FirebaseManager {
 
   public async setData(ref: string, data: any): Promise<void> {
     if (!this.initDone) {
-      moan("init not done");
+      moan(MGS.Error, "init not done");
       return;
     }
 
@@ -94,20 +95,20 @@ export class FirebaseManager {
       // then try setting and casting the data into the DataModel
       this.setDeepArray(referencePoints, referencedData, data);
     } catch {
-      moan();
+      moan(MGS.Error);
       return;
     }
 
     // set the data on firebase
     if (this.db === undefined) {
-      moan("no database");
+      moan(MGS.Error, "no database");
       return;
     }
 
     try {
       await this.db.ref("/" + ref).set(data);
     } catch {
-      moan("upload failure");
+      moan(MGS.Error, "upload failure");
       return;
     }
 
@@ -116,14 +117,14 @@ export class FirebaseManager {
 
   public getData(ref: string): { [id: string]: any } | undefined {
     if (!this.initDone) {
-      moan("init not done");
+      moan(MGS.Error, "init not done");
       return;
     }
 
     // reference validation
     let referencePoints = ref.split("/");
     if (referencePoints.length < 1) {
-      moan("no database");
+      moan(MGS.Error, "no database");
       return;
     }
 
@@ -136,7 +137,7 @@ export class FirebaseManager {
 
       return temp;
     } catch {
-      moan("invalid reference");
+      moan(MGS.Error, "invalid reference");
       return;
     }
   }
@@ -144,7 +145,7 @@ export class FirebaseManager {
   public async initUser(id: string) {
     // initialise user's properties if its not already is initialised
     if (this.db === undefined) {
-      moan("no database");
+      moan(MGS.Error, "no database");
       return;
     }
 
@@ -170,7 +171,7 @@ export class FirebaseManager {
       }
       this.setDeepArray(referencePoint.slice(1), data[ref], toset);
     } catch {
-      moan("invalid operation");
+      moan(MGS.Error, "invalid operation");
       return;
     }
   }
@@ -183,11 +184,11 @@ export class FirebaseManager {
       }
       client.guilds.cache.forEach((value) => {
         data["guild"][value.id] = initialGuild;
-        console.log(`Data changed for ${value.id}`);
+        moan(MGS.Info, `changed data for ${value.id}`);
       });
     }
     await this.db?.ref(`/guild/`).set(data["guild"]);
-    console.log("Data initialised for guilds");
+    moan(MGS.Success, "initialised data for guilds");
     return data;
   }
 }
