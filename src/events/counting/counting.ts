@@ -16,7 +16,7 @@ const countingListener = {
     if (!guildData["countingChannels"]) {
       return;
     }
-    if (!guildData["countingChannels"][msg.channel.id]) {
+    if (guildData["countingChannels"][msg.channel.id] === undefined) {
       return;
     }
     // parse string
@@ -37,6 +37,8 @@ const countingListener = {
 
     // same person?
     if (id === msg.author.id) {
+      guildData["countingChannels"][msg.channel.id] = { count: 0, id: 0 };
+      await MGfirebase.setData(`guild/${msg?.guild?.id}`, guildData);
       await msg.react("❌");
       await msg.reply({
         embeds: [

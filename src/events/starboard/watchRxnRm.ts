@@ -48,7 +48,7 @@ const starboardwatch = {
     if (!guildData["starboardMsgs"]) {
       return;
     }
-    if (!guildData["starboardMsgs"][reaction.message.id]) {
+    if (guildData["starboardMsgs"][reaction.message.id] === undefined) {
       return;
     }
 

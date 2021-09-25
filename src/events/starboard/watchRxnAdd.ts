@@ -48,7 +48,7 @@ const starboardwatch = {
     if (!guildData["starboardMsgs"]) {
       guildData["starboardMsgs"] = {};
     }
-    if (!guildData["starboardMsgs"][reaction.message.id]) {
+    if (guildData["starboardMsgs"][reaction.message.id] === undefined) {
       guildData["starboardMsgs"][reaction.message.id] = { stars: 0, rxnid: "" };
     }
 
