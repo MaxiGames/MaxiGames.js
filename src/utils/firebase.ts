@@ -95,7 +95,7 @@ export class FirebaseManager {
       // then try setting and casting the data into the DataModel
       this.setDeepArray(referencePoints, referencedData, data);
     } catch {
-      moan(MGS.Error);
+      moan(MGS.Error, "");
       return;
     }
 

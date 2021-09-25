@@ -3,17 +3,10 @@ import MGStatus from "./statuses";
 import process from "process";
 
 // let out a (dying?) moan
-export default function moan(status: MGStatus, ...where: string[]) {
-  let e = "";
+export default function moan(status: MGStatus, msg: string | unknown) {
+  let e: string = "";
 
-  try {
-    for (let i = 0; i < process.stderr.getWindowSize()[0]; i++) {
-      e += "-";
-    }
-  } catch {
-    e += "-----";
-  }
-  e += "| ";
+  e += "\x1b[1m";
 
   switch (status) {
     case MGStatus.Default:
@@ -33,11 +26,13 @@ export default function moan(status: MGStatus, ...where: string[]) {
 
   e += "\x1b[0m";
 
-  for (let c of where) {
-    e += ` \x1b[7m(${c})\x1b[0m`;
+  if (typeof msg === "string") {
+    e += ` (${msg})`;
+  } else {
+    e += ` (${JSON.stringify(msg)})`;
   }
 
-  e += "\n| @         ";
+  e += "\n          [@ ";
 
   const stack = new Error().stack;
   if (stack === undefined) {
@@ -52,21 +47,12 @@ export default function moan(status: MGStatus, ...where: string[]) {
       .filter((x) => x[0] !== __filename)[0];
 
     e +=
-      `\x1b[4m${path.dirname(caller[0])}/` +
+      `\x1b[4m\x1b[2m${path.dirname(caller[0])}/` +
       `\x1b[1m${path.basename(caller[0])}\x1b[0m ` +
       `in \x1b[1m${caller[1]}\x1b[0m`;
   }
 
-  e += ".\n";
-  try {
-    for (let i = 0; i < process.stderr.getWindowSize()[0]; i++) {
-      e += "-";
-    }
-  } catch {
-    e += "-----";
-  }
-
-  e += "\n";
+  e += "].\n";
 
   console.error(e);
 }
