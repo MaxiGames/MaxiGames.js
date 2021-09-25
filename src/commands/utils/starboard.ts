@@ -22,86 +22,92 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../utils/firebase";
 import { CommandInteraction, Guild } from "discord.js";
+import withChecks from "../../lib/withs";
+import cooldownTest from "../../lib/cooldown";
+import { userPermsTest } from "../../lib/permscheck";
 
-const starboard: MGCommand = {
-  data: new SlashCommandBuilder()
-    .setName("starboard")
-    .setDescription("configure your server's starboard")
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("addchannel")
-        .setDescription("register a channel as the starboard channel")
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("channel you want to register")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("rmchannel")
-        .setDescription("remove a channel as the starboard channel")
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("threshold")
-        .setDescription("set the starboard threshold")
-        .addIntegerOption((option) =>
-          option
-            .setName("threshold")
-            .setDescription("desired threshold")
-            .setRequired(true)
-        )
-    ),
+const starboard: MGCommand = withChecks(
+  [cooldownTest(5), userPermsTest("ADMINISTRATOR")],
+  {
+    data: new SlashCommandBuilder()
+      .setName("starboard")
+      .setDescription("configure your server's starboard")
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("addchannel")
+          .setDescription("register a channel as the starboard channel")
+          .addChannelOption((option) =>
+            option
+              .setName("channel")
+              .setDescription("channel you want to register")
+              .setRequired(true)
+          )
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("rmchannel")
+          .setDescription("remove a channel as the starboard channel")
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("threshold")
+          .setDescription("set the starboard threshold")
+          .addIntegerOption((option) =>
+            option
+              .setName("threshold")
+              .setDescription("desired threshold")
+              .setRequired(true)
+          )
+      ),
 
-  async execute(interaction) {
-    let subcommand = interaction.options.getSubcommand();
-    let guild = interaction.guild;
-    if (guild === null) {
-      await interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Error).setTitle(
-            "This command is not usable outside of a server channel."
-          ),
-        ],
-      });
-      return;
-    }
+    async execute(interaction) {
+      let subcommand = interaction.options.getSubcommand();
+      let guild = interaction.guild;
+      if (guild === null) {
+        await interaction.reply({
+          embeds: [
+            MGEmbed(MGStatus.Error).setTitle(
+              "This command is not usable outside of a server channel."
+            ),
+          ],
+        });
+        return;
+      }
 
-    let guildData = MGFirebase.getData(`guild/${guild.id}`);
-    if (guildData === undefined) {
-      return;
-    }
+      let guildData = MGFirebase.getData(`guild/${guild.id}`);
+      if (guildData === undefined) {
+        return;
+      }
 
-    switch (subcommand) {
-      case "addchannel":
-        addchannel(interaction, guild, guildData);
-        break;
-      case "rmchannel":
-        rmchannel(interaction, guild, guildData);
-        break;
-      case "threshold":
-        let newthresh = interaction.options.getInteger("threshold")!;
-        let embed;
+      switch (subcommand) {
+        case "addchannel":
+          addchannel(interaction, guild, guildData);
+          break;
+        case "rmchannel":
+          rmchannel(interaction, guild, guildData);
+          break;
+        case "threshold":
+          let newthresh = interaction.options.getInteger("threshold")!;
+          let embed;
 
-        if (newthresh < 1) {
-          embed = MGEmbed(MGStatus.Error).setTitle(
-            "Error: threshold must be greater than zero!"
-          );
-        } else {
-          embed = MGEmbed(MGStatus.Success).setTitle(
-            `Starboard threshold set to ${newthresh}.`
-          );
-          guildData["starboardChannel"]["thresh"] = newthresh;
-          await MGFirebase.setData(`guild/${guild.id}`, guildData);
-        }
+          if (newthresh < 1) {
+            embed = MGEmbed(MGStatus.Error).setTitle(
+              "Error: threshold must be greater than zero!"
+            );
+          } else {
+            embed = MGEmbed(MGStatus.Success).setTitle(
+              `Starboard threshold set to ${newthresh}.`
+            );
+            guildData["starboardChannel"]["thresh"] = newthresh;
+            await MGFirebase.setData(`guild/${guild.id}`, guildData);
+          }
 
-        await interaction.reply({ embeds: [embed] });
-        break;
-    }
-  },
-};
+          await interaction.reply({ embeds: [embed] });
+          break;
+      }
+    },
+  }
+);
 
 async function addchannel(
   interaction: CommandInteraction,

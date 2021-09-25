@@ -27,56 +27,62 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../utils/firebase";
 import { CommandInteraction, Guild } from "discord.js";
+import withChecks from "../../lib/withs";
+import { userPermsTest } from "../../lib/permscheck";
+import cooldownTest from "../../lib/cooldown";
 
-const counting: MGCommand = {
-  data: new SlashCommandBuilder()
-    .setName("counting")
-    .setDescription("configure your server' counting games!")
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("addchannel")
-        .setDescription("register a channel as a counting channel")
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("channel to be added")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("removechannel")
-        .setDescription("unregister a channel as a counting channel")
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("channel you want to unregister")
-            .setRequired(true)
-        )
-    ),
+const counting: MGCommand = withChecks(
+  [cooldownTest(10), userPermsTest("ADMINISTRATOR")],
+  {
+    data: new SlashCommandBuilder()
+      .setName("counting")
+      .setDescription("configure your server' counting games!")
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("addchannel")
+          .setDescription("register a channel as a counting channel")
+          .addChannelOption((option) =>
+            option
+              .setName("channel")
+              .setDescription("channel to be added")
+              .setRequired(true)
+          )
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("removechannel")
+          .setDescription("unregister a channel as a counting channel")
+          .addChannelOption((option) =>
+            option
+              .setName("channel")
+              .setDescription("channel you want to unregister")
+              .setRequired(true)
+          )
+      ),
 
-  // execute command
-  async execute(interaction) {
-    let subcommand = interaction.options.getSubcommand();
-    let guild = interaction.guild;
-    if (guild === null) {
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Error).setTitle(
-            "This command is not usable in a channel!"
-          ),
-        ],
-      });
-      return;
-    }
-    let guildData = MGFirebase.getData(`guild/${guild.id}`);
-    if (subcommand === "addchannel") {
-      addChannel(interaction, guild, guildData);
-    } else if (subcommand === "removechannel") {
-      removeChannel(interaction, guild, guildData);
-    }
-  },
-};
+    // execute command
+    async execute(interaction) {
+      let subcommand = interaction.options.getSubcommand();
+      let guild = interaction.guild;
+      if (guild === null) {
+        interaction.reply({
+          embeds: [
+            MGEmbed(MGStatus.Error).setTitle(
+              "This command is not usable in a channel!"
+            ),
+          ],
+        });
+        return;
+      }
+      let guildData = MGFirebase.getData(`guild/${guild.id}`);
+      if (subcommand === "addchannel") {
+        addChannel(interaction, guild, guildData);
+      } else if (subcommand === "removechannel") {
+        removeChannel(interaction, guild, guildData);
+      }
+    },
+  }
+);
 
 async function addChannel(
   interaction: CommandInteraction,
