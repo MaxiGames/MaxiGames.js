@@ -114,7 +114,7 @@ client.login(config.tokenId).then(() => {
 
     MGfirebase.setData(`server/${guild.id}`, initialGuild);
 
-    user.setActivity(`m!help on ${currentGuildCount} servers!`, {
+    user.setActivity(`/help on ${currentGuildCount} servers!`, {
       type: "WATCHING",
     });
   });
@@ -128,7 +128,7 @@ client.login(config.tokenId).then(() => {
       throw "User is null and this is very bad!!!";
     }
 
-    user.setActivity(`m!help on ${currentGuildCount} servers!`, {
+    user.setActivity(`/help on ${currentGuildCount} servers!`, {
       type: "WATCHING",
     });
   });
