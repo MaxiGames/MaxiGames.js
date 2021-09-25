@@ -58,8 +58,6 @@ for (const event of events) {
   moan(MGS.Info, `registered event "${event.name}"`);
 }
 
-console.log();
-
 // Wait for interaction & handle commands
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) {
