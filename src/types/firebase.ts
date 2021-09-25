@@ -48,6 +48,8 @@ interface User {
     gamble: number;
     money: number;
     share: number;
+    counting: number;
+    starboard: number;
   };
 }
 
@@ -66,6 +68,8 @@ export let initialUser: User = {
     gamble: 0,
     money: 0,
     share: 0,
+    counting: 0,
+    starboard: 0,
   },
 };
 

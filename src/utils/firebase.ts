@@ -59,7 +59,7 @@ export class FirebaseManager {
       let data = snapshot.val();
       try {
         // casting data
-        data = await this.initData(data, client);
+        data = await this.initData(data);
         let castedData = data as DataModel;
         this.data = castedData;
         moan(MGS.Success, "initialised database");
@@ -176,19 +176,15 @@ export class FirebaseManager {
     }
   }
 
-  private async initData(data: any, client: Client) {
-    if (!data["guild"]) {
-      data["guild"] = {};
-      if (client === undefined) {
-        return;
+  private async initData(data: any) {
+    for (let i in data["user"]) {
+      if (!data["user"][i]["cooldowns"]["counting"]) {
+        data["user"][i]["cooldowns"]["counting"] = 0;
+        data["user"][i]["cooldowns"]["starboard"] = 0;
       }
-      client.guilds.cache.forEach((value) => {
-        data["guild"][value.id] = initialGuild;
-        moan(MGS.Info, `changed data for ${value.id}`);
-      });
     }
-    await this.db?.ref(`/guild/`).set(data["guild"]);
-    moan(MGS.Success, "initialised data for guilds");
+    await this.db?.ref(`/`).set(data);
+    moan(MGS.Success, "initialised data for cooldowns");
     return data;
   }
 }
