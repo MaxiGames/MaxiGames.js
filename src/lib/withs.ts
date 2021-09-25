@@ -22,7 +22,7 @@ import type MGCmdTest from "../types/checks";
 
 function tail<a>(l: a[]) {
   // prettier-disable
-  if (l.length === 0) {
+  if (l.length > 1) {
     return l.slice(1);
   } else {
     return [];

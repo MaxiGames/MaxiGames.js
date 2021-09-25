@@ -56,7 +56,6 @@ export function userRolesTest(roles: string[]) {
   let ret: MGCmdTest = {
     async check(command, interaction) {
       for (let c of roles) {
-        console.log(c);
         if (
           !(interaction.member!.roles as GuildMemberRoleManager).cache.some(
             (r) => r.name === c
