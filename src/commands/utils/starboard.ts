@@ -21,13 +21,13 @@ import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../utils/firebase";
-import { CommandInteraction, Guild } from "discord.js";
+import { Permissions, CommandInteraction, Guild } from "discord.js";
 import withChecks from "../../lib/withs";
 import cooldownTest from "../../lib/cooldown";
 import { userPermsTest } from "../../lib/permscheck";
 
 const starboard: MGCommand = withChecks(
-  [cooldownTest(5), userPermsTest("ADMINISTRATOR")],
+  [cooldownTest(5), userPermsTest(Permissions.FLAGS.ADMINISTRATOR)],
   {
     data: new SlashCommandBuilder()
       .setName("starboard")
