@@ -20,7 +20,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
@@ -75,9 +75,12 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
       moneyAdd = 1000 + Math.ceil(Math.random() * 1000);
     else moneyAdd = 5000 + Math.ceil(Math.random() * 5000);
 
-    MGfirebase.initUser(`${interaction.user.id}`);
+    MGFirebase.initUser(`${interaction.user.id}`);
 
-    let data = MGfirebase.getData(`user/${interaction.user.id}`);
+    let data = MGFirebase.getData(`user/${interaction.user.id}`);
+    if (data === undefined) {
+      return;
+    }
 
     let interval: number;
     let date = Math.ceil(new Date().getTime() / 1000);
@@ -116,7 +119,7 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
 
       data["money"] += moneyAdd;
       data["timelyClaims"][subCommand] = date;
-      await MGfirebase.setData(`user/${interaction.user.id}`, data);
+      await MGFirebase.setData(`user/${interaction.user.id}`, data);
     } else {
       embed = MGEmbed(MGStatus.Error)
         .setTitle(`You can't claim ${subCommand} yet!`)

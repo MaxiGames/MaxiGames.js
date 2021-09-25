@@ -20,7 +20,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
@@ -30,13 +30,17 @@ const money: MGCommand = withChecks([cooldownTest(20)], {
     .setDescription("Get more money!!!"),
 
   async execute(interaction) {
-    await MGfirebase.initUser(interaction.user.id);
+    await MGFirebase.initUser(interaction.user.id);
 
-    let data = MGfirebase.getData(`user/${interaction.user.id}`);
+    let data = MGFirebase.getData(`user/${interaction.user.id}`);
     let toAdd = Math.ceil(Math.random() * 30);
+    if (data === undefined) {
+      return;
+    }
+
     data.money += toAdd;
 
-    await MGfirebase.setData(`user/${interaction.user.id}`, data);
+    await MGFirebase.setData(`user/${interaction.user.id}`, data);
 
     const embed = MGEmbed(MGStatus.Success)
       .setTitle("You have successfully earned MaxiCoins!")

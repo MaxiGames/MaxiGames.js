@@ -25,8 +25,58 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import { CommandInteraction, Guild } from "discord.js";
+
+const counting: MGCommand = {
+  data: new SlashCommandBuilder()
+    .setName("counting")
+    .setDescription("configure your server' counting games!")
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("addchannel")
+        .setDescription("register a channel as a counting channel")
+        .addChannelOption((option) =>
+          option
+            .setName("channel")
+            .setDescription("channel to be added")
+            .setRequired(true)
+        )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("removechannel")
+        .setDescription("unregister a channel as a counting channel")
+        .addChannelOption((option) =>
+          option
+            .setName("channel")
+            .setDescription("channel you want to unregister")
+            .setRequired(true)
+        )
+    ),
+
+  // execute command
+  async execute(interaction) {
+    let subcommand = interaction.options.getSubcommand();
+    let guild = interaction.guild;
+    if (guild === null) {
+      interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error).setTitle(
+            "This command is not usable in a channel!"
+          ),
+        ],
+      });
+      return;
+    }
+    let guildData = MGFirebase.getData(`guild/${guild.id}`);
+    if (subcommand === "addchannel") {
+      addChannel(interaction, guild, guildData);
+    } else if (subcommand === "removechannel") {
+      removeChannel(interaction, guild, guildData);
+    }
+  },
+};
 
 async function addChannel(
   interaction: CommandInteraction,
@@ -47,7 +97,7 @@ async function addChannel(
   }
   if (guildData["countingChannels"][channel.id] === undefined) {
     guildData["countingChannels"][channel.id] = 0;
-    await MGfirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
+    await MGFirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
       await interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Success)
@@ -97,7 +147,7 @@ async function removeChannel(
     });
   } else {
     delete serverData["countingChannels"][channel.id];
-    await MGfirebase.setData(`guild/${guild.id}`, serverData).then(async () => {
+    await MGFirebase.setData(`guild/${guild.id}`, serverData).then(async () => {
       if (channel === null) return;
       await interaction.reply({
         embeds: [
@@ -111,56 +161,5 @@ async function removeChannel(
     });
   }
 }
-
-const counting: MGCommand = {
-  // exports (self explanatory)
-  data: new SlashCommandBuilder()
-    .setName("counting")
-    .setDescription("configure your server' counting games!")
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("addchannel")
-        .setDescription("register a channel as a counting channel")
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("channel to be added")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("removechannel")
-        .setDescription("unregister a channel as a counting channel")
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("channel you want to unregister")
-            .setRequired(true)
-        )
-    ),
-
-  // execute command
-  async execute(interaction) {
-    let subcommand = interaction.options.getSubcommand();
-    let guild = interaction.guild;
-    if (guild === null) {
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Error).setTitle(
-            "This command is not usable in a channel!"
-          ),
-        ],
-      });
-      return;
-    }
-    let guildData = MGfirebase.getData(`guild/${guild.id}`);
-    if (subcommand === "addchannel") {
-      addChannel(interaction, guild, guildData);
-    } else if (subcommand === "removechannel") {
-      removeChannel(interaction, guild, guildData);
-    }
-  },
-};
 
 export default counting;

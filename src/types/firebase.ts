@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export default interface DataModel {
+export interface DataModel {
   user: { [id: string]: User };
   guild: { [id: string]: Guild };
 }
 
-interface Guild {
+export interface Guild {
   countingChannels: { [id: string]: { count: number; id: number } } | number;
   starboardChannel: { id: string; thresh: number } | number;
   starboardMsgs: { [id: string]: { stars: number; rxnid: string } } | number;

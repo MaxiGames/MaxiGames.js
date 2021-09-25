@@ -24,7 +24,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
@@ -57,11 +57,16 @@ const gamble = withChecks([cooldownTest(10)], {
   async execute(interaction) {
     const amt = interaction.options.getInteger("amount"); // read bet amt
     const option = interaction.options.getString("option"); // read bet on which coin side
-    if (amt === null || option === null) return;
+    if (amt === null || option === null) {
+      return;
+    }
 
-    await MGfirebase.initUser(interaction.user.id); // init firebase
+    await MGFirebase.initUser(interaction.user.id); // init firebase
 
-    let data = MGfirebase.getData(`user/${interaction.user.id}`); // get user balance
+    let data = MGFirebase.getData(`user/${interaction.user.id}`); // get user balance
+    if (data === undefined) {
+      return;
+    }
 
     if (data["money"] < amt) {
       interaction.reply({
@@ -84,7 +89,7 @@ const gamble = withChecks([cooldownTest(10)], {
       (option === "tails" && compOption === 2)
     ) {
       data["money"] += amt;
-      MGfirebase.setData(`user/${interaction.user.id}`, data); // update user balance
+      MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
 
       interaction.reply({
         embeds: [
@@ -101,7 +106,7 @@ const gamble = withChecks([cooldownTest(10)], {
       });
     } else {
       data["money"] -= amt;
-      MGfirebase.setData(`user/${interaction.user.id}`, data);
+      MGFirebase.setData(`user/${interaction.user.id}`, data);
       interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Success)

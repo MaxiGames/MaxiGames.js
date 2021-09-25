@@ -21,7 +21,7 @@ import withcooldown from "../../lib/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
@@ -51,10 +51,13 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 
     if (amt === null || usr === null) return;
 
-    await MGfirebase.initUser(interaction.user.id);
-    await MGfirebase.initUser(usr.id);
+    await MGFirebase.initUser(interaction.user.id);
+    await MGFirebase.initUser(usr.id);
 
-    let data = MGfirebase.getData(`user/${interaction.user.id}`);
+    let data = MGFirebase.getData(`user/${interaction.user.id}`);
+    if (data === undefined) {
+      return;
+    }
 
     if (data["money"] < amt) {
       interaction.reply({
@@ -69,7 +72,7 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
       });
       return;
     }
-    //entered user is the same as the command user
+    // entered user is the same as the command user
     if (usr.id === interaction.user.id) {
       interaction.reply({
         embeds: [
@@ -81,11 +84,15 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
       return;
     }
 
-    let otherUserData = MGfirebase.getData(`user/${usr.id}`);
+    let otherUserData = MGFirebase.getData(`user/${usr.id}`);
+    if (otherUserData === undefined) {
+      return;
+    }
+
     data["money"] -= amt;
     otherUserData["money"] += amt;
-    MGfirebase.setData(`user/${usr.id}`, otherUserData);
-    MGfirebase.setData(`user/${interaction.user.id}`, data);
+    MGFirebase.setData(`user/${usr.id}`, otherUserData);
+    MGFirebase.setData(`user/${interaction.user.id}`, data);
 
     interaction.reply({
       embeds: [

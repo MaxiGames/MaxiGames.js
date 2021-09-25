@@ -21,7 +21,7 @@ import withcooldown from "../../lib/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
@@ -52,9 +52,13 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
       return;
     }
 
-    await MGfirebase.initUser(interaction.user.id);
+    await MGFirebase.initUser(interaction.user.id);
     //check if player has enough money to pay for what they are gambling
-    let data = MGfirebase.getData(`user/${interaction.user.id}`);
+    let data = MGFirebase.getData(`user/${interaction.user.id}`);
+    if (data === undefined) {
+      return;
+    }
+
     if (data["money"] < amt) {
       interaction.reply({
         embeds: [
@@ -91,7 +95,7 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
         embeds: [Embed],
       });
 
-      MGfirebase.setData(`user/${interaction.user.id}`, data);
+      MGFirebase.setData(`user/${interaction.user.id}`, data);
     } else if (player_roll < bot_roll) {
       data["money"] -= amt;
       const Embed = MGEmbed(MGStatus.Success)
@@ -104,7 +108,7 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
         embeds: [Embed],
       });
 
-      MGfirebase.setData(`user/${interaction.user.id}`, data);
+      MGFirebase.setData(`user/${interaction.user.id}`, data);
     } else {
       const Embed = MGEmbed(MGStatus.Success)
         .setTitle(

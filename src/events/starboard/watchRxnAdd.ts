@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MessageReaction, TextChannel, User } from "discord.js";
@@ -24,7 +24,10 @@ import { MessageReaction, TextChannel, User } from "discord.js";
 const starboardwatch = {
   name: "messageReactionAdd",
   async execute(reaction: MessageReaction, user: User) {
-    let guildData = MGfirebase.getData(`guild/${reaction.message.guildId}`);
+    let guildData = MGFirebase.getData(`guild/${reaction.message.guildId}`);
+    if (guildData === undefined) {
+      return;
+    }
 
     /*
     if (reaction.partial) {
@@ -55,7 +58,7 @@ const starboardwatch = {
     guildData["starboardMsgs"][reaction.message.id]["stars"] += 1;
 
     try {
-      await MGfirebase.setData(
+      await MGFirebase.setData(
         `guild/${reaction.message.guild!.id}`,
         guildData
       );

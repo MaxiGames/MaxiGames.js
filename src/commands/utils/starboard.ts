@@ -20,7 +20,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import { CommandInteraction, Guild } from "discord.js";
 
 const starboard: MGCommand = {
@@ -69,7 +69,11 @@ const starboard: MGCommand = {
       return;
     }
 
-    let guildData = MGfirebase.getData(`guild/${guild.id}`);
+    let guildData = MGFirebase.getData(`guild/${guild.id}`);
+    if (guildData === undefined) {
+      return;
+    }
+
     switch (subcommand) {
       case "addchannel":
         addchannel(interaction, guild, guildData);
@@ -90,7 +94,7 @@ const starboard: MGCommand = {
             `Starboard threshold set to ${newthresh}.`
           );
           guildData["starboardChannel"]["thresh"] = newthresh;
-          await MGfirebase.setData(`guild/${guild.id}`, guildData);
+          await MGFirebase.setData(`guild/${guild.id}`, guildData);
         }
 
         await interaction.reply({ embeds: [embed] });
@@ -108,7 +112,7 @@ async function addchannel(
   let oldc = guildData["starboardChannel"];
   guildData["starboardChannel"] = { id: channel.id, thresh: 1 };
 
-  await MGfirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
+  await MGFirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
     let embed;
     if (!oldc) {
       embed = MGEmbed(MGStatus.Success)
@@ -140,7 +144,7 @@ async function rmchannel(
       );
 
     guildData["starboardChannel"] = 0;
-    await MGfirebase.setData(`guild/${guild.id}`, guildData);
+    await MGFirebase.setData(`guild/${guild.id}`, guildData);
   } else {
     embed = MGEmbed(MGStatus.Error).setTitle(
       "This server had no starboard channel in the first place."

@@ -18,179 +18,178 @@
 
 import { Client } from "discord.js";
 import * as admin from "firebase-admin";
-import DataModel, {
+import {
+  DataModel,
   initialData,
   initialGuild,
   initialUser,
 } from "../types/firebase";
+import moan from "../lib/moan";
 
 export class FirebaseManager {
   db: admin.database.Database | undefined = undefined;
   data: DataModel = initialData;
   initDone = false;
 
-  init(client: Client) {
+  async init(client: Client) {
     this.initDone = true;
     this.db = admin.database();
     if (this.db === undefined) {
       throw "cannot find database";
     }
 
-    // Initialise and cast data!!
-    let data = this.db
-      .ref(`/`)
-      .get()
-      .then((snapshot) => {
-        if (!snapshot.exists()) {
-          console.log("no database found :(");
-          this.data = initialData as DataModel;
+    // initialise and cast data
+    const snapshot = await this.db.ref("/").get();
+    if (!snapshot.exists()) {
+      moan("no database found");
+      this.data = initialData as DataModel;
 
-          // set it on firebase
-          this.db?.ref(`/`).set(this.data);
+      // set it on firebase
+      this.db?.ref("/").set(this.data);
 
-          if (this.db === undefined) {
-            console.log("No DB AVALIABLE");
-            return;
-          }
-          // if db doesn't exist, get data set on the guild
-          this.db
-            .ref(`/`)
-            .set(this.data)
-            .then(() => {
-              console.log("Initialised Data!!!");
-            });
-        } else {
-          let data = snapshot.val();
-          try {
-            // casting data
-            data = this.Data(data, client);
-            let castedData = data as DataModel;
-            this.data = castedData;
-            console.log("Database successfully initialised!");
-          } catch {
-            throw "Data could not be casted properly during initialisation";
-          }
-        }
-      });
+      if (this.db === undefined) {
+        moan("no database available");
+        return;
+      }
+      // if db doesn't exist, get data set on the guild
+      await this.db.ref("/").set(this.data);
+      console.log("Initialised data.");
+    } else {
+      let data = snapshot.val();
+      try {
+        // casting data
+        data = await this.initData(data, client);
+        let castedData = data as DataModel;
+        this.data = castedData;
+        console.log("Database successfully initialised.");
+      } catch {
+        moan("data casting failed");
+        return;
+      }
+    }
   }
 
-  public async setData(ref: string, data: any): Promise<string> {
-    if (!this.initDone) return "init not done";
+  public async setData(ref: string, data: any): Promise<void> {
+    if (!this.initDone) {
+      moan("init not done");
+      return;
+    }
+
     let referencePoints = ref.split("/");
 
     // validate reference input
     if (referencePoints.length < 1) {
-      return "Need at least 1 slash to work!";
+      return;
     }
 
-    let referencedData = this.data as any;
+    let referencedData = this.data as unknown as { [id: string]: any };
     try {
-      // valid reference checking, first check by seeing if its possible to go into the endpoint of the reference
-      let temp = referencedData;
+      // check validity of reference
+      // first check by seeing if it's possible to go into the endpoint of the reference
+      referencedData;
       for (let i of referencePoints) {
-        temp = referencedData[i];
+        referencedData[i];
       }
 
       // then try setting and casting the data into the DataModel
-      let result = this.setDeepArray(referencePoints, referencedData, data);
-
-      if (result !== "Operation Successful")
-        return `Data couldn't be set : ${result}`;
-
-      let newData: DataModel;
-      try {
-        newData = referencedData;
-      } catch {
-        return "Data does not fit the data model";
-      }
+      this.setDeepArray(referencePoints, referencedData, data);
     } catch {
-      return "Data is invalid, therefore unable to be set";
+      moan();
+      return;
     }
 
     // set the data on firebase
-    ref = "/" + ref;
-    if (this.db === undefined) return "No DB";
-    await this.db
-      .ref(ref)
-      .set(data)
-      .then(() => {
-        return "Success";
-      })
-      .catch(() => {
-        return "Something went wrong while uploading to firebase";
-      });
-    return "Success";
-  }
-
-  public getData(ref: string): any {
-    if (!this.initDone) return "init not done";
-
-    //reference validation
-    let referencePoints = ref.split("/");
-    if (referencePoints.length < 1) {
-      return "Need at least 1 slash to work!";
+    if (this.db === undefined) {
+      moan("no database");
+      return;
     }
 
     try {
-      //Check if its valid just by seeing if the reference exists
+      await this.db.ref("/" + ref).set(data);
+    } catch {
+      moan("upload failure");
+      return;
+    }
+
+    return;
+  }
+
+  public getData(ref: string): { [id: string]: any } | undefined {
+    if (!this.initDone) {
+      moan("init not done");
+      return;
+    }
+
+    // reference validation
+    let referencePoints = ref.split("/");
+    if (referencePoints.length < 1) {
+      moan("no database");
+      return;
+    }
+
+    try {
+      // Check if data is valid just by seeing if the reference exists
       let temp = this.data as any;
       for (let i of referencePoints) {
         temp = temp[i];
       }
 
-      //return the data if it does
       return temp;
     } catch {
-      return "Invalid reference";
+      moan("invalid reference");
+      return;
     }
   }
 
   public async initUser(id: string) {
-    //initialized someone's money and properties if its not already is initialised
+    // initialise user's properties if its not already is initialised
+    if (this.db === undefined) {
+      moan("no database");
+      return;
+    }
+
     if (this.data.user[id] === undefined) {
       this.data.user[id] = initialUser;
-      if (this.db === undefined) return;
       await this.db.ref(`user/${id}`).set(this.data.user[id]);
     }
   }
 
-  private setDeepArray(referencePoint: string[], loopedArr: any, data: any) {
-    // recursive function to use the reference to the data array and set the data at the back of the function
-    let result: string;
+  private setDeepArray(
+    referencePoint: string[],
+    data: { [id: string]: any },
+    toset: unknown
+  ) {
+    // use the reference to the data array and set the data at the back of the function
     try {
       let ref = referencePoint[0];
 
       if (referencePoint.length === 1) {
         // if there is only one more object left to go into
-        loopedArr[ref] = data;
-        return "Operation Successful";
+        data[ref] = toset;
+        return;
       }
-      let popped = referencePoint.shift();
-      // recurse
-      result = this.setDeepArray(referencePoint, loopedArr[ref], data);
+      this.setDeepArray(referencePoint.slice(1), data[ref], toset);
     } catch {
-      return "Invalid Operation";
+      moan("invalid operation");
+      return;
     }
-    return result;
   }
 
-  private Data(data: any, client: Client) {
+  private async initData(data: any, client: Client) {
     if (!data["guild"]) {
       data["guild"] = {};
-      if (client === undefined) return;
+      if (client === undefined) {
+        return;
+      }
       client.guilds.cache.forEach((value) => {
         data["guild"][value.id] = initialGuild;
         console.log(`Data changed for ${value.id}`);
       });
     }
-    this.db
-      ?.ref(`/guild/`)
-      .set(data["guild"])
-      .then(() => {
-        console.log("Data initialised for guilds");
-      });
+    await this.db?.ref(`/guild/`).set(data["guild"]);
+    console.log("Data initialised for guilds");
     return data;
   }
 }
 
-export let MGfirebase = new FirebaseManager();
+export let MGFirebase = new FirebaseManager();

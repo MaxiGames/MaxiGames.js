@@ -17,7 +17,7 @@
  */
 
 import { CommandInteraction } from "discord.js";
-import { MGfirebase } from "../utils/firebase";
+import { MGFirebase } from "../utils/firebase";
 import { MGEmbed } from "./flavoured";
 import type MGCmdTest from "../types/checks";
 import MGStatus from "./statuses";
@@ -28,8 +28,12 @@ export default function cooldownTest(
 ) {
   let ret: MGCmdTest = {
     async check(command, interaction) {
-      MGfirebase.initUser(interaction.user.id);
-      let data = MGfirebase.getData(`user/${interaction.user.id}`);
+      MGFirebase.initUser(interaction.user.id);
+      let data = MGFirebase.getData(`user/${interaction.user.id}`);
+      if (data === undefined) {
+        return true;
+      }
+
       let lastDate = data["cooldowns"][command.data.name!];
       let date = Math.ceil(new Date().getTime() / 1000);
 
@@ -37,17 +41,24 @@ export default function cooldownTest(
     },
 
     async succ(command, interaction) {
-      MGfirebase.initUser(interaction.user.id);
-      let data = MGfirebase.getData(`user/${interaction.user.id}`);
+      MGFirebase.initUser(interaction.user.id);
+      let data = MGFirebase.getData(`user/${interaction.user.id}`);
+      if (data === undefined) {
+        return;
+      }
 
       data["cooldowns"][command.data.name!] = Math.ceil(
         new Date().getTime() / 1000
       );
-      await MGfirebase.setData(`user/${interaction.user.id}`, data);
+      await MGFirebase.setData(`user/${interaction.user.id}`, data);
     },
 
     async fail(command, interaction) {
-      let data = MGfirebase.getData(`user/${interaction.user.id}`);
+      let data = MGFirebase.getData(`user/${interaction.user.id}`);
+      if (data === undefined) {
+        return;
+      }
+
       let lastDate = data["cooldowns"][command.data.name!];
       let date = Math.ceil(new Date().getTime() / 1000);
 

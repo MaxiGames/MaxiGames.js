@@ -26,7 +26,7 @@ import { config, firebaseConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
-import { MGfirebase } from "./utils/firebase";
+import { MGFirebase } from "./utils/firebase";
 import { initialGuild } from "./types/firebase";
 
 export const client = new Client({
@@ -112,7 +112,7 @@ client.login(config.tokenId).then(() => {
       throw "User is null and this is very bad!!!"; // corner case again
     }
 
-    MGfirebase.setData(`server/${guild.id}`, initialGuild);
+    MGFirebase.setData(`server/${guild.id}`, initialGuild);
 
     user.setActivity(`/help on ${currentGuildCount} servers!`, {
       type: "WATCHING",
@@ -135,4 +135,4 @@ client.login(config.tokenId).then(() => {
 });
 
 // Firebase init
-MGfirebase.init(client);
+MGFirebase.init(client);

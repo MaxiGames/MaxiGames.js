@@ -25,7 +25,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MyCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 
 const balance: MyCommand = {
   data: new SlashCommandBuilder()
@@ -41,11 +41,17 @@ const balance: MyCommand = {
     ),
 
   async execute(interaction) {
-    await MGfirebase.initUser(interaction.user.id); // initialise Firebase to get/set user's balance
+    await MGFirebase.initUser(interaction.user.id);
 
     let user = interaction.options.getUser("user");
-    if (user === null) user = interaction.user; // corner case.
-    let data = MGfirebase.getData(`user/${interaction.user.id}`); // read user balance
+    if (user === null) {
+      user = interaction.user;
+    }
+    let data = MGFirebase.getData(`user/${interaction.user.id}`);
+
+    if (data === undefined) {
+      return;
+    }
 
     const embed = MGEmbed(MGStatus.Info)
       .setTitle("Balance!")

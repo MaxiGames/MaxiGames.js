@@ -2,7 +2,7 @@ import { Client } from "discord.js";
 import math from "mathjs";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGfirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../utils/firebase";
 import { Message } from "discord.js";
 
 const countingListener = {
@@ -12,7 +12,11 @@ const countingListener = {
       return;
     }
 
-    let guildData = MGfirebase.getData(`guild/${msg?.guild?.id}`);
+    let guildData = MGFirebase.getData(`guild/${msg?.guild?.id}`);
+    if (guildData === undefined) {
+      return;
+    }
+
     if (!guildData["countingChannels"]) {
       return;
     }
@@ -38,7 +42,7 @@ const countingListener = {
     // same person?
     if (id === msg.author.id) {
       guildData["countingChannels"][msg.channel.id] = { count: 0, id: 0 };
-      await MGfirebase.setData(`guild/${msg?.guild?.id}`, guildData);
+      await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
       await msg.react("❌");
       await msg.reply({
         embeds: [
@@ -59,12 +63,12 @@ const countingListener = {
         count: number,
         id: msg.author.id,
       };
-      await MGfirebase.setData(`guild/${msg?.guild?.id}`, guildData);
+      await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
     } else {
       // wrong.
       await msg.react("❌");
       guildData["countingChannels"][msg.channel.id] = { count: 0, id: 0 };
-      await MGfirebase.setData(`guild/${msg?.guild?.id}`, guildData);
+      await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
       await msg.reply({
         embeds: [
           MGEmbed(MGStatus.Error)
