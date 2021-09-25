@@ -28,7 +28,7 @@ export default function cooldownTest(
 ) {
   let ret: MGCmdTest = {
     async check(command, interaction) {
-      MGfirebase.initialisePerson(interaction.user.id);
+      MGfirebase.initUser(interaction.user.id);
       let data = MGfirebase.getData(`user/${interaction.user.id}`);
       let lastDate = data["cooldowns"][command.data.name!];
       let date = Math.ceil(new Date().getTime() / 1000);
@@ -37,7 +37,7 @@ export default function cooldownTest(
     },
 
     async succ(command, interaction) {
-      MGfirebase.initialisePerson(interaction.user.id);
+      MGfirebase.initUser(interaction.user.id);
       let data = MGfirebase.getData(`user/${interaction.user.id}`);
 
       data["cooldowns"][command.data.name!] = Math.ceil(

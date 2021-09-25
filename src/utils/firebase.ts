@@ -145,7 +145,7 @@ export class FirebaseManager {
     }
   }
 
-  public async initialisePerson(id: string) {
+  public async initUser(id: string) {
     //initialized someone's money and properties if its not already is initialised
     if (this.data.user[id] === undefined) {
       this.data.user[id] = initialUser;

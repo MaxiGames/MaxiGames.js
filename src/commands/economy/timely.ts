@@ -75,7 +75,7 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
       moneyAdd = 1000 + Math.ceil(Math.random() * 1000);
     else moneyAdd = 5000 + Math.ceil(Math.random() * 5000);
 
-    MGfirebase.initialisePerson(`${interaction.user.id}`);
+    MGfirebase.initUser(`${interaction.user.id}`);
 
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
 

@@ -41,7 +41,7 @@ const balance: MyCommand = {
     ),
 
   async execute(interaction) {
-    await MGfirebase.initialisePerson(interaction.user.id); // initialise Firebase to get/set user's balance
+    await MGfirebase.initUser(interaction.user.id); // initialise Firebase to get/set user's balance
 
     let user = interaction.options.getUser("user");
     if (user === null) user = interaction.user; // corner case.

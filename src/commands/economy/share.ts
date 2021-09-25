@@ -51,8 +51,8 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 
     if (amt === null || usr === null) return;
 
-    await MGfirebase.initialisePerson(interaction.user.id);
-    await MGfirebase.initialisePerson(usr.id);
+    await MGfirebase.initUser(interaction.user.id);
+    await MGfirebase.initUser(usr.id);
 
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
 

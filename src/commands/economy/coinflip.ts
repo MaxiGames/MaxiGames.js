@@ -59,7 +59,7 @@ const gamble = withChecks([cooldownTest(10)], {
     const option = interaction.options.getString("option"); // read bet on which coin side
     if (amt === null || option === null) return;
 
-    await MGfirebase.initialisePerson(interaction.user.id); // init firebase
+    await MGfirebase.initUser(interaction.user.id); // init firebase
 
     let data = MGfirebase.getData(`user/${interaction.user.id}`); // get user balance
 

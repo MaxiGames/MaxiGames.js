@@ -52,7 +52,7 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
       return;
     }
 
-    await MGfirebase.initialisePerson(interaction.user.id);
+    await MGfirebase.initUser(interaction.user.id);
     //check if player has enough money to pay for what they are gambling
     let data = MGfirebase.getData(`user/${interaction.user.id}`);
     if (data["money"] < amt) {
