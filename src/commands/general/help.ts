@@ -85,7 +85,7 @@ export async function mainHelp(
   const row = new MessageActionRow().addComponents(
     new MessageSelectMenu()
       .setCustomId("help-main")
-      .setPlaceholder("Initial landing page")
+      .setPlaceholder(page === "main" ? "Initial landing page" : page)
       .addOptions(options)
   );
 

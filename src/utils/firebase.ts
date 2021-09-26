@@ -18,14 +18,11 @@
 
 import { Client } from "discord.js";
 import * as admin from "firebase-admin";
-import {
-  DataModel,
-  initialData,
-  initialGuild,
-  initialUser,
-} from "../types/firebase";
+import { DataModel, initialData, initialUser } from "../types/firebase";
 import moan from "../lib/moan";
 import MGS from "../lib/statuses";
+import { MGEmbed } from "../lib/flavoured";
+import MGStatus from "../lib/statuses";
 
 export class FirebaseManager {
   db: admin.database.Database | undefined = undefined;
@@ -62,6 +59,7 @@ export class FirebaseManager {
         data = await this.initData(data);
         let castedData = data as DataModel;
         this.data = castedData;
+        this.announcement(client);
         moan(MGS.Success, "initialised database");
       } catch {
         moan(MGS.Error, "data casting failed");
@@ -178,14 +176,35 @@ export class FirebaseManager {
 
   private async initData(data: any) {
     for (let i in data["user"]) {
-      if (!data["user"][i]["cooldowns"]["counting"]) {
-        data["user"][i]["cooldowns"]["counting"] = 0;
-        data["user"][i]["cooldowns"]["starboard"] = 0;
+      if (!data["announcement"]) {
+        data["announcement"] = initialData.announcement;
       }
     }
     await this.db?.ref(`/`).set(data);
-    moan(MGS.Success, "initialised data for cooldowns");
+    moan(MGS.Success, "initialised data for announcements");
     return data;
+  }
+
+  private async announcement(client: Client) {
+    if (this.db === null || client === null) return;
+    this.db?.ref(`/announcement`).on(`value`, (snapshot) => {
+      if (snapshot.exists()) {
+        let data = snapshot.val() as string;
+        if (data === "") return;
+        client.guilds.cache.forEach((guild) => {
+          guild.systemChannel?.send({
+            embeds: [
+              MGEmbed(MGStatus.Success)
+                .setTitle(
+                  "Important announcement by MaxiGames developers to all severs"
+                )
+                .setDescription(data),
+            ],
+          });
+        });
+        this.db?.ref(`/announcement`).set("");
+      }
+    });
   }
 }
 

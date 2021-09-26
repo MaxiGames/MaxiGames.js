@@ -19,6 +19,7 @@
 export interface DataModel {
   user: { [id: string]: User };
   guild: { [id: string]: Guild };
+  announcement: string;
 }
 
 export interface Guild {
@@ -80,4 +81,5 @@ export let initialData: DataModel = {
   guild: {
     1234: initialGuild,
   },
+  announcement: "",
 };
