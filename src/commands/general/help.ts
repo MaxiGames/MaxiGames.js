@@ -40,24 +40,20 @@ export function getLinks() {
   const inviteButton = new MessageButton()
     .setLabel("Invite the bot!")
     .setStyle("LINK")
-    .setEmoji("123456789012345678")
     .setURL(
       "https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=261188091120&scope=bot%20applications.commands"
     );
   const topGGVote = new MessageButton()
     .setLabel("Vote (Top.gg)")
     .setStyle("LINK")
-    .setEmoji("123456789012345678")
     .setURL("https://tinyurl.com/votemaxigamesTopgg");
   const discordsVote = new MessageButton()
     .setLabel("Vote (discords.com)")
     .setStyle("LINK")
-    .setEmoji("123456789012345678")
     .setURL("https://tinyurl.com/votemaxigamesDiscordcom");
   const supportServer = new MessageButton()
     .setLabel("Support Server")
     .setStyle("LINK")
-    .setEmoji("123456789012345678")
     .setURL("https://discord.gg/BNm87Cvdx3");
   return [inviteButton, topGGVote, discordsVote, supportServer];
 }
@@ -76,7 +72,7 @@ export async function mainHelp(
     options.push({
       label: dir,
       description: `Find out what commands there is for the category: ${dir}`,
-      value: `dir`,
+      value: dir,
     });
   }
 
@@ -98,29 +94,26 @@ export async function mainHelp(
   );
 
   if (page === "main") {
-    await interaction.reply({
+    return {
       embeds: [
-        MGEmbed(MGStatus.Default)
+        MGEmbed(MGStatus.Success)
           .setTitle("Help!")
           .setDescription(
             "Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
           ),
       ],
       components: [row, row2],
-    });
-    return;
+    };
   }
 
-  await interaction.reply({
+  return {
     embeds: [
-      MGEmbed(MGStatus.Default)
+      MGEmbed(MGStatus.Success)
         .setTitle("Help!")
-        .setDescription(
-          "Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
-        ),
+        .setDescription(`Category: ${page}`),
     ],
     components: [row, row2],
-  });
+  };
 }
 
 const help: MGCommand = {
@@ -137,7 +130,7 @@ const help: MGCommand = {
     let subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
       case "main":
-        let msg = await mainHelp(interaction, "main");
+        await interaction.reply(await mainHelp(interaction, "main"));
     }
   },
 };

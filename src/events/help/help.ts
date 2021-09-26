@@ -28,12 +28,9 @@ const help = {
     if (!interaction.isSelectMenu()) return;
 
     if (interaction.customId === "help-main") {
-      mainHelp(interaction, interaction.values[0]);
+      let content = await mainHelp(interaction, interaction.values[0]);
 
-      await interaction.update({
-        content: "Something was selected!",
-        components: [],
-      });
+      await interaction.update(content);
     }
   },
 };
