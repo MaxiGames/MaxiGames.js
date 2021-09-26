@@ -20,7 +20,9 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import {
   CommandInteraction,
   MessageActionRow,
+  MessageButton,
   MessageSelectMenu,
+  SelectMenuInteraction,
 } from "discord.js";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
@@ -34,16 +36,47 @@ function getDirectories(path: string) {
   });
 }
 
-async function mainHelp(interaction: CommandInteraction) {
+export function getLinks() {
+  const inviteButton = new MessageButton()
+    .setLabel("Invite the bot!")
+    .setStyle("LINK")
+    .setEmoji("123456789012345678")
+    .setURL(
+      "https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=261188091120&scope=bot%20applications.commands"
+    );
+  const topGGVote = new MessageButton()
+    .setLabel("Vote (Top.gg)")
+    .setStyle("LINK")
+    .setEmoji("123456789012345678")
+    .setURL("https://tinyurl.com/votemaxigamesTopgg");
+  const discordsVote = new MessageButton()
+    .setLabel("Vote (discords.com)")
+    .setStyle("LINK")
+    .setEmoji("123456789012345678")
+    .setURL("https://tinyurl.com/votemaxigamesDiscordcom");
+  const supportServer = new MessageButton()
+    .setLabel("Support Server")
+    .setStyle("LINK")
+    .setEmoji("123456789012345678")
+    .setURL("https://discord.gg/BNm87Cvdx3");
+  return [inviteButton, topGGVote, discordsVote, supportServer];
+}
+
+export async function mainHelp(
+  interaction: SelectMenuInteraction | CommandInteraction,
+  page: string
+) {
   const commandFiles = getDirectories("./dist/src/commands");
 
   let options: { label: string; description: string; value: string }[] = [];
+
+  // forming the select menus
   for (let dir of commandFiles) {
     dir = startCase(dir);
     options.push({
       label: dir,
       description: `Find out what commands there is for the category: ${dir}`,
-      value: dir,
+      value: `dir`,
     });
   }
 
@@ -54,7 +87,40 @@ async function mainHelp(interaction: CommandInteraction) {
       .addOptions(options)
   );
 
-  await interaction.reply({ content: "Pong!", components: [row] });
+  //making the buttons
+  let [inviteButton, topGGVote, discordsVote, supportServer] = getLinks();
+
+  let row2 = new MessageActionRow().addComponents(
+    inviteButton,
+    topGGVote,
+    discordsVote,
+    supportServer
+  );
+
+  if (page === "main") {
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Default)
+          .setTitle("Help!")
+          .setDescription(
+            "Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
+          ),
+      ],
+      components: [row, row2],
+    });
+    return;
+  }
+
+  await interaction.reply({
+    embeds: [
+      MGEmbed(MGStatus.Default)
+        .setTitle("Help!")
+        .setDescription(
+          "Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
+        ),
+    ],
+    components: [row, row2],
+  });
 }
 
 const help: MGCommand = {
@@ -71,7 +137,7 @@ const help: MGCommand = {
     let subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
       case "main":
-        await mainHelp(interaction);
+        let msg = await mainHelp(interaction, "main");
     }
   },
 };
