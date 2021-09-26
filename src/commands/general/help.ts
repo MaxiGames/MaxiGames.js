@@ -28,11 +28,17 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
 import fs from "fs";
-import { startCase } from "lodash";
+import { lowerCase, startCase } from "lodash";
 
 function getDirectories(path: string) {
   return fs.readdirSync(path).filter(function (file) {
     return fs.statSync(path + "/" + file).isDirectory();
+  });
+}
+
+function getFiles(path: string) {
+  return fs.readdirSync(path).filter(function (file) {
+    return fs.statSync(path + "/" + file).isFile();
   });
 }
 
@@ -96,7 +102,7 @@ export async function mainHelp(
   if (page === "main") {
     return {
       embeds: [
-        MGEmbed(MGStatus.Success)
+        MGEmbed(MGStatus.Info)
           .setTitle("Help!")
           .setDescription(
             "Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
@@ -106,11 +112,26 @@ export async function mainHelp(
     };
   }
 
+  //if its a category page, find the commands
+  let cmds = getFiles(`./dist/src/commands/${lowerCase(page)}/`);
+  let fields: { name: string; value: string; inline: boolean }[] = [];
+
+  let counter = 1;
+  for (let i of cmds) {
+    fields.push({
+      name: `${counter}`,
+      value: startCase(i.replace(`.js`, "")),
+      inline: true,
+    });
+    counter++;
+  }
+
   return {
     embeds: [
-      MGEmbed(MGStatus.Success)
+      MGEmbed(MGStatus.Info)
         .setTitle("Help!")
-        .setDescription(`Category: ${page}`),
+        .setDescription(`Category: ${page}`)
+        .addFields(fields),
     ],
     components: [row, row2],
   };
