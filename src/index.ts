@@ -107,7 +107,7 @@ client.login(config.tokenId).then(() => {
   // change activity on guild join
   client.on("guildCreate", (guild) => {
     moan(MGS.Info, `joined new guild "${guild.name}"`);
-    currentGuildCount--;
+    currentGuildCount++;
 
     if (user === null) {
       throw "User is null and this is very bad!!!";
@@ -123,7 +123,7 @@ client.login(config.tokenId).then(() => {
   // change activity on guild leave
   client.on("guildDelete", (guild) => {
     moan(MGS.Info, `left guild: "${guild.name}"`);
-    currentGuildCount++;
+    currentGuildCount--;
 
     if (user === null) {
       throw "User is null and this is very bad!!!";
