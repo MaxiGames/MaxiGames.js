@@ -18,7 +18,13 @@ This project is licensed under the GNU AGPLv3 License - see the LICENSE.md file 
 
 ## Featured Widgets
 
+**Discords.com**
+
 [![Bots for Discord](https://discords.com/bots/api/bot/863419048041381920/widget)](https://discords.com/bots/bots/863419048041381920)
+
+**Top.gg**
+
+![Discord Bots](https://top.gg/api/widget/863419048041381920.svg)
 
 ---
 

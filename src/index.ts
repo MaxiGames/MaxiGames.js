@@ -22,7 +22,7 @@
  */
 
 import { Client, Intents } from "discord.js";
-import { config, firebaseConfig } from "./utils/config";
+import { config, firebaseConfig, apiConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
@@ -30,6 +30,7 @@ import { MGFirebase } from "./utils/firebase";
 import { initialGuild } from "./types/firebase";
 import moan from "./lib/moan";
 import MGS from "./lib/statuses";
+import DBL from "top.gg-core";
 
 export const client = new Client({
   intents: [
@@ -42,6 +43,21 @@ export const client = new Client({
   ],
   // partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
+
+/*
+ * Top.gg Initialisation
+ */
+
+let dbl = new DBL.Client(apiConfig["top.GG"]["token"]);
+let webhook = new DBL.Webhook(apiConfig["top.GG"]["password"]);
+
+if (process.env.NODE_ENV == "production") {
+  webhook.login("/top.gg/bot/863419048041381920/vote", "3000");
+
+  webhook.on("vote", (vote: any) => {
+    console.log(`User id: ${vote.user}\nAll data: ${vote}`);
+  });
+}
 
 /*
  * Event Handlers
@@ -95,6 +111,11 @@ admin.initializeApp({
 client.login(config.tokenId).then(() => {
   let user = client.user;
   let currentGuildCount = client.guilds.cache.size;
+  if (process.env.NODE_ENV == "production") {
+    dbl
+      .post({ servers: currentGuildCount })
+      .then(moan(MGS.Info, "Posted new count to top.gg"));
+  }
 
   if (user === null) {
     throw "User is null and this is very bad!!!";
@@ -108,6 +129,11 @@ client.login(config.tokenId).then(() => {
   client.on("guildCreate", (guild) => {
     moan(MGS.Info, `joined new guild "${guild.name}"`);
     currentGuildCount++;
+    if (process.env.NODE_ENV == "production") {
+      dbl
+        .post({ servers: currentGuildCount })
+        .then(moan(MGS.Info, "Posted new count to top.gg"));
+    }
 
     if (user === null) {
       throw "User is null and this is very bad!!!";
@@ -124,6 +150,11 @@ client.login(config.tokenId).then(() => {
   client.on("guildDelete", (guild) => {
     moan(MGS.Info, `left guild: "${guild.name}"`);
     currentGuildCount--;
+    if (process.env.NODE_ENV == "production") {
+      dbl
+        .post({ servers: currentGuildCount })
+        .then(moan(MGS.Info, "Posted new count to top.gg"));
+    }
 
     if (user === null) {
       throw "User is null and this is very bad!!!";
