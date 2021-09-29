@@ -23,7 +23,7 @@ import { ColorResolvable, MessageEmbed } from "discord.js";
 const color: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("randcolor")
-    .setDescription("Get a random color :D"),
+    .setDescription("Get a random color"),
   async execute(interaction) {
     const arr = [
       "0",

@@ -27,7 +27,7 @@ const epoch: MGCommand = {
     .setDescription("How many seconds have elapsed since the epoch?"),
   async execute(interaction) {
     const embed = MGEmbed(MGStatus.Info)
-      .setTitle(`Time elapsed since the epoch:D`)
+      .setTitle(`Time elapsed since the epoch`)
       .setDescription(
         "Find out more on what an epoch is here: https://searchdatacenter.techtarget.com/definition/epoch :D"
       )

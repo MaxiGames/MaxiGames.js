@@ -39,7 +39,7 @@ const current: MGCommand = {
     ];
     const embed = MGEmbed(MGStatus.Info)
       .setTitle("Current Date and Time")
-      .setDescription("Find the current date and time below :D")
+      .setDescription("Find the current date and time below")
       .addFields(
         { name: "Date", value: now.toDateString(), inline: true },
         { name: "Day", value: days[now.getDay()], inline: true },
