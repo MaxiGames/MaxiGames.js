@@ -68,6 +68,21 @@ const gamble = withChecks([cooldownTest(10)], {
       return;
     }
 
+    if (amt <= 0) {
+      let deduct = Math.ceil(Math.random() * 5);
+      data["money"] -= deduct;
+      interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle("Stop trying to trick the system, you fool!")
+            .setDescription("No negative numbers.")
+            .addField("Deducted money:", `${deduct}`),
+        ],
+      });
+      MGFirebase.setData(`user/${interaction.user.id}`, data);
+      return;
+    }
+
     if (data["money"] < amt) {
       interaction.reply({
         embeds: [
@@ -118,7 +133,7 @@ const gamble = withChecks([cooldownTest(10)], {
             )
             .addFields(
               { name: "Balance", value: `${data["money"]}` },
-              { name: "Amount earned:", value: `${amt}` }
+              { name: "Amount lost:", value: `${amt}` }
             ),
         ],
       });
