@@ -31,8 +31,7 @@ const japanesify: MGCommand = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    const msg: string =
-      interaction.options.getString("message") || "Invalid :(";
+    let msg: string = interaction.options.getString("message") || "Invalid :(";
     if (msg.length > 2000) {
       const Embed = new Discord.MessageEmbed()
         .setColor("#ff0000")
@@ -44,15 +43,15 @@ const japanesify: MGCommand = {
       return;
     }
     msg = msg.toLowerCase();
-    let alphabet = "abcdefghijklmnopqrstuvwxyz "
-    for (let i = 0; i < msg.length; i++){
-        if (!alphabet.includes(msg[i])){
-            await interaction.reply({
-                content: "Your string contains non-alphabetical characters!",
-                ephemeral: true,
-            });
-            return;
-        }
+    let alphabet = "abcdefghijklmnopqrstuvwxyz ";
+    for (let i = 0; i < msg.length; i++) {
+      if (!alphabet.includes(msg[i])) {
+        await interaction.reply({
+          content: "Your string contains non-alphabetical characters!",
+          ephemeral: true,
+        });
+        return;
+      }
     }
     let message_1 = msg;
     let message_2 = msg.replace("ss", "s");
