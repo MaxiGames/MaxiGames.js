@@ -23,6 +23,10 @@ export interface DataModel {
 }
 
 export interface Guild {
+  statistics: {
+    highestCount: number;
+    totalCount: number;
+  };
   countingChannels: { [id: string]: { count: number; id: number } } | number;
   starboardChannel: { id: string; thresh: number } | number;
   starboardMsgs: { [id: string]: { stars: number; rxnid: string } } | number;
@@ -32,6 +36,10 @@ export let initialGuild: Guild = {
   countingChannels: 0,
   starboardChannel: 0,
   starboardMsgs: 0,
+  statistics: {
+    highestCount: 0,
+    totalCount: 0,
+  },
 };
 
 interface User {
@@ -52,6 +60,10 @@ interface User {
     counting: number;
     starboard: number;
   };
+  count: {
+    totalCount: number;
+    highestCount: number;
+  };
 }
 
 export let initialUser: User = {
@@ -71,6 +83,10 @@ export let initialUser: User = {
     share: 0,
     counting: 0,
     starboard: 0,
+  },
+  count: {
+    totalCount: 0,
+    highestCount: 0,
   },
 };
 

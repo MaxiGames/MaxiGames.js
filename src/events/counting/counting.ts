@@ -63,7 +63,21 @@ const countingListener = {
         count: number,
         id: msg.author.id,
       };
+
+      //show on statistics
+      guildData["statistics"]["totalCount"] += 1;
+      if (guildData["statistics"]["highestCount"] < number) {
+        guildData["statistics"]["highestCount"] = number;
+      }
       await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
+
+      //add to personal statistics
+      let userData = MGFirebase.getData(`user/${msg.author.id}`);
+      userData["count"]["totalCount"]++;
+      if (userData["count"]["highestCount"] < number) {
+        userData["count"]["highestCount"] = number;
+      }
+      await MGFirebase.setData(`user/${msg.author.id}`, userData);
     } else {
       // wrong.
       await msg.react("❌");

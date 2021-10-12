@@ -18,7 +18,12 @@
 
 import { Client } from "discord.js";
 import * as admin from "firebase-admin";
-import { DataModel, initialData, initialUser } from "../types/firebase";
+import {
+  DataModel,
+  initialData,
+  initialGuild,
+  initialUser,
+} from "../types/firebase";
 import moan from "../lib/moan";
 import MGS from "../lib/statuses";
 import { MGEmbed } from "../lib/flavoured";
@@ -57,6 +62,7 @@ export class FirebaseManager {
       try {
         // casting data
         data = await this.initData(data);
+        await this.initAllServer(client, data);
         let castedData = data as DataModel;
         this.data = castedData;
         this.announcement(client);
@@ -113,7 +119,7 @@ export class FirebaseManager {
     return;
   }
 
-  public getData(ref: string): { [id: string]: any } | undefined {
+  public getData(ref: string): any {
     if (!this.initDone) {
       moan(MGS.Warn, "Init not done.");
       return;
@@ -153,6 +159,20 @@ export class FirebaseManager {
     }
   }
 
+  private async initAllServer(client: Client, data: any) {
+    if (client === undefined) {
+      setTimeout(() => this.initAllServer, 2000); //recurse if its not defined yet
+    } else {
+      client.guilds.cache.forEach(async (guild) => {
+        if (data["guild"][guild.id] === undefined) {
+          data["guild"][guild.id] = initialGuild;
+          await this.setData(`guild/${guild.id}`, data);
+          moan(MGS.Success, "Initialised server with name: " + guild.name);
+        }
+      });
+    }
+  }
+
   private setDeepArray(
     referencePoint: string[],
     data: { [id: string]: any },
@@ -176,12 +196,17 @@ export class FirebaseManager {
 
   private async initData(data: any) {
     for (let i in data["user"]) {
-      if (!data["announcement"]) {
-        data["announcement"] = initialData.announcement;
+      if (!data["user"][i]["count"]) {
+        data["user"][i]["count"] = initialUser.count;
+      }
+    }
+    for (let i in data["guild"]) {
+      if (!data["guild"][i]["statistics"]) {
+        data["guild"][i]["statistics"] = initialGuild.statistics;
       }
     }
     await this.db?.ref(`/`).set(data);
-    moan(MGS.Success, "Initialised data for announcements.");
+    moan(MGS.Success, "initialised data for stats");
     return data;
   }
 
