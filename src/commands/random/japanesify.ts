@@ -53,22 +53,69 @@ const japanesify: MGCommand = {
         return;
       }
     }
-    let message_1 = msg;
-    let message_2 = msg.replace("ss", "s");
-    let message_2_storage = message_2;
-    while (message_1 != message_2) {
-      message_2_storage = message_2;
-      message_2 = message_2.replace("ss", "s");
-      message_1 = message_2_storage;
+    let message_2 = msg;
+    for (let i = 0; i < 26; i++) {
+      let message_1 = message_2;
+      message_2 = message_2.replace(alphabet[i] + alphabet[i], alphabet[i]);
+      let message_2_storage = message_2;
+      while (message_1 != message_2) {
+        message_2_storage = message_2;
+        message_2 = message_2.replace(alphabet[i] + alphabet[i], alphabet[i]);
+        message_1 = message_2_storage;
+      }
     }
 
-    message_2 = message_2
-      .replace("sh", "s")
-      .replace("s", "sh")
-      .replace("nine", "9")
-      .replace("one", "1")
-      .replace("for", "4")
-      .replace("rr", "ww");
+    let pchar = message_2[-1];
+    // ok im tired someone else replace this :D
+    if (
+      !message_2.endsWith("a") &&
+      !message_2.endsWith("o") &&
+      !message_2.endsWith("e") &&
+      !message_2.endsWith("i") &&
+      !message_2.endsWith("u")
+    ) {
+      // bu
+      // da
+      // fu
+      // go
+      // ha
+      // ji/ki
+      // lu
+      // mo
+      // no
+      // pa
+      // ignore q, booligan letter
+      // ru
+      // sa
+      // to
+      // ignore v, booligan letter
+      // wa
+      // ignore x, booligan letter
+      // yo
+      // ignore z, booligan letter
+      if (pchar === "b" || pchar === "f" || pchar === "l" || pchar === "r") {
+        message_2 += "u";
+      } else if (
+        pchar === "d" ||
+        pchar === "h" ||
+        pchar === "p" ||
+        pchar === "s" ||
+        pchar === "w"
+      ) {
+        message_2 += "a";
+      } else if (
+        pchar === "g" ||
+        pchar === "m" ||
+        pchar === "n" ||
+        pchar === "t" ||
+        pchar === "y"
+      ) {
+        message_2 += "o";
+      } else if (pchar === "j" || pchar === "k") {
+        message_2 += "i";
+      }
+    }
+
     const Embed = new Discord.MessageEmbed()
       .setColor("#00ff00")
       .setTitle(`Your kawaii-ified message: `)
