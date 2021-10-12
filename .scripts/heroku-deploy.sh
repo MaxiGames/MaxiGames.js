@@ -20,6 +20,7 @@ oink=0  # oink oink
 function cleanup()
 {
     if [ $bruh -eq 0 ]; then
+        bruh=1
         echo "Cleaning up."
         git reset --hard HEAD~ >/dev/null 2>&1  # oh, shut up
         if [ $oink -eq 1 ]; then
@@ -27,7 +28,6 @@ function cleanup()
         fi
         tar xf tar >/dev/null 2>&1  # go away
         rm -f tar
-        bruh=1
     fi
 }
 
