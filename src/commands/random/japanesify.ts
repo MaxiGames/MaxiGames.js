@@ -53,66 +53,72 @@ const japanesify: MGCommand = {
         return;
       }
     }
-    let message_2 = msg;
+    let prevmsg = msg;
+    let message_2 = prevmsg;
     for (let i = 0; i < 26; i++) {
-      let message_1 = message_2;
-      message_2 = message_2.replace(alphabet[i] + alphabet[i], alphabet[i]);
+      message_2 = prevmsg.replace(alphabet[i] + alphabet[i], alphabet[i]);
       let message_2_storage = message_2;
-      while (message_1 != message_2) {
+      while (prevmsg != message_2) {
         message_2_storage = message_2;
         message_2 = message_2.replace(alphabet[i] + alphabet[i], alphabet[i]);
-        message_1 = message_2_storage;
+        prevmsg = message_2_storage;
+        console.log(prevmsg);
+        console.log(message_2);
       }
     }
-
-    let pchar = message_2[-1];
-    // ok im tired someone else replace this :D
-    if (
-      !message_2.endsWith("a") &&
-      !message_2.endsWith("o") &&
-      !message_2.endsWith("e") &&
-      !message_2.endsWith("i") &&
-      !message_2.endsWith("u")
-    ) {
-      // bu
-      // da
-      // fu
-      // go
-      // ha
-      // ji/ki
-      // lu
-      // mo
-      // no
-      // pa
-      // ignore q, booligan letter
-      // ru
-      // sa
-      // to
-      // ignore v, booligan letter
-      // wa
-      // ignore x, booligan letter
-      // yo
-      // ignore z, booligan letter
-      if (pchar === "b" || pchar === "f" || pchar === "l" || pchar === "r") {
-        message_2 += "u";
-      } else if (
-        pchar === "d" ||
-        pchar === "h" ||
-        pchar === "p" ||
-        pchar === "s" ||
-        pchar === "w"
+    for (let i = 0; i < message_2.length; i++) {
+      let pchar = message_2[i];
+      console.log(pchar);
+      // ok im tired someone else replace this :D
+      if (
+        !(
+          pchar === "a" ||
+          pchar === "o" ||
+          pchar === "u" ||
+          pchar === "i" ||
+          pchar === "e"
+        )
       ) {
-        message_2 += "a";
-      } else if (
-        pchar === "g" ||
-        pchar === "m" ||
-        pchar === "n" ||
-        pchar === "t" ||
-        pchar === "y"
-      ) {
-        message_2 += "o";
-      } else if (pchar === "j" || pchar === "k") {
-        message_2 += "i";
+        // bu
+        // da
+        // fu
+        // go
+        // ha
+        // ji/ki
+        // lu
+        // mo
+        // no
+        // pa
+        // ignore q, booligan letter
+        // ru
+        // sa
+        // to
+        // ignore v, booligan letter
+        // wa
+        // ignore x, booligan letter
+        // yo
+        // ignore z, booligan letter
+        if (pchar === "b" || pchar === "f" || pchar === "l" || pchar === "r") {
+          message_2 += "u";
+        } else if (
+          pchar === "d" ||
+          pchar === "h" ||
+          pchar === "p" ||
+          pchar === "s" ||
+          pchar === "w"
+        ) {
+          message_2 += "a";
+        } else if (
+          pchar === "g" ||
+          pchar === "m" ||
+          pchar === "n" ||
+          pchar === "t" ||
+          pchar === "y"
+        ) {
+          message_2 += "o";
+        } else if (pchar === "j" || pchar === "k") {
+          message_2 += "i";
+        }
       }
     }
 
