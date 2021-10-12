@@ -2,7 +2,7 @@ import path from "path";
 import MGStatus from "./statuses";
 
 const SPC1 = 10; // space for status info
-const SPC2 = 40; // max width for message
+const SPC2 = 60; // max width for message
 
 // Readjust string to fit n columns + indent size.
 function refmtstr(str: string, threshold: number, indent: number): string {
@@ -69,7 +69,7 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
     )}`;
   }
 
-  e += `\x1b[1G\x1b[${SPC1}\n[@ `;
+  e += `\x1b[1G\x1b[${SPC1 + 2 + SPC2}C[@ `;
 
   // black magic
   // do not touch

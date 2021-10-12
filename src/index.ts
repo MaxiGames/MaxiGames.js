@@ -71,7 +71,7 @@ for (const event of events) {
     client.on(event.name, event.execute);
   }
 
-  moan(MGS.Info, `registered event "${event.name}"`);
+  moan(MGS.Info, `Registered event handler for "${event.name}."`);
 }
 
 // Wait for interaction & handle commands
