@@ -102,7 +102,7 @@ async function addChannel(
     guildData["countingChannels"] = {};
   }
   if (guildData["countingChannels"][channel.id] === undefined) {
-    guildData["countingChannels"][channel.id] = 0;
+    guildData["countingChannels"][channel.id] = { count: 0, id: 0 };
     await MGFirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
       await interaction.reply({
         embeds: [
