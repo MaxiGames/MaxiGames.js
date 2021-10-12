@@ -39,6 +39,7 @@ function refmtstr(str: string, threshold: number, indent: number): string {
 export default function moan(status: MGStatus, msg: string | unknown): void {
   let e: string = "";
 
+  e += "\x1b[2K\x1b[1G";
   e += "\x1b[1m";
 
   switch (status) {
