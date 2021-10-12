@@ -1,6 +1,5 @@
 import path from "path";
 import MGStatus from "./statuses";
-import process from "process";
 
 // let out a (dying?) moan
 export default function moan(status: MGStatus, msg: string | unknown) {
@@ -29,7 +28,10 @@ export default function moan(status: MGStatus, msg: string | unknown) {
   if (typeof msg === "string") {
     e += ` ${msg}`;
   } else {
-    e += ` ${JSON.stringify(msg)}`;
+    e += ` Object:\n          | ${JSON.stringify(msg, null, 2).replaceAll(
+      "\n",
+      "\n          | "
+    )}`;
   }
 
   e += "          [@ ";
