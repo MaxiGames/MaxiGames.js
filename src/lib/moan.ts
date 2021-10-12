@@ -1,8 +1,42 @@
 import path from "path";
 import MGStatus from "./statuses";
 
-// let out a (dying?) moan
-export default function moan(status: MGStatus, msg: string | unknown) {
+const SPC1 = 10; // space for status info
+const SPC2 = 40; // max width for message
+
+// Readjust string to fit n columns + indent size.
+function refmtstr(str: string, threshold: number, indent: number): string {
+  function iter(xs: string[], c: string, n: number): string {
+    if (xs.length === 0) {
+      return c;
+    } else {
+      if (n + xs[0].length > threshold) {
+        return iter(
+          xs.slice(1),
+          `${c.slice(0, -1)}\n${xs[0]} `,
+          xs[0].length + 1
+        );
+      } else {
+        return iter(xs.slice(1), `${c}${xs[0]} `, n + xs[0].length + 1);
+      }
+    }
+  }
+
+  return (
+    `\x1b[${indent}C` +
+    iter(
+      str
+        .split(" ")
+        .flatMap((x) => x.split("\n"))
+        .filter((x) => x != " "),
+      "",
+      0
+    ).replaceAll("\n", "\n" + `\x1b[${indent}C`)
+  );
+}
+
+// Let out a (dying?) moan.
+export default function moan(status: MGStatus, msg: string | unknown): void {
   let e: string = "";
 
   e += "\x1b[1m";
@@ -25,17 +59,20 @@ export default function moan(status: MGStatus, msg: string | unknown) {
 
   e += "\x1b[0m";
 
+  e += "\x1b[0G";
   if (typeof msg === "string") {
-    e += ` ${msg}`;
+    e += refmtstr(msg, SPC2, SPC1);
   } else {
-    e += ` Object:\n          | ${JSON.stringify(msg, null, 2).replaceAll(
+    e += ` Object:\n\x1b[${SPC1}C| ${JSON.stringify(msg, null, 2).replaceAll(
       "\n",
-      "\n          | "
+      `\n|\x1b[${SPC1}C|`
     )}`;
   }
 
-  e += "          [@ ";
+  e += `\x1b[1G\x1b[${SPC1}\n[@ `;
 
+  // black magic
+  // do not touch
   const stack = new Error().stack;
   if (stack === undefined) {
     e += "\x1b[1m???\x1b[0m";
