@@ -13,7 +13,7 @@ function refmtstr(str: string, threshold: number, indent: number): string {
       if (n + xs[0].length > threshold) {
         return iter(
           xs.slice(1),
-          `${c.slice(0, -1)}\n${xs[0]} `,
+          `${c.slice(0, -1)}\x1b[1B\x1b[1G${xs[0]} `,
           xs[0].length + 1
         );
       } else {
@@ -31,7 +31,7 @@ function refmtstr(str: string, threshold: number, indent: number): string {
         .filter((x) => x != " "),
       "",
       0
-    ).replaceAll("\n", "\n" + `\x1b[${indent}C`)
+    ).replaceAll("\n", "\x1b[1B\x1b[1G" + `\x1b[${indent}C`)
   );
 }
 
@@ -63,10 +63,11 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
   if (typeof msg === "string") {
     e += refmtstr(msg, SPC2, SPC1);
   } else {
-    e += ` Object:\n\x1b[${SPC1}C| ${JSON.stringify(msg, null, 2).replaceAll(
-      "\n",
-      `\n|\x1b[${SPC1}C|`
-    )}`;
+    e += ` Object:\x1b[1B\x1b[1G\x1b[${SPC1}C| ${JSON.stringify(
+      msg,
+      null,
+      2
+    ).replaceAll("\n", `\x1b[1B\x1b[1G|\x1b[${SPC1}C|`)}`;
   }
 
   e += `\x1b[1G\x1b[${SPC1 + 2 + SPC2}C[@ `;
