@@ -39,19 +39,19 @@ export class FirebaseManager {
     // initialise and cast data
     const snapshot = await this.db.ref("/").get();
     if (!snapshot.exists()) {
-      moan(MGS.Error, "no database found");
+      moan(MGS.Error, "No database found!");
       this.data = initialData as DataModel;
 
       // set it on firebase
       this.db?.ref("/").set(this.data);
 
       if (this.db === undefined) {
-        moan(MGS.Error, "no database available");
+        moan(MGS.Error, "No database available!");
         return;
       }
       // if db doesn't exist, get data set on the guild
       await this.db.ref("/").set(this.data);
-      moan(MGS.Success, "initialised data");
+      moan(MGS.Success, "Initialised data.");
     } else {
       let data = snapshot.val();
       try {
@@ -60,9 +60,9 @@ export class FirebaseManager {
         let castedData = data as DataModel;
         this.data = castedData;
         this.announcement(client);
-        moan(MGS.Success, "initialised database");
+        moan(MGS.Success, "Initialised database.");
       } catch {
-        moan(MGS.Error, "data casting failed");
+        moan(MGS.Error, "Data casting failed!");
         return;
       }
     }
@@ -70,7 +70,7 @@ export class FirebaseManager {
 
   public async setData(ref: string, data: any): Promise<void> {
     if (!this.initDone) {
-      moan(MGS.Error, "init not done");
+      moan(MGS.Warn, "Init not done.");
       return;
     }
 
@@ -99,14 +99,14 @@ export class FirebaseManager {
 
     // set the data on firebase
     if (this.db === undefined) {
-      moan(MGS.Error, "no database");
+      moan(MGS.Error, "No database!");
       return;
     }
 
     try {
       await this.db.ref("/" + ref).set(data);
     } catch {
-      moan(MGS.Error, "upload failure");
+      moan(MGS.Error, "Upload failure!");
       return;
     }
 
@@ -115,14 +115,14 @@ export class FirebaseManager {
 
   public getData(ref: string): { [id: string]: any } | undefined {
     if (!this.initDone) {
-      moan(MGS.Error, "init not done");
+      moan(MGS.Warn, "Init not done.");
       return;
     }
 
     // reference validation
     let referencePoints = ref.split("/");
     if (referencePoints.length < 1) {
-      moan(MGS.Error, "no database");
+      moan(MGS.Error, "No database!");
       return;
     }
 
@@ -135,7 +135,7 @@ export class FirebaseManager {
 
       return temp;
     } catch {
-      moan(MGS.Error, "invalid reference");
+      moan(MGS.Error, "Invalid reference!");
       return;
     }
   }
@@ -143,7 +143,7 @@ export class FirebaseManager {
   public async initUser(id: string) {
     // initialise user's properties if its not already is initialised
     if (this.db === undefined) {
-      moan(MGS.Error, "no database");
+      moan(MGS.Error, "No database!");
       return;
     }
 
@@ -169,7 +169,7 @@ export class FirebaseManager {
       }
       this.setDeepArray(referencePoint.slice(1), data[ref], toset);
     } catch {
-      moan(MGS.Error, "invalid operation");
+      moan(MGS.Error, "Invalid operation!");
       return;
     }
   }
@@ -181,7 +181,7 @@ export class FirebaseManager {
       }
     }
     await this.db?.ref(`/`).set(data);
-    moan(MGS.Success, "initialised data for announcements");
+    moan(MGS.Success, "Initialised data for announcements.");
     return data;
   }
 
