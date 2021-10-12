@@ -30,40 +30,19 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
     .setDescription(
       "Time and time again :)...you'll get to get richer and richer!!!"
     )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName(`hourly`)
-        .setDescription("Claim some $$$ hourly!! (30-60 MaxiCoins every hour)")
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName(`daily`)
-        .setDescription("Claim some $$$ daily!! (100-200 MaxiCoins every day)")
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName(`weekly`)
-        .setDescription(
-          "Claim some $$$ weekly!! (250-500 MaxiCoins every week)"
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName(`monthly`)
-        .setDescription(
-          "Claim some $$$ monthly!! (1000-2000 MaxiCoins every hour)"
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName(`yearly`)
-        .setDescription(
-          "Claim some $$$ yearly!! (5000-10000 MaxiCoins every year)"
-        )
+    .addStringOption((option) =>
+      option
+        .setName("category")
+        .setDescription("Which timely rewards?")
+        .addChoice("hourly", "hourly")
+        .addChoice("daily", "daily")
+        .addChoice("weekly", "weekly")
+        .addChoice("monthly", "monthly")
+        .addChoice("yearly", "yearly")
     ),
 
   async execute(interaction) {
-    let subCommand = interaction.options.getSubcommand();
+    let subCommand = interaction.options.getString("category")!;
     let moneyAdd: number;
 
     if (subCommand === "hourly") moneyAdd = 30 + Math.ceil(Math.random() * 30);

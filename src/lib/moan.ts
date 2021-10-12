@@ -27,12 +27,12 @@ export default function moan(status: MGStatus, msg: string | unknown) {
   e += "\x1b[0m";
 
   if (typeof msg === "string") {
-    e += ` (${msg})`;
+    e += ` ${msg}`;
   } else {
-    e += ` (${JSON.stringify(msg)})`;
+    e += ` ${JSON.stringify(msg)}`;
   }
 
-  e += "\n          [@ ";
+  e += "          [@ ";
 
   const stack = new Error().stack;
   if (stack === undefined) {
@@ -52,7 +52,7 @@ export default function moan(status: MGStatus, msg: string | unknown) {
       `in \x1b[1m${caller[1]}\x1b[0m`;
   }
 
-  e += "].\n";
+  e += "].";
 
   console.error(e);
 }
