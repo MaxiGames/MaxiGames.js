@@ -1,8 +1,9 @@
 import path from "path";
 import MGStatus from "./statuses";
+import process from "process";
 
 const SPC1 = 10; // space for status info
-const SPC2 = 60; // max width for message
+const SPC2 = 50; // max width for message
 
 // Readjust string to fit n columns + indent size.
 function refmtstr(str: string, threshold: number, indent: number): string {
@@ -13,7 +14,7 @@ function refmtstr(str: string, threshold: number, indent: number): string {
       if (n + xs[0].length > threshold) {
         return iter(
           xs.slice(1),
-          `${c.slice(0, -1)}\x1b[1B\x1b[1G${xs[0]} `,
+          `${c.slice(0, -1)}\n\x1b[2K\x1b[${indent + 1}G${xs[0]} `,
           xs[0].length + 1
         );
       } else {
@@ -31,7 +32,7 @@ function refmtstr(str: string, threshold: number, indent: number): string {
         .filter((x) => x != " "),
       "",
       0
-    ).replaceAll("\n", "\x1b[1B\x1b[1G" + `\x1b[${indent}C`)
+    )
   );
 }
 
@@ -64,11 +65,11 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
   if (typeof msg === "string") {
     e += refmtstr(msg, SPC2, SPC1);
   } else {
-    e += ` Object:\x1b[1B\x1b[1G\x1b[${SPC1}C| ${JSON.stringify(
+    e += ` Object:\n\x1b[2K\x1b[1G\x1b[${SPC1}C| ${JSON.stringify(
       msg,
       null,
       2
-    ).replaceAll("\n", `\x1b[1B\x1b[1G|\x1b[${SPC1}C|`)}`;
+    ).replaceAll("\n", `\n\x1b[2K\x1b[1G|\x1b[${SPC1}C|`)}`;
   }
 
   e += `\x1b[1G\x1b[${SPC1 + 2 + SPC2}C[@ `;
@@ -82,18 +83,22 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
     const caller = stack
       .split("\n")
       .map((x) => x.trim())
-      .map((x) => [/\(.+\)/.exec(x), /at (.+) \(/.exec(x)])
-      .filter((x) => x[0] !== null && x[1] !== null)
-      .map((x) => [x[0]![0].slice(1).split(":")[0], x[1]![1]])
+      .map((x) => [
+        /\(.+\)/.exec(x),
+        /at (.+) \(/.exec(x),
+        /\(.+:(?:.+:)?([0-9]+):[0-9]+\)/.exec(x),
+      ])
+      .filter((x) => x[0] !== null && x[1] !== null && x[2] !== null)
+      .map((x) => [x[0]![0].slice(1).split(":")[0], x[1]![1], x[2]![1]])
       .filter((x) => x[0] !== __filename)[0];
 
     e +=
       `\x1b[4m\x1b[2m${path.dirname(caller[0])}/` +
       `\x1b[1m${path.basename(caller[0])}\x1b[0m ` +
-      `in \x1b[1m${caller[1]}\x1b[0m`;
+      `in \x1b[1m${caller[1]}\x1b[0m (line ${caller[2]})`;
   }
 
-  e += "].";
+  e += "].\n";
 
-  console.error(e);
+  process.stderr.write(e);
 }
