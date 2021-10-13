@@ -20,6 +20,7 @@ import { Client } from "discord.js";
 import * as admin from "firebase-admin";
 import {
   DataModel,
+  initialAdmin,
   initialData,
   initialGuild,
   initialUser,
@@ -195,15 +196,8 @@ export class FirebaseManager {
   }
 
   private async initData(data: any) {
-    for (let i in data["user"]) {
-      if (!data["user"][i]["count"]) {
-        data["user"][i]["count"] = initialUser.count;
-      }
-    }
-    for (let i in data["guild"]) {
-      if (!data["guild"][i]["statistics"]) {
-        data["guild"][i]["statistics"] = initialGuild.statistics;
-      }
+    if (!data["admin"]) {
+      data["admin"] = initialAdmin;
     }
     await this.db?.ref(`/`).set(data);
     moan(MGS.Success, "initialised data for stats");

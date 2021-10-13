@@ -121,7 +121,7 @@ client.login(config.tokenId).then(() => {
     throw "User is null and this is very bad!!!";
   }
 
-  user.setActivity(`m!help on ${currentGuildCount} servers!`, {
+  user.setActivity(`/help on ${currentGuildCount} servers!`, {
     type: "WATCHING",
   }); // initialize activity as "Watching m!help on <number> servers!"
 

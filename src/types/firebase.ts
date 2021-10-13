@@ -20,6 +20,26 @@ export interface DataModel {
   user: { [id: string]: User };
   guild: { [id: string]: Guild };
   announcement: string;
+  admin: {
+    bugreports: {
+      [id: string]: BugReports;
+    };
+    suggestons: {
+      [id: string]: Suggestions;
+    };
+  };
+}
+
+export interface BugReports {
+  bug: string;
+  status: "denied" | "in-progress";
+  user: number;
+}
+
+export interface Suggestions {
+  suggestion: string;
+  status: "denied" | "in-progress";
+  user: number;
 }
 
 export interface Guild {
@@ -90,6 +110,27 @@ export let initialUser: User = {
   },
 };
 
+export let initialSuggestion: Suggestions = {
+  suggestion: "Example Suggestion",
+  status: "denied",
+  user: 123,
+};
+
+export let initialBugReport: BugReports = {
+  bug: "Example Bug Report",
+  status: "denied",
+  user: 123,
+};
+
+export let initialAdmin = {
+  bugreports: {
+    123: initialBugReport,
+  },
+  suggestons: {
+    123: initialSuggestion,
+  },
+};
+
 export let initialData: DataModel = {
   user: {
     1234: initialUser,
@@ -98,4 +139,5 @@ export let initialData: DataModel = {
     1234: initialGuild,
   },
   announcement: "",
+  admin: initialAdmin,
 };
