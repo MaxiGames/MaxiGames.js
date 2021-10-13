@@ -45,9 +45,9 @@ const bug: MGCommand = {
         await interaction.reply({
           embeds: [
             MGEmbed(MGStatus.Error)
-              .setTitle("A bug report with that bug already exists!")
+              .setTitle("A bug report with that title already exists!")
               .setDescription(
-                "Check the current bugs at https://discord.gg/hkkkTqhGAz!"
+                "Check open bugs at https://discord.gg/hkkkTqhGAz."
               ),
           ],
         });
@@ -55,39 +55,37 @@ const bug: MGCommand = {
       }
     }
 
-    //send it to maxigames server
+    // send it to the MG server
     let channel = interaction.client.guilds.cache
       .get(`837522963389349909`)
       ?.channels.cache.get("869960880631218196") as ThreadChannel;
-    await channel
-      .send({
-        embeds: [
-          MGEmbed(MGStatus.Success)
-            .setTitle(
-              `Bug report from ${interaction.user.username}#${interaction.user.discriminator}`
-            )
-            .setThumbnail(`${interaction.user.avatarURL()}`)
-            .setDescription(bug),
-        ],
-      })
-      .then(async (message) => {
-        let bugReport: BugReports = {
-          bug: bug,
-          status: "in-progress",
-          user: parseInt(interaction.user.id),
-        };
-        data[message.id] = bugReport;
-        await MGFirebase.setData(`admin/bugreports`, data);
-        await interaction.reply({
-          embeds: [
-            MGEmbed(MGStatus.Success)
-              .setTitle("Submitted Bug Report!")
-              .setDescription(
-                "A bug report has been submitted in the MaxiGames Official server: https://discord.gg/hkkkTqhGAz. You will be promptly notified once it has been addressed! Thanks :D"
-              ),
-          ],
-        });
-      });
+    let msg = await channel.send({
+      embeds: [
+        MGEmbed(MGStatus.Success)
+          .setTitle(
+            `Bug report from ${interaction.user.username}#${interaction.user.discriminator}`
+          )
+          .setThumbnail(`${interaction.user.avatarURL()}`)
+          .setDescription(bug),
+      ],
+    });
+
+    let bugReport: BugReports = {
+      bug: bug,
+      status: "in-progress",
+      user: parseInt(interaction.user.id),
+    };
+    data[msg.id] = bugReport;
+    await MGFirebase.setData(`admin/bugreports`, data);
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Success)
+          .setTitle("Submitted Bug Report!")
+          .setDescription(
+            "Your bug report has been submitted to the MaxiGames Official server: https://discord.gg/hkkkTqhGAz. You will be notified once it has been addressed! Thanks :D"
+          ),
+      ],
+    });
   },
 };
 
