@@ -58,8 +58,8 @@ const bug: MGCommand = {
 
     //send it to maxigames server
     let channel = interaction.client.guilds.cache
-      .get(`866939574419849216`)
-      ?.channels.cache.get("873835031880163330") as ThreadChannel;
+      .get(`837522963389349909`)
+      ?.channels.cache.get("869960880631218196") as ThreadChannel;
     await channel
       .send({
         embeds: [
