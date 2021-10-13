@@ -21,8 +21,7 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../utils/firebase";
 import MGCommand from "../../types/command";
-import moan from "../../lib/moan";
-import { GuildChannel, ThreadChannel } from "discord.js";
+import { ThreadChannel } from "discord.js";
 import { BugReports } from "../../types/firebase";
 
 const bug: MGCommand = {
