@@ -39,6 +39,7 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
         .addChoice("weekly", "weekly")
         .addChoice("monthly", "monthly")
         .addChoice("yearly", "yearly")
+        .setRequired(true)
     ),
 
   async execute(interaction) {
@@ -88,16 +89,16 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
       date - data["timelyClaims"][subCommand] > interval ||
       data["timelyClaims"][subCommand] === 0
     ) {
+      data["money"] += moneyAdd;
+      data["timelyClaims"][subCommand] = date;
+
       embed = MGEmbed(MGStatus.Success)
         .setTitle(`Claimed ${subCommand}!`)
         .setDescription(`Yay! You claimed your ${subCommand}!`)
         .addFields(
           { name: "Added:", value: `${moneyAdd}` },
-          { name: "Balance", value: `${data["money"]}` }
+          { name: "Current Balance", value: `${data["money"]}` }
         );
-
-      data["money"] += moneyAdd;
-      data["timelyClaims"][subCommand] = date;
       await MGFirebase.setData(`user/${interaction.user.id}`, data);
     } else {
       embed = MGEmbed(MGStatus.Error)
@@ -114,7 +115,7 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
     await interaction.reply({ embeds: [embed] });
   },
 });
-// utility function to convert seconds to a comprehendable value for user-friendly experience
+// utility function to convert seconds to a comprehensible value for user-friendly experience
 function convertSecondsToDay(n: number) {
   let day = Math.floor(n / (24 * 60 * 60));
   n -= day * 24 * 60 * 60;
@@ -127,7 +128,29 @@ function convertSecondsToDay(n: number) {
 
   let seconds = Math.floor(n);
 
-  return `${day} day(s), ${hour} hour(s), ${minutes.toFixed()} minute(s) and ${seconds.toFixed()} second(s) `;
+  let dayStr = day === 0 ? "" : `${day} day(s)`;
+  let hourStr = hour === 0 ? "" : `${hour} hour(s)`;
+  let minutesStr = minutes === 0 ? "" : `${minutes.toFixed()} minute(s)`;
+  let secondStr = seconds === 0 ? "" : `${seconds.toFixed()} second(s)`;
+
+  let message = "";
+
+  if (dayStr !== "") {
+    message = `${dayStr}, ${hourStr}, ${minutesStr} and ${secondStr}`;
+  } else {
+    if (hourStr !== "") {
+      message = `${hourStr}, ${minutesStr} and ${secondStr}`;
+    } else {
+      if (minutesStr !== "") {
+        message = `${minutesStr} and ${secondStr}`;
+      } else {
+        if (secondStr !== "") {
+          message = `${secondStr}`;
+        }
+      }
+    }
+  }
+  return message;
 }
 
 export default timely;

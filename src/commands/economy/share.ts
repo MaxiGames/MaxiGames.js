@@ -51,6 +51,18 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 
     if (amt === null || usr === null) return;
 
+    if (usr.bot) {
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle("You can't share money to bots!")
+            .setDescription(
+              "What are you, a bot? Only a bot shares money to bots smh..."
+            ),
+        ],
+      });
+    }
+
     await MGFirebase.initUser(interaction.user.id);
     await MGFirebase.initUser(usr.id);
 
@@ -62,7 +74,7 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
     if (amt <= 0) {
       let deduct = Math.ceil(Math.random() * 5);
       data["money"] -= deduct;
-      interaction.reply({
+      await interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Error)
             .setTitle("Stop trying to trick the system, you fool!")
@@ -75,7 +87,7 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
     }
 
     if (data["money"] < amt) {
-      interaction.reply({
+      await interaction.reply({
         embeds: [
           MGEmbed(MGStatus.Error)
             .setTitle("Not enough money!!")
