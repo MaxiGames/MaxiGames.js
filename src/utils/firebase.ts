@@ -196,8 +196,9 @@ export class FirebaseManager {
   }
 
   private async initData(data: any) {
-    if (!data["admin"]) {
-      data["admin"] = initialAdmin;
+    if (!data["admin"]["suggestions"]) {
+      data["admin"]["suggestions"] = initialAdmin.suggestions;
+      delete data["admin"]["suggestons"];
     }
     await this.db?.ref(`/`).set(data);
     moan(MGS.Success, "initialised data for stats");

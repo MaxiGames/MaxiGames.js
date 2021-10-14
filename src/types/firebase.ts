@@ -24,7 +24,7 @@ export interface DataModel {
     bugreports: {
       [id: string]: BugReports;
     };
-    suggestons: {
+    suggestions: {
       [id: string]: Suggestions;
     };
   };
@@ -126,7 +126,7 @@ export let initialAdmin = {
   bugreports: {
     123: initialBugReport,
   },
-  suggestons: {
+  suggestions: {
     123: initialSuggestion,
   },
 };
