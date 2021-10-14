@@ -80,7 +80,8 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
       user: parseInt(interaction.user.id),
     };
     data[message.id] = suggestion1;
-    await interaction.editReply({
+    await MGFirebase.setData(`admin/suggestions`, data);
+    await interaction.reply({
       embeds: [
         MGEmbed(MGStatus.Success)
           .setTitle("Submitted suggestion!")
@@ -89,7 +90,6 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
           ),
       ],
     });
-    await MGFirebase.setData(`admin/suggestions`, data);
     await message.react(`⬆️`);
     await message.react(`🤷`);
     await message.react(`⬇️`);
