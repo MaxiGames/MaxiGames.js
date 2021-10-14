@@ -109,6 +109,7 @@ admin.initializeApp({
 
 // set bot activity upon guild events
 client.login(config.tokenId).then(() => {
+  //delete all slash commands before
   let user = client.user;
   let currentGuildCount = client.guilds.cache.size;
   if (process.env.NODE_ENV == "production") {
