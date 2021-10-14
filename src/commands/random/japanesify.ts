@@ -31,8 +31,8 @@ const japanesify: MGCommand = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    let msg: string = interaction.options.getString("message") || "Invalid :(";
-    if (msg.length > 2000) {
+    let msg = interaction.options.getString("message") || "Invalid :(";
+    if (msg.length > 1000) {
       const Embed = new Discord.MessageEmbed()
         .setColor("#ff0000")
         .setTitle("Your message is too long! Try a shorter one.");
@@ -53,94 +53,138 @@ const japanesify: MGCommand = {
         return;
       }
     }
-    let prevmsg = msg;
-    let message_2 = prevmsg;
+    let message_2 = msg;
     for (let i = 0; i < 26; i++) {
-      message_2 = prevmsg.replace(alphabet[i] + alphabet[i], alphabet[i]);
+      let message_1 = message_2;
+      message_2 = message_2.replace(alphabet[i] + alphabet[i], alphabet[i]);
       let message_2_storage = message_2;
-      while (prevmsg != message_2) {
+      while (message_1 != message_2) {
         message_2_storage = message_2;
         message_2 = message_2.replace(alphabet[i] + alphabet[i], alphabet[i]);
-        prevmsg = message_2_storage;
-        console.log(prevmsg);
-        console.log(message_2);
+        message_1 = message_2_storage;
       }
     }
     let number_of_chars_added = 0;
-    for (let i = 0; i < message_2.length; i++) {
-      let pchar = message_2[i];
-      let nchar = message_2[i + 1];
-      if (i === message_2.length - 1) {
-        let nchar = "z";
-      }
-      console.log(pchar);
-      // ok im tired someone else replace this :D
-      if (
-        !(
-          pchar === "a" ||
-          pchar === "o" ||
-          pchar === "u" ||
-          pchar === "i" ||
-          pchar === "e" ||
-          nchar === "a" ||
-          nchar === "e" ||
-          nchar === "i" ||
-          nchar === "o" ||
-          nchar === "u"
-        )
-      ) {
-        // bu
-        // da
-        // fu
-        // go
-        // ha
-        // ji/ki
-        // lu
-        // mo
-        // no
-        // pa
-        // ignore q, booligan letter
-        // ru
-        // sa
-        // to
-        // ignore v, booligan letter
-        // wa
-        // ignore x, booligan letter
-        // yo
-        // ignore z, booligan letter
-        if (pchar === "b" || pchar === "f" || pchar === "l" || pchar === "r") {
-        } else if (
-          pchar === "d" ||
-          pchar === "h" ||
-          pchar === "p" ||
-          pchar === "s" ||
-          pchar === "w"
+    for (let ii = 0; ii < message_2.length; ii++) {
+      let i = ii + number_of_chars_added;
+      if (i != message_2.length) {
+        let mchar = message_2[i];
+        let nchar = message_2[i + 1];
+        if (
+          mchar != "a" &&
+          mchar != "e" &&
+          mchar != "i" &&
+          mchar != "o" &&
+          mchar != "u" &&
+          nchar != "a" &&
+          nchar != "e" &&
+          nchar != "i" &&
+          nchar != "o" &&
+          nchar != "u"
         ) {
-          message_2 =
-            message_2.substring(0, i + 1 + number_of_chars_added) +
-            "a" +
-            message_2.substring(
-              i + 1 + number_of_chars_added,
-              message_2.length
-            );
-        } else if (
-          pchar === "g" ||
-          pchar === "m" ||
-          pchar === "n" ||
-          pchar === "t" ||
-          pchar === "y"
-        ) {
-          message_2 += "o";
-        } else if (pchar === "j" || pchar === "k") {
-          message_2 += "i";
+          if (
+            mchar === "b" ||
+            mchar === "f" ||
+            mchar === "l" ||
+            mchar === "r" ||
+            mchar === "z"
+          ) {
+            message_2 =
+              message_2.substring(0, i + 1) +
+              "u" +
+              message_2.substring(i + 1, message_2.length);
+          } else if (
+            mchar === "d" ||
+            mchar === "h" ||
+            mchar === "p" ||
+            mchar === "s" ||
+            mchar === "w"
+          ) {
+            message_2 =
+              message_2.substring(0, i + 1) +
+              "a" +
+              message_2.substring(i + 1, message_2.length);
+          } else if (
+            mchar === "g" ||
+            mchar === "m" ||
+            mchar === "n" ||
+            mchar === "t" ||
+            mchar === "y"
+          ) {
+            message_2 =
+              message_2.substring(0, i + 1) +
+              "o" +
+              message_2.substring(i + 1, message_2.length);
+          } else if (mchar === "j" || mchar === "k") {
+            message_2 =
+              message_2.substring(0, i + 1 + number_of_chars_added) +
+              "i" +
+              message_2.substring(
+                i + 1 + number_of_chars_added,
+                message_2.length
+              );
+          }
+          number_of_chars_added += 1;
         }
-        number_of_chars_added += 1;
+      } else {
+        let mchar = message_2[i];
+        if (
+          mchar != "a" &&
+          mchar != "e" &&
+          mchar != "i" &&
+          mchar != "o" &&
+          mchar != "u"
+        ) {
+          if (
+            mchar === "b" ||
+            mchar === "f" ||
+            mchar === "l" ||
+            mchar === "r" ||
+            mchar === "z"
+          ) {
+            message_2 =
+              message_2.substring(0, i + 1) +
+              "u" +
+              message_2.substring(i + 1, message_2.length);
+          } else if (
+            mchar === "d" ||
+            mchar === "h" ||
+            mchar === "p" ||
+            mchar === "s" ||
+            mchar === "w"
+          ) {
+            message_2 =
+              message_2.substring(0, i + 1) +
+              "a" +
+              message_2.substring(i + 1, message_2.length);
+          } else if (
+            mchar === "g" ||
+            mchar === "m" ||
+            mchar === "n" ||
+            mchar === "t" ||
+            mchar === "y"
+          ) {
+            message_2 =
+              message_2.substring(0, i + 1) +
+              "o" +
+              message_2.substring(i + 1, message_2.length);
+          } else if (mchar === "j" || mchar === "k") {
+            message_2 =
+              message_2.substring(0, i + 1 + number_of_chars_added) +
+              "i" +
+              message_2.substring(
+                i + 1 + number_of_chars_added,
+                message_2.length
+              );
+          }
+          number_of_chars_added += 1;
+        }
       }
     }
 
     const Embed = new Discord.MessageEmbed()
       .setColor("#00ff00")
-      .setTitle(`Your kawaii-ified message: `)
+      .setTitle(`Your japanesified message: `)
       .setDescription(`${message_2}`);
     await interaction.reply({
       embeds: [Embed],
