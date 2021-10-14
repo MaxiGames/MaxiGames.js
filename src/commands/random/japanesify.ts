@@ -66,8 +66,13 @@ const japanesify: MGCommand = {
         console.log(message_2);
       }
     }
+    let number_of_chars_added = 0;
     for (let i = 0; i < message_2.length; i++) {
       let pchar = message_2[i];
+      let nchar = message_2[i + 1];
+      if (i === message_2.length - 1) {
+        let nchar = "z";
+      }
       console.log(pchar);
       // ok im tired someone else replace this :D
       if (
@@ -76,7 +81,12 @@ const japanesify: MGCommand = {
           pchar === "o" ||
           pchar === "u" ||
           pchar === "i" ||
-          pchar === "e"
+          pchar === "e" ||
+          nchar === "a" ||
+          nchar === "e" ||
+          nchar === "i" ||
+          nchar === "o" ||
+          nchar === "u"
         )
       ) {
         // bu
@@ -99,7 +109,6 @@ const japanesify: MGCommand = {
         // yo
         // ignore z, booligan letter
         if (pchar === "b" || pchar === "f" || pchar === "l" || pchar === "r") {
-          message_2 += "u";
         } else if (
           pchar === "d" ||
           pchar === "h" ||
@@ -107,7 +116,13 @@ const japanesify: MGCommand = {
           pchar === "s" ||
           pchar === "w"
         ) {
-          message_2 += "a";
+          message_2 =
+            message_2.substring(0, i + 1 + number_of_chars_added) +
+            "a" +
+            message_2.substring(
+              i + 1 + number_of_chars_added,
+              message_2.length
+            );
         } else if (
           pchar === "g" ||
           pchar === "m" ||
@@ -119,6 +134,7 @@ const japanesify: MGCommand = {
         } else if (pchar === "j" || pchar === "k") {
           message_2 += "i";
         }
+        number_of_chars_added += 1;
       }
     }
 
