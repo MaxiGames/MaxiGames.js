@@ -86,6 +86,9 @@ const bug: MGCommand = {
           ),
       ],
     });
+    await msg.react(`⬆️`);
+    await msg.react(`🤷`);
+    await msg.react(`⬇️`);
   },
 };
 
