@@ -79,7 +79,8 @@ export default function cooldownTest(
   return ret;
 }
 
-function convertSecondsToDay(n: number) {
+// utility function to convert seconds to a comprehensible value for user-friendly experience
+export function convertSecondsToDay(n: number) {
   let day = Math.floor(n / (24 * 60 * 60));
   n -= day * 24 * 60 * 60;
 
@@ -91,5 +92,27 @@ function convertSecondsToDay(n: number) {
 
   let seconds = Math.floor(n);
 
-  return `${day} day(s), ${hour} hour(s), ${minutes.toFixed()} minute(s) and ${seconds.toFixed()} second(s) `;
+  let dayStr = day === 0 ? "" : `${day} day(s)`;
+  let hourStr = hour === 0 ? "" : `${hour} hour(s)`;
+  let minutesStr = minutes === 0 ? "" : `${minutes.toFixed()} minute(s)`;
+  let secondStr = seconds === 0 ? "" : `${seconds.toFixed()} second(s)`;
+
+  let message = "";
+
+  if (dayStr !== "") {
+    message = `${dayStr}, ${hourStr}, ${minutesStr} and ${secondStr}`;
+  } else {
+    if (hourStr !== "") {
+      message = `${hourStr}, ${minutesStr} and ${secondStr}`;
+    } else {
+      if (minutesStr !== "") {
+        message = `${minutesStr} and ${secondStr}`;
+      } else {
+        if (secondStr !== "") {
+          message = `${secondStr}`;
+        }
+      }
+    }
+  }
+  return message;
 }

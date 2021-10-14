@@ -23,8 +23,10 @@ import { MGFirebase } from "../../utils/firebase";
 import MGCommand from "../../types/command";
 import { ThreadChannel } from "discord.js";
 import { Suggestions } from "../../types/firebase";
+import withChecks from "../../lib/withs";
+import cooldownTest from "../../lib/cooldown";
 
-const suggestions: MGCommand = {
+const suggestions: MGCommand = withChecks([cooldownTest(10)], {
   data: new SlashCommandBuilder()
     .setName("suggestion")
     .setDescription("Suggest something for the bot!")
@@ -36,13 +38,16 @@ const suggestions: MGCommand = {
     ),
 
   async execute(interaction) {
+    await interaction.reply({
+      embeds: [MGEmbed(MGStatus.Info).setTitle("Working on it...")],
+    });
     let suggestion = interaction.options.getString("suggestion")!;
     let data = MGFirebase.getData("admin/suggestions");
 
-    //check if its a repeate suggestion
+    //check if its a repeated suggestion
     for (let i in data) {
       if (data[i]["suggeston"] === suggestions) {
-        await interaction.reply({
+        await interaction.editReply({
           embeds: [
             MGEmbed(MGStatus.Error)
               .setTitle("That suggestion already exists!")
@@ -57,8 +62,8 @@ const suggestions: MGCommand = {
 
     //send it to MG server
     let channel = interaction.client.guilds.cache
-      .get(`837522963389349909`)
-      ?.channels.cache.get("897738840054317078") as ThreadChannel;
+      .get(`866939574419849216`)
+      ?.channels.cache.get("866939574419849219") as ThreadChannel;
     let message = await channel.send({
       embeds: [
         MGEmbed(MGStatus.Success)
@@ -75,8 +80,7 @@ const suggestions: MGCommand = {
       user: parseInt(interaction.user.id),
     };
     data[message.id] = suggestion1;
-    await MGFirebase.setData(`admin/suggestions`, data);
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [
         MGEmbed(MGStatus.Success)
           .setTitle("Submitted suggestion!")
@@ -85,10 +89,11 @@ const suggestions: MGCommand = {
           ),
       ],
     });
+    await MGFirebase.setData(`admin/suggestions`, data);
     await message.react(`⬆️`);
     await message.react(`🤷`);
     await message.react(`⬇️`);
   },
-};
+});
 
 export default suggestions;

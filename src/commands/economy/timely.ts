@@ -21,7 +21,7 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
 import { MGFirebase } from "../../utils/firebase";
-import cooldownTest from "../../lib/cooldown";
+import cooldownTest, { convertSecondsToDay } from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
 const timely: MyCommand = withChecks([cooldownTest(5)], {
@@ -115,42 +115,5 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
     await interaction.reply({ embeds: [embed] });
   },
 });
-// utility function to convert seconds to a comprehensible value for user-friendly experience
-function convertSecondsToDay(n: number) {
-  let day = Math.floor(n / (24 * 60 * 60));
-  n -= day * 24 * 60 * 60;
-
-  let hour = Math.floor(n / (60 * 60));
-  n -= hour * 60 * 60;
-
-  let minutes = Math.floor(n / 60);
-  n -= minutes * 60;
-
-  let seconds = Math.floor(n);
-
-  let dayStr = day === 0 ? "" : `${day} day(s)`;
-  let hourStr = hour === 0 ? "" : `${hour} hour(s)`;
-  let minutesStr = minutes === 0 ? "" : `${minutes.toFixed()} minute(s)`;
-  let secondStr = seconds === 0 ? "" : `${seconds.toFixed()} second(s)`;
-
-  let message = "";
-
-  if (dayStr !== "") {
-    message = `${dayStr}, ${hourStr}, ${minutesStr} and ${secondStr}`;
-  } else {
-    if (hourStr !== "") {
-      message = `${hourStr}, ${minutesStr} and ${secondStr}`;
-    } else {
-      if (minutesStr !== "") {
-        message = `${minutesStr} and ${secondStr}`;
-      } else {
-        if (secondStr !== "") {
-          message = `${secondStr}`;
-        }
-      }
-    }
-  }
-  return message;
-}
 
 export default timely;

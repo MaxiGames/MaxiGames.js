@@ -79,6 +79,8 @@ interface User {
     share: number;
     counting: number;
     starboard: number;
+    bugreport: number;
+    suggestion: number;
   };
   count: {
     totalCount: number;
@@ -103,6 +105,8 @@ export let initialUser: User = {
     share: 0,
     counting: 0,
     starboard: 0,
+    bugreport: 0,
+    suggestion: 0,
   },
   count: {
     totalCount: 0,

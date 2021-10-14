@@ -200,6 +200,13 @@ export class FirebaseManager {
       data["admin"]["suggestions"] = initialAdmin.suggestions;
       delete data["admin"]["suggestons"];
     }
+
+    for (let i in data["user"]) {
+      if (!data["user"][i]["cooldowns"]["suggestion"]) {
+        data["user"][i]["cooldowns"]["suggestion"] = 0;
+        data["user"][i]["cooldowns"]["bugreport"] = 0;
+      }
+    }
     await this.db?.ref(`/`).set(data);
     moan(MGS.Success, "initialised data for stats");
     return data;

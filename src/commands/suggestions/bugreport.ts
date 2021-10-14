@@ -23,8 +23,10 @@ import { MGFirebase } from "../../utils/firebase";
 import MGCommand from "../../types/command";
 import { ThreadChannel } from "discord.js";
 import { BugReports } from "../../types/firebase";
+import withChecks from "../../lib/withs";
+import cooldownTest from "../../lib/cooldown";
 
-const bug: MGCommand = {
+const bug: MGCommand = withChecks([cooldownTest(10)], {
   data: new SlashCommandBuilder()
     .setName("bugreport")
     .setDescription("Report a bug!")
@@ -36,13 +38,16 @@ const bug: MGCommand = {
     ),
 
   async execute(interaction) {
+    await interaction.reply({
+      embeds: [MGEmbed(MGStatus.Info).setTitle("Working on it...")],
+    });
     let bug = interaction.options.getString("bug")!;
     let data = MGFirebase.getData("admin/bugreports");
 
     //check if its a repeated bug report
     for (let i in data) {
       if (data[i]["bug"] === bug) {
-        await interaction.reply({
+        await interaction.editReply({
           embeds: [
             MGEmbed(MGStatus.Error)
               .setTitle("A bug report with that title already exists!")
@@ -77,7 +82,7 @@ const bug: MGCommand = {
     };
     data[msg.id] = bugReport;
     await MGFirebase.setData(`admin/bugreports`, data);
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [
         MGEmbed(MGStatus.Success)
           .setTitle("Submitted Bug Report!")
@@ -90,6 +95,6 @@ const bug: MGCommand = {
     await msg.react(`🤷`);
     await msg.react(`⬇️`);
   },
-};
+});
 
 export default bug;
