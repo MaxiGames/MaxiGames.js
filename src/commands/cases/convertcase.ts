@@ -25,20 +25,12 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-// use the lodash library to do all the hard work for us 
+// use the lodash library to do all the hard work for us
 const tocamel = require("lodash/camelCase") as (param: string) => string;
 const tolisp = require("lodash/kebabCase") as (param: string) => string;
-const topascal = function (string: string) {
-  return `${string}`
-    .replace(new RegExp(/[-_]+/, "g"), " ")
-    .replace(new RegExp(/[^\w\s]/, "g"), "")
-    .replace(
-      new RegExp(/\s+(.)(\w+)/, "g"),
-      ($1, $2, $3) => `${$2.toUpperCase() + $3.toLowerCase()}`
-    )
-    .replace(new RegExp(/\s/, "g"), "")
-    .replace(new RegExp(/\w/), (s) => s.toUpperCase());
-};
+const topascal = (param: string) =>
+  tocamel(param).replace(/\w/, (c) => c.toUpperCase());
+
 const tosnake = require("lodash/snakeCase") as (param: string) => string;
 const toupper = require("lodash/upperCase") as (param: string) => string;
 const tolower = require("lodash/lowerCase") as (param: string) => string;
