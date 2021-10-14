@@ -62,8 +62,8 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
 
     //send it to MG server
     let channel = interaction.client.guilds.cache
-      .get(`837522963389349909`)
-      ?.channels.cache.get("897738840054317078") as ThreadChannel;
+      .get(`866939574419849216`)
+      ?.channels.cache.get("866939574419849219") as ThreadChannel;
     let message = await channel.send({
       embeds: [
         MGEmbed(MGStatus.Success)
@@ -80,8 +80,7 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
       user: parseInt(interaction.user.id),
     };
     data[message.id] = suggestion1;
-    await MGFirebase.setData(`admin/suggestions`, data);
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [
         MGEmbed(MGStatus.Success)
           .setTitle("Submitted suggestion!")
@@ -90,6 +89,7 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
           ),
       ],
     });
+    await MGFirebase.setData(`admin/suggestions`, data);
     await message.react(`⬆️`);
     await message.react(`🤷`);
     await message.react(`⬇️`);
