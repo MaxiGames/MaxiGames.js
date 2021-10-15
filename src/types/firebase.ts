@@ -141,7 +141,6 @@ export let initialAdmin = {
   },
 };
 
-
 export let initialData: DataModel = {
   user: {
     1234: initialUser,
