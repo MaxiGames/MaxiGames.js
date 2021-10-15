@@ -22,12 +22,12 @@
  */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type MyCommand from "../../types/command";
+import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../utils/firebase";
 
-const balance: MyCommand = {
+const balance: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("balance")
     .setDescription("Check your balance! Do you have money to spare? :D")
