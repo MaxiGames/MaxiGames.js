@@ -86,6 +86,9 @@ interface User {
     totalCount: number;
     highestCount: number;
   };
+  minigames: {
+    tictactoe: number;
+  };
 }
 
 export let initialUser: User = {
@@ -111,6 +114,9 @@ export let initialUser: User = {
   count: {
     totalCount: 0,
     highestCount: 0,
+  },
+  minigames: {
+    tictactoe: 0,
   },
 };
 

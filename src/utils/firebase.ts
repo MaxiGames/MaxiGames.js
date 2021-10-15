@@ -196,19 +196,13 @@ export class FirebaseManager {
   }
 
   private async initData(data: any) {
-    if (!data["admin"]["suggestions"]) {
-      data["admin"]["suggestions"] = initialAdmin.suggestions;
-      delete data["admin"]["suggestons"];
-    }
-
     for (let i in data["user"]) {
-      if (!data["user"][i]["cooldowns"]["suggestion"]) {
-        data["user"][i]["cooldowns"]["suggestion"] = 0;
-        data["user"][i]["cooldowns"]["bugreport"] = 0;
+      if (!data["user"][i]["minigames"]) {
+        data["user"][i]["minigames"] = initialUser.minigames;
       }
     }
     await this.db?.ref(`/`).set(data);
-    moan(MGS.Success, "initialised data for stats");
+    moan(MGS.Success, "initialised data for minigames");
     return data;
   }
 
