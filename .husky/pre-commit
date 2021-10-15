@@ -4,7 +4,10 @@
 set -e
 
 # Ensure that the project compiles, also prepare it for the check
-npm run build
+
+if [ ! -e .dirty ]; then
+    npm run build
+fi
 
 npm run --silent check-commands
 
