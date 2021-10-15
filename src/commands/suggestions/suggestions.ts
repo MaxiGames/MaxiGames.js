@@ -62,8 +62,8 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
 
     //send it to MG server
     let channel = interaction.client.guilds.cache
-      .get(`866939574419849216`)
-      ?.channels.cache.get("866939574419849219") as ThreadChannel;
+      .get(`837522963389349909`)
+      ?.channels.cache.get("897738840054317078") as ThreadChannel;
     let message = await channel.send({
       embeds: [
         MGEmbed(MGStatus.Success)
