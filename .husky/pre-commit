@@ -1,12 +1,21 @@
-#!/bin/sh
+#! /bin/bash
 . "$(dirname "$0")/_/husky.sh"
 
 set -e
 
 # Ensure that the project compiles, also prepare it for the check
 
-if [ ! -e .dirty ]; then
-    npm run build
+if [ -z "${DIRTY+1}" ]; then
+    npm run build || exit
+    rm -f DIRTY.md
+    git rm --cached DIRTY.md >/dev/null 2>&1 || true
+else
+    # indentation matters until after EOF
+    cat << EOF > DIRTY.md
+# WARNING
+Beware! This release will _not_ compile correctly.
+EOF
+    git add DIRTY.md
 fi
 
 npm run --silent check-commands
