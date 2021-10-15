@@ -116,7 +116,7 @@ export let initialUser: User = {
     highestCount: 0,
   },
   minigames: {
-    tictactoe: 0,
+    tictactoe: 1000,
   },
 };
 

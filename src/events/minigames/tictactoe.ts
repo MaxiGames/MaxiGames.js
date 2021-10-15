@@ -24,8 +24,14 @@ import {
   EmbedField,
   Interaction,
   MessageActionRow,
+  MessageEmbed,
 } from "discord.js";
-import { generateTTT } from "../../commands/minigames/tictactoe";
+import {
+  checkForResult,
+  endResult,
+  generateEndResult,
+  generateTTT,
+} from "../../commands/minigames/tictactoe";
 
 const tictactoe = {
   name: "interactionCreate",
@@ -40,6 +46,11 @@ const tictactoe = {
       let players = content.split(",");
       let player1 = players[0].split(": ")[1];
       let player2 = players[1].split(": ")[1];
+      let player1ID = players[0].split(")")[0].replace("**Player 1** (", "");
+      let player2ID = players[1]
+        .split(")")[0]
+        .replace("**Player 2** (", "")
+        .replace(" ", "");
       let fields = interaction.message.embeds[0].fields as EmbedField[];
       let player1Playing = fields[0].value === player1 ? false : true;
       if (fields[0].value === interaction.user.username) {
@@ -65,8 +76,31 @@ const tictactoe = {
           board.push(row);
         }
 
-        let msg = await generateTTT(board, player1, player2, player1Playing);
-        await interaction.update(msg);
+        let result = checkForResult(board);
+        if (result === endResult.continue) {
+          let msg = await generateTTT(
+            board,
+            player1,
+            player1ID,
+            player2,
+            player2ID,
+            player1Playing
+          );
+          await interaction.update(msg);
+        } else {
+          let msg = (await generateEndResult(
+            board,
+            player1,
+            player1ID,
+            player2,
+            player2ID,
+            result
+          )) as {
+            embeds: MessageEmbed[];
+            components: MessageActionRow[];
+          };
+          await interaction.update(msg);
+        }
       }
     }
   },

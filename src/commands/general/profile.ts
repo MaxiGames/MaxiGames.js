@@ -23,6 +23,14 @@ import { MGFirebase } from "../../utils/firebase";
 import MGCommand from "../../types/command";
 import moan from "../../lib/moan";
 
+function calculateRating(userData: any) {
+  let str = "";
+  for (let i in userData["minigames"]) {
+    str += `${i.toUpperCase()}'s Rating: ${userData["minigames"][i]}\n`;
+  }
+  return str;
+}
+
 const profile: MGCommand = {
   data: new SlashCommandBuilder()
     .setName("profile")
@@ -43,6 +51,10 @@ const profile: MGCommand = {
           inline: false,
         },
         { name: "Money:", value: `${userData["money"]}`, inline: false },
+        {
+          name: "Minigames:",
+          value: `${calculateRating(userData)}`,
+        },
       ]);
     await interaction.reply({
       embeds: [embed],
