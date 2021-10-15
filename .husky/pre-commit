@@ -13,7 +13,7 @@ else
     # indentation matters until after EOF
     cat << EOF > DIRTY.md
 # WARNING
-Beware! This release will _not_ compile correctly.
+Beware! This commit will _not_ compile correctly.
 EOF
     git add DIRTY.md
 fi
