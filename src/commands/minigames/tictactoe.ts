@@ -117,7 +117,10 @@ export async function generateEndResult(
       .setDescription("Draw by stalemate :O")
       .addFields([
         { name: `${player1} Rating Change:`, value: `${change}` },
-        { name: `${player2} Rating Change:`, value: `${change}` },
+        {
+          name: `${player2} Rating Change:`,
+          value: `${Math.ceil(change * 1.5)}`,
+        },
         {
           name: `${player1} Rating:`,
           value: `${userData1["minigames"]["tictactoe"]}`,
@@ -137,7 +140,10 @@ export async function generateEndResult(
       .setDescription("Yay!")
       .addFields([
         { name: `${player1} Rating Change:`, value: `${change}` },
-        { name: `${player2} Rating Change:`, value: `-${change}` },
+        {
+          name: `${player2} Rating Change:`,
+          value: `-${Math.ceil(change * 1.5)}`,
+        },
         {
           name: `${player1} Rating:`,
           value: `${userData1["minigames"]["tictactoe"]}`,
@@ -150,13 +156,16 @@ export async function generateEndResult(
   } else if (result === endResult.player2Win) {
     let multFactor = Math.ceil(Math.random() * 50);
     let change = Math.ceil(diff * multFactor * 0.1);
-    userData1["minigames"]["tictactoe"] -= change;
-    userData2["minigames"]["tictactoe"] += Math.ceil(change * 1.5);
+    userData1["minigames"]["tictactoe"] -= Math.ceil(change * 1.5);
+    userData2["minigames"]["tictactoe"] += change;
     embed = MGEmbed(MGStatus.Success)
       .setTitle(`${player2} Won!`)
       .setDescription("Yay!")
       .addFields([
-        { name: `${player1} Rating Change:`, value: `-${change}` },
+        {
+          name: `${player1} Rating Change:`,
+          value: `-${Math.ceil(change * 1.5)}`,
+        },
         { name: `${player2} Rating Change:`, value: `${change}` },
         {
           name: `${player1} Rating:`,
@@ -186,18 +195,18 @@ export function checkForResult(board: string[][]): endResult {
     //horizontal
     if (board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
       if (board[0][i] === "O") {
-        return endResult.player2Win;
-      } else if (board[0][i] === "X") {
         return endResult.player1Win;
+      } else if (board[0][i] === "X") {
+        return endResult.player2Win;
       }
     }
 
     //vertical
     if (board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
       if (board[i][0] === "O") {
-        return endResult.player2Win;
-      } else if (board[i][0] === "X") {
         return endResult.player1Win;
+      } else if (board[i][0] === "X") {
+        return endResult.player2Win;
       }
     }
   }
@@ -205,16 +214,16 @@ export function checkForResult(board: string[][]): endResult {
   //diagonal
   if (board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
     if (board[0][0] === "O") {
-      return endResult.player2Win;
-    } else if (board[0][0] === "X") {
       return endResult.player1Win;
+    } else if (board[0][0] === "X") {
+      return endResult.player2Win;
     }
   }
   if (board[2][0] === board[1][1] && board[1][1] === board[0][2]) {
     if (board[0][2] === "O") {
-      return endResult.player2Win;
-    } else if (board[0][2] === "X") {
       return endResult.player1Win;
+    } else if (board[0][2] === "X") {
+      return endResult.player2Win;
     }
   }
 
