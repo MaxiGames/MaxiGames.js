@@ -52,14 +52,14 @@ export interface Guild {
   starboardMsgs: { [id: string]: { stars: number; rxnid: string } } | number;
 }
 
-export let initialGuild: Guild = {
-  countingChannels: 0,
-  starboardChannel: 0,
-  starboardMsgs: 0,
-  statistics: {
-    highestCount: 0,
-    totalCount: 0,
-  },
+export const initialGuild: Guild = {
+	countingChannels: 0,
+	starboardChannel: 0,
+	starboardMsgs: 0,
+	statistics: {
+		highestCount: 0,
+		totalCount: 0,
+	},
 };
 
 interface User {
@@ -91,63 +91,63 @@ interface User {
   };
 }
 
-export let initialUser: User = {
-  money: 0,
-  timelyClaims: {
-    hourly: 0,
-    daily: 0,
-    weekly: 0,
-    monthly: 0,
-    yearly: 0,
-  },
-  cooldowns: {
-    timely: 0,
-    coinflip: 0,
-    gamble: 0,
-    money: 0,
-    share: 0,
-    counting: 0,
-    starboard: 0,
-    bugreport: 0,
-    suggestion: 0,
-  },
-  count: {
-    totalCount: 0,
-    highestCount: 0,
-  },
-  minigames: {
-    tictactoe: 1000,
-  },
+export const initialUser: User = {
+	money: 0,
+	timelyClaims: {
+		hourly: 0,
+		daily: 0,
+		weekly: 0,
+		monthly: 0,
+		yearly: 0,
+	},
+	cooldowns: {
+		timely: 0,
+		coinflip: 0,
+		gamble: 0,
+		money: 0,
+		share: 0,
+		counting: 0,
+		starboard: 0,
+		bugreport: 0,
+		suggestion: 0,
+	},
+	count: {
+		totalCount: 0,
+		highestCount: 0,
+	},
+	minigames: {
+		tictactoe: 1000,
+	},
 };
 
-export let initialSuggestion: Suggestions = {
-  suggestion: "Example Suggestion",
-  status: "denied",
-  user: 123,
+export const initialSuggestion: Suggestions = {
+	suggestion: "Example Suggestion",
+	status: "denied",
+	user: 123,
 };
 
-export let initialBugReport: BugReports = {
-  bug: "Example Bug Report",
-  status: "denied",
-  user: 123,
+export const initialBugReport: BugReports = {
+	bug: "Example Bug Report",
+	status: "denied",
+	user: 123,
 };
 
-export let initialAdmin = {
-  bugreports: {
-    123: initialBugReport,
-  },
-  suggestions: {
-    123: initialSuggestion,
-  },
+export const initialAdmin = {
+	bugreports: {
+		123: initialBugReport,
+	},
+	suggestions: {
+		123: initialSuggestion,
+	},
 };
 
-export let initialData: DataModel = {
-  user: {
-    1234: initialUser,
-  },
-  guild: {
-    1234: initialGuild,
-  },
-  announcement: "",
-  admin: initialAdmin,
+export const initialData: DataModel = {
+	user: {
+		1234: initialUser,
+	},
+	guild: {
+		1234: initialGuild,
+	},
+	announcement: "",
+	admin: initialAdmin,
 };

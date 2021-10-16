@@ -20,69 +20,69 @@ import { MGEmbed } from "./flavoured";
 import type MGCmdTest from "../types/checks";
 import MGStatus from "./statuses";
 import {
-  GuildMemberRoleManager,
-  Permissions,
-  PermissionResolvable,
+	GuildMemberRoleManager,
+	Permissions,
+	PermissionResolvable,
 } from "discord.js";
 
 export function userPermsTest(perms: PermissionResolvable) {
-  let ret: MGCmdTest = {
-    async check(command, interaction) {
-      return (interaction.member!.permissions as Permissions).has(perms);
-    },
+	const ret: MGCmdTest = {
+		async check(command, interaction) {
+			return (interaction.member!.permissions as Permissions).has(perms);
+		},
 
-    async succ(command, interaction) {
-      return;
-    },
+		async succ(command, interaction) {
+			return;
+		},
 
-    async fail(command, interaction) {
-      await interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Error)
-            .setTitle(`Insufficent permissions to use ${command.data.name}`)
-            .setDescription(
-              `You need at least the following permissions: ${perms}`
-            ),
-        ],
-      });
-      return;
-    },
-  };
+		async fail(command, interaction) {
+			await interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Error)
+						.setTitle(`Insufficent permissions to use ${command.data.name}`)
+						.setDescription(
+							`You need at least the following permissions: ${perms}`
+						),
+				],
+			});
+			return;
+		},
+	};
 
-  return ret;
+	return ret;
 }
 
 export function userRolesTest(roles: string[]) {
-  let ret: MGCmdTest = {
-    async check(command, interaction) {
-      for (let c of roles) {
-        if (
-          !(interaction.member!.roles as GuildMemberRoleManager).cache.some(
-            (r) => r.name === c
-          )
-        ) {
-          return false;
-        }
-      }
+	const ret: MGCmdTest = {
+		async check(command, interaction) {
+			for (const c of roles) {
+				if (
+					!(interaction.member!.roles as GuildMemberRoleManager).cache.some(
+						(r) => r.name === c
+					)
+				) {
+					return false;
+				}
+			}
 
-      return true;
-    },
+			return true;
+		},
 
-    async succ(command, interaction) {
-      return;
-    },
+		async succ(command, interaction) {
+			return;
+		},
 
-    async fail(command, interaction) {
-      await interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Error)
-            .setTitle(`Insufficent permissions to use ${command.data.name}`)
-            .setDescription(`You need at least the following roles: ${roles}`),
-        ],
-      });
-      return;
-    },
-  };
+		async fail(command, interaction) {
+			await interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Error)
+						.setTitle(`Insufficent permissions to use ${command.data.name}`)
+						.setDescription(`You need at least the following roles: ${roles}`),
+				],
+			});
+			return;
+		},
+	};
 
-  return ret;
+	return ret;
 }

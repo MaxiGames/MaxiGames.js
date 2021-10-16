@@ -21,4 +21,4 @@ fi
 npm run --silent check-commands
 
 # Format files
-npx pretty-quick --staged
+#npx pretty-quick --staged

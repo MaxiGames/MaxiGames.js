@@ -23,16 +23,16 @@ import { Interaction } from "discord.js";
 import { mainHelp } from "../../commands/general/help";
 
 const help = {
-  name: "interactionCreate",
-  async execute(interaction: Interaction) {
-    if (!interaction.isSelectMenu()) return;
+	name: "interactionCreate",
+	async execute(interaction: Interaction) {
+		if (!interaction.isSelectMenu()) return;
 
-    if (interaction.customId === "help-main") {
-      let content = await mainHelp(interaction, interaction.values[0]);
+		if (interaction.customId === "help-main") {
+			const content = await mainHelp(interaction, interaction.values[0]);
 
-      await interaction.update(content);
-    }
-  },
+			await interaction.update(content);
+		}
+	},
 };
 
 export default help;

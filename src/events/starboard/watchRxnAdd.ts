@@ -22,14 +22,14 @@ import MGStatus from "../../lib/statuses";
 import { MessageReaction, TextChannel, User } from "discord.js";
 
 const starboardwatch = {
-  name: "messageReactionAdd",
-  async execute(reaction: MessageReaction, user: User) {
-    let guildData = MGFirebase.getData(`guild/${reaction.message.guildId}`);
-    if (guildData === undefined) {
-      return;
-    }
+	name: "messageReactionAdd",
+	async execute(reaction: MessageReaction, user: User) {
+		const guildData = MGFirebase.getData(`guild/${reaction.message.guildId}`);
+		if (guildData === undefined) {
+			return;
+		}
 
-    /*
+		/*
     if (reaction.partial) {
       try {
         await reaction.fetch();
@@ -40,73 +40,73 @@ const starboardwatch = {
     }
     */
 
-    if (reaction.emoji.name !== "⭐") {
-      return;
-    }
+		if (reaction.emoji.name !== "⭐") {
+			return;
+		}
 
-    if (guildData["starboardChannel"] === 0) {
-      return; // no starboard channel set
-    }
+		if (guildData["starboardChannel"] === 0) {
+			return; // no starboard channel set
+		}
 
-    if (!guildData["starboardMsgs"]) {
-      guildData["starboardMsgs"] = {};
-    }
-    if (guildData["starboardMsgs"][reaction.message.id] === undefined) {
-      guildData["starboardMsgs"][reaction.message.id] = { stars: 0, rxnid: "" };
-    }
+		if (!guildData["starboardMsgs"]) {
+			guildData["starboardMsgs"] = {};
+		}
+		if (guildData["starboardMsgs"][reaction.message.id] === undefined) {
+			guildData["starboardMsgs"][reaction.message.id] = { stars: 0, rxnid: "" };
+		}
 
-    guildData["starboardMsgs"][reaction.message.id]["stars"] += 1;
+		guildData["starboardMsgs"][reaction.message.id]["stars"] += 1;
 
-    try {
-      await MGFirebase.setData(
-        `guild/${reaction.message.guild!.id}`,
-        guildData
-      );
+		try {
+			await MGFirebase.setData(
+				`guild/${reaction.message.guild!.id}`,
+				guildData
+			);
 
-      if (reaction.count < guildData["starboardChannel"].thresh) {
-        return;
-      }
+			if (reaction.count < guildData["starboardChannel"].thresh) {
+				return;
+			}
 
-      if (reaction.message.content!.trim() !== "") {
-        // if there's no message content don't show just a >; it's ugly
-        // yes I know this code is even uglier, but quite frankly, I don't care.
-        reaction.message.content =
+			if (reaction.message.content!.trim() !== "") {
+				// if there's no message content don't show just a >; it's ugly
+				// yes I know this code is even uglier, but quite frankly, I don't care.
+				reaction.message.content =
           "\n\n> " + reaction.message.content!.replace(/\n/g, "\n> ");
-      }
+			}
 
-      let embed = MGEmbed(MGStatus.Info)
-        .setTitle(`Starred ${reaction.count} times!`)
-        .setDescription(
-          `[Click to jump to message](${reaction.message.url})` +
+			const embed = MGEmbed(MGStatus.Info)
+				.setTitle(`Starred ${reaction.count} times!`)
+				.setDescription(
+					`[Click to jump to message](${reaction.message.url})` +
             reaction.message.content
-        )
-        .setFooter("React with ⭐ to star this message")
-        .setAuthor(
+				)
+				.setFooter("React with ⭐ to star this message")
+				.setAuthor(
           reaction.message.author!.username,
           reaction.message.author!.avatarURL() ??
             reaction.message.author!.defaultAvatarURL
-        );
-      reaction.message.attachments.each((a) => embed.setImage(a.url));
+				);
+			reaction.message.attachments.each((a) => embed.setImage(a.url));
 
-      let sbchan = reaction.client.channels.cache.get(
-        guildData["starboardChannel"].id
-      ) as TextChannel;
-      try {
-        let oldmsg = await sbchan.messages.fetch(
-          guildData["starboardMsgs"][reaction.message.id]["rxnid"]
-        );
+			const sbchan = reaction.client.channels.cache.get(
+				guildData["starboardChannel"].id
+			) as TextChannel;
+			try {
+				const oldmsg = await sbchan.messages.fetch(
+					guildData["starboardMsgs"][reaction.message.id]["rxnid"]
+				);
 
-        // if that worked, edit the message
-        await oldmsg.edit({ embeds: [embed] });
-      } catch {
-        // if that failed, (re)send
-        let rxnsg = await sbchan.send({ embeds: [embed] });
-        guildData["starboardMsgs"][reaction.message.id]["rxnid"] = rxnsg.id;
-      }
-    } catch {
-      // oops I guess?
-    }
-  },
+				// if that worked, edit the message
+				await oldmsg.edit({ embeds: [embed] });
+			} catch {
+				// if that failed, (re)send
+				const rxnsg = await sbchan.send({ embeds: [embed] });
+				guildData["starboardMsgs"][reaction.message.id]["rxnid"] = rxnsg.id;
+			}
+		} catch {
+			// oops I guess?
+		}
+	},
 };
 
 export default starboardwatch;

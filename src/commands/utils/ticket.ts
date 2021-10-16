@@ -29,58 +29,58 @@ import { MGFirebase } from "../../utils/firebase";
 import { Permissions, CommandInteraction, Guild } from "discord.js";
 
 const counting: MGCommand = {
-  data: new SlashCommandBuilder()
-    .setName("channel")
-    .setDescription(
-      "Create your own private channel to ask questions or have discussions :D"
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("adduser")
-        .setDescription(
-          "(ADMINS ONLY) Allow a user to view all private channels"
-        )
-        .addUserOption((option) =>
-          option
-            .setName("user")
-            .setDescription("User to be allowed to view")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("removeuser")
-        .setDescription(
-          "(ADMINS ONLY) Stop a user from being able to view all private channels"
-        )
-        .addUserOption((option) =>
-          option
-            .setName("user")
-            .setDescription("User no longer to be allowed to view")
-            .setRequired(true)
-        )
-    ),
+	data: new SlashCommandBuilder()
+		.setName("channel")
+		.setDescription(
+			"Create your own private channel to ask questions or have discussions :D"
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("adduser")
+				.setDescription(
+					"(ADMINS ONLY) Allow a user to view all private channels"
+				)
+				.addUserOption((option) =>
+					option
+						.setName("user")
+						.setDescription("User to be allowed to view")
+						.setRequired(true)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("removeuser")
+				.setDescription(
+					"(ADMINS ONLY) Stop a user from being able to view all private channels"
+				)
+				.addUserOption((option) =>
+					option
+						.setName("user")
+						.setDescription("User no longer to be allowed to view")
+						.setRequired(true)
+				)
+		),
 
-  // execute command
-  async execute(interaction) {
-    let subcommand = interaction.options.getSubcommand();
-    let guild = interaction.guild;
+	// execute command
+	async execute(interaction) {
+		const subcommand = interaction.options.getSubcommand();
+		const guild = interaction.guild;
 
-    // if (guild === null) {
-    //     interaction.reply({
-    //         embeds: [
-    //             MGEmbed(MGStatus.Error).setTitle("This command is not usable in a channel!"),
-    //     ],
-    //     });
-    //     return;
-    // }
-    // let guildData = MGFirebase.getData(`guild/${guild.id}`);
-    // if (subcommand === "addchannel") {
-    //     addChannel(interaction, guild, guildData);
-    // } else if (subcommand === "removechannel") {
-    //     removeChannel(interaction, guild, guildData);
-    // }
-  },
+		// if (guild === null) {
+		//     interaction.reply({
+		//         embeds: [
+		//             MGEmbed(MGStatus.Error).setTitle("This command is not usable in a channel!"),
+		//     ],
+		//     });
+		//     return;
+		// }
+		// let guildData = MGFirebase.getData(`guild/${guild.id}`);
+		// if (subcommand === "addchannel") {
+		//     addChannel(interaction, guild, guildData);
+		// } else if (subcommand === "removechannel") {
+		//     removeChannel(interaction, guild, guildData);
+		// }
+	},
 };
 
 // async function addChannel(

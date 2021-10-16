@@ -18,8 +18,8 @@
 
 import type { CommandInteraction } from "discord.js";
 import type {
-  SlashCommandBuilder,
-  SlashCommandSubcommandsOnlyBuilder,
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
 
 export default interface MGCommand {

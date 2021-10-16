@@ -29,120 +29,120 @@ import MGStatus from "../../lib/statuses";
 const tocamel = require("lodash/camelCase") as (param: string) => string;
 const tolisp = require("lodash/kebabCase") as (param: string) => string;
 const topascal = (param: string) =>
-  tocamel(param).replace(/\w/, (c) => c.toUpperCase());
+	tocamel(param).replace(/\w/, (c) => c.toUpperCase());
 
 const tosnake = require("lodash/snakeCase") as (param: string) => string;
 const toupper = require("lodash/upperCase") as (param: string) => string;
 const tolower = require("lodash/lowerCase") as (param: string) => string;
 
 const convertCase: MGCommand = {
-  // exports (self explanatory)
-  data: new SlashCommandBuilder()
-    .setName("convertcase")
-    .setDescription("Convert some text another case")
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("camel")
-        .setDescription("Convert text to camelCase")
-        .addStringOption((option) =>
-          option
-            .setName("string")
-            .setDescription("Text that you want to convert")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("lisp")
-        .setDescription("Convert text to lisp-case")
-        .addStringOption((option) =>
-          option
-            .setName("string")
-            .setDescription("Text that you want to convert")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("pascal")
-        .setDescription("Convert text to PascalCase")
-        .addStringOption((option) =>
-          option
-            .setName("string")
-            .setDescription("Text that you want to convert")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("snake")
-        .setDescription("Convert text to snake_case")
-        .addStringOption((option) =>
-          option
-            .setName("string")
-            .setDescription("Text that you want to convert")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("lower")
-        .setDescription("Convert text to lower case")
-        .addStringOption((option) =>
-          option
-            .setName("string")
-            .setDescription("Text that you want to convert")
-            .setRequired(true)
-        )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("upper")
-        .setDescription("Convert text to UPPER CASE")
-        .addStringOption((option) =>
-          option
-            .setName("string")
-            .setDescription("Text that you want to convert")
-            .setRequired(true)
-        )
-    ),
+	// exports (self explanatory)
+	data: new SlashCommandBuilder()
+		.setName("convertcase")
+		.setDescription("Convert some text another case")
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("camel")
+				.setDescription("Convert text to camelCase")
+				.addStringOption((option) =>
+					option
+						.setName("string")
+						.setDescription("Text that you want to convert")
+						.setRequired(true)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("lisp")
+				.setDescription("Convert text to lisp-case")
+				.addStringOption((option) =>
+					option
+						.setName("string")
+						.setDescription("Text that you want to convert")
+						.setRequired(true)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("pascal")
+				.setDescription("Convert text to PascalCase")
+				.addStringOption((option) =>
+					option
+						.setName("string")
+						.setDescription("Text that you want to convert")
+						.setRequired(true)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("snake")
+				.setDescription("Convert text to snake_case")
+				.addStringOption((option) =>
+					option
+						.setName("string")
+						.setDescription("Text that you want to convert")
+						.setRequired(true)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("lower")
+				.setDescription("Convert text to lower case")
+				.addStringOption((option) =>
+					option
+						.setName("string")
+						.setDescription("Text that you want to convert")
+						.setRequired(true)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("upper")
+				.setDescription("Convert text to UPPER CASE")
+				.addStringOption((option) =>
+					option
+						.setName("string")
+						.setDescription("Text that you want to convert")
+						.setRequired(true)
+				)
+		),
 
-  // execute command
-  async execute(interaction) {
-    const toConvert = interaction.options.getString("string")!;
+	// execute command
+	async execute(interaction) {
+		const toConvert = interaction.options.getString("string")!;
 
-    let subcommand = interaction.options.getSubcommand()!;
+		const subcommand = interaction.options.getSubcommand()!;
 
-    let f = (a: string) => a;
-    switch (
-      subcommand // no I will not exec()
-    ) {
-      case "camel":
-        f = tocamel;
-        break;
-      case "lisp":
-        f = tolisp;
-        break;
-      case "pascal":
-        f = topascal;
-        break;
-      case "snake":
-        f = tosnake;
-        break;
-      case "upper":
-        f = toupper;
-        break;
-      case "lower":
-        f = tolower;
-        break;
-    }
+		let f = (a: string) => a;
+		switch (
+			subcommand // no I will not exec()
+		) {
+		case "camel":
+			f = tocamel;
+			break;
+		case "lisp":
+			f = tolisp;
+			break;
+		case "pascal":
+			f = topascal;
+			break;
+		case "snake":
+			f = tosnake;
+			break;
+		case "upper":
+			f = toupper;
+			break;
+		case "lower":
+			f = tolower;
+			break;
+		}
 
-    let embed = MGEmbed(MGStatus.Success)
-      .setTitle(`Converted case to: ${subcommand}`)
-      .setDescription(f(toConvert));
+		const embed = MGEmbed(MGStatus.Success)
+			.setTitle(`Converted case to: ${subcommand}`)
+			.setDescription(f(toConvert));
 
-    await interaction.reply({ embeds: [embed] });
-  },
+		await interaction.reply({ embeds: [embed] });
+	},
 };
 
 export default convertCase;

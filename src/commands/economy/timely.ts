@@ -25,95 +25,95 @@ import cooldownTest, { convertSecondsToDay } from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
 const timely: MyCommand = withChecks([cooldownTest(5)], {
-  data: new SlashCommandBuilder()
-    .setName("timely")
-    .setDescription(
-      "Time and time again :)...you'll get to get richer and richer!!!"
-    )
-    .addStringOption((option) =>
-      option
-        .setName("category")
-        .setDescription("Which timely rewards?")
-        .addChoice("hourly", "hourly")
-        .addChoice("daily", "daily")
-        .addChoice("weekly", "weekly")
-        .addChoice("monthly", "monthly")
-        .addChoice("yearly", "yearly")
-        .setRequired(true)
-    ),
+	data: new SlashCommandBuilder()
+		.setName("timely")
+		.setDescription(
+			"Time and time again :)...you'll get to get richer and richer!!!"
+		)
+		.addStringOption((option) =>
+			option
+				.setName("category")
+				.setDescription("Which timely rewards?")
+				.addChoice("hourly", "hourly")
+				.addChoice("daily", "daily")
+				.addChoice("weekly", "weekly")
+				.addChoice("monthly", "monthly")
+				.addChoice("yearly", "yearly")
+				.setRequired(true)
+		),
 
-  async execute(interaction) {
-    let subCommand = interaction.options.getString("category")!;
-    let moneyAdd: number;
+	async execute(interaction) {
+		const subCommand = interaction.options.getString("category")!;
+		let moneyAdd: number;
 
-    if (subCommand === "hourly") moneyAdd = 30 + Math.ceil(Math.random() * 30);
-    else if (subCommand === "daily")
-      moneyAdd = 50 + Math.ceil(Math.random() * 50);
-    else if (subCommand === "weekly")
-      moneyAdd = 250 + Math.ceil(Math.random() * 250);
-    else if (subCommand === "monthly")
-      moneyAdd = 1000 + Math.ceil(Math.random() * 1000);
-    else moneyAdd = 5000 + Math.ceil(Math.random() * 5000);
+		if (subCommand === "hourly") moneyAdd = 30 + Math.ceil(Math.random() * 30);
+		else if (subCommand === "daily")
+			moneyAdd = 50 + Math.ceil(Math.random() * 50);
+		else if (subCommand === "weekly")
+			moneyAdd = 250 + Math.ceil(Math.random() * 250);
+		else if (subCommand === "monthly")
+			moneyAdd = 1000 + Math.ceil(Math.random() * 1000);
+		else moneyAdd = 5000 + Math.ceil(Math.random() * 5000);
 
-    MGFirebase.initUser(`${interaction.user.id}`);
+		MGFirebase.initUser(`${interaction.user.id}`);
 
-    let data = MGFirebase.getData(`user/${interaction.user.id}`);
-    if (data === undefined) {
-      return;
-    }
+		const data = MGFirebase.getData(`user/${interaction.user.id}`);
+		if (data === undefined) {
+			return;
+		}
 
-    let interval: number;
-    let date = Math.ceil(new Date().getTime() / 1000);
+		let interval: number;
+		const date = Math.ceil(new Date().getTime() / 1000);
 
-    switch (subCommand) {
-      case "hourly":
-        interval = 3600;
-        break;
-      case "daily":
-        interval = 86400;
-        break;
-      case "weekly":
-        interval = 604800;
-        break;
-      case "monthly":
-        interval = 2592000;
-        break;
-      default:
-        interval = 31536000;
-        break;
-    }
+		switch (subCommand) {
+		case "hourly":
+			interval = 3600;
+			break;
+		case "daily":
+			interval = 86400;
+			break;
+		case "weekly":
+			interval = 604800;
+			break;
+		case "monthly":
+			interval = 2592000;
+			break;
+		default:
+			interval = 31536000;
+			break;
+		}
 
-    let embed;
+		let embed;
 
-    if (
-      date - data["timelyClaims"][subCommand] > interval ||
+		if (
+			date - data["timelyClaims"][subCommand] > interval ||
       data["timelyClaims"][subCommand] === 0
-    ) {
-      data["money"] += moneyAdd;
-      data["timelyClaims"][subCommand] = date;
+		) {
+			data["money"] += moneyAdd;
+			data["timelyClaims"][subCommand] = date;
 
-      embed = MGEmbed(MGStatus.Success)
-        .setTitle(`Claimed ${subCommand}!`)
-        .setDescription(`Yay! You claimed your ${subCommand}!`)
-        .addFields(
-          { name: "Added:", value: `${moneyAdd}` },
-          { name: "Current Balance", value: `${data["money"]}` }
-        );
-      await MGFirebase.setData(`user/${interaction.user.id}`, data);
-    } else {
-      embed = MGEmbed(MGStatus.Error)
-        .setTitle(`You can't claim ${subCommand} yet!`)
-        .setDescription(`Be patient :)`)
-        .addFields({
-          name: "Time left:",
-          value: `${convertSecondsToDay(
-            Math.floor(data["timelyClaims"][subCommand] + interval - date)
-          )}`,
-        });
-    }
+			embed = MGEmbed(MGStatus.Success)
+				.setTitle(`Claimed ${subCommand}!`)
+				.setDescription(`Yay! You claimed your ${subCommand}!`)
+				.addFields(
+					{ name: "Added:", value: `${moneyAdd}` },
+					{ name: "Current Balance", value: `${data["money"]}` }
+				);
+			await MGFirebase.setData(`user/${interaction.user.id}`, data);
+		} else {
+			embed = MGEmbed(MGStatus.Error)
+				.setTitle(`You can't claim ${subCommand} yet!`)
+				.setDescription("Be patient :)")
+				.addFields({
+					name: "Time left:",
+					value: `${convertSecondsToDay(
+						Math.floor(data["timelyClaims"][subCommand] + interval - date)
+					)}`,
+				});
+		}
 
-    await interaction.reply({ embeds: [embed] });
-  },
+		await interaction.reply({ embeds: [embed] });
+	},
 });
 
 export default timely;
