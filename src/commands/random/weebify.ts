@@ -18,17 +18,17 @@
 
 import { SlashCommandBuilder } from "@discordjs/builders";
 import MGCommand from "../../types/command";
-
 import Discord from "discord.js";
-const japanesify: MGCommand = {
+
+const weebify: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName("japanesify")
-		.setDescription("Change your message to become japanesy!")
+		.setName("weebify")
+		.setDescription("Change your message to become a weeb!")
 		.addStringOption((option) =>
 			option
 				.setName("message")
 				.setDescription(
-					"can only contain alphabet characters or spaces"
+					"can only contain alphabetical characters or spaces"
 				)
 				.setRequired(true)
 		),
@@ -199,7 +199,7 @@ const japanesify: MGCommand = {
 
 		const Embed = new Discord.MessageEmbed()
 			.setColor("#00ff00")
-			.setTitle("Your japanesified message: ")
+			.setTitle("Your weebified message: ")
 			.setDescription(`${message_2}`);
 		await interaction.reply({
 			embeds: [Embed],
@@ -207,4 +207,4 @@ const japanesify: MGCommand = {
 	},
 };
 
-export default japanesify;
+export default weebify;
