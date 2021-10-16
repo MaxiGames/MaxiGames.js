@@ -25,15 +25,10 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-// use the lodash library to do all the hard work for us
-const tocamel = require("lodash/camelCase") as (param: string) => string;
-const tolisp = require("lodash/kebabCase") as (param: string) => string;
-const topascal = (param: string) =>
-	tocamel(param).replace(/\w/, (c) => c.toUpperCase());
+import { camelCase, kebabCase as lispCase, snakeCase, upperCase, lowerCase } from "lodash";
 
-const tosnake = require("lodash/snakeCase") as (param: string) => string;
-const toupper = require("lodash/upperCase") as (param: string) => string;
-const tolower = require("lodash/lowerCase") as (param: string) => string;
+const pascalCase = (param: string) =>
+	camelCase(param).replace(/\w/, (c) => c.toUpperCase());
 
 const convertCase: MGCommand = {
 	// exports (self explanatory)
@@ -118,22 +113,22 @@ const convertCase: MGCommand = {
 			subcommand // no I will not exec()
 		) {
 		case "camel":
-			f = tocamel;
+			f = camelCase;
 			break;
 		case "lisp":
-			f = tolisp;
+			f = lispCase;
 			break;
 		case "pascal":
-			f = topascal;
+			f = pascalCase;
 			break;
 		case "snake":
-			f = tosnake;
+			f = snakeCase;
 			break;
 		case "upper":
-			f = toupper;
+			f = upperCase;
 			break;
 		case "lower":
-			f = tolower;
+			f = lowerCase;
 			break;
 		}
 
