@@ -43,7 +43,7 @@ const commandFiles: Array<Array<string>> = fs
 // load 'em in!
 for (const filecol of commandFiles) {
 	for (const name of filecol) {
-		const command = require(`../../../${name}`); // eslint-disable-line no-var-requires
+		const command = require(`../../../${name}`); // eslint-disable-line @typescript-eslint/no-var-requires
 		commands.set(command.default.data.name, command.default);
 	}
 }
