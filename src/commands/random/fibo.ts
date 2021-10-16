@@ -18,8 +18,8 @@
 
 import { SlashCommandBuilder } from "@discordjs/builders";
 import MGCommand from "../../types/command";
+import Discord from "discord.js";
 
-const Discord = require("discord.js");
 const fibo: MGCommand = {
 	data: new SlashCommandBuilder()
 		.setName("fibo")

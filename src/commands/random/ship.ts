@@ -21,7 +21,6 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
 
-const Discord = require("discord.js");
 const ship: MGCommand = {
 	data: new SlashCommandBuilder()
 		.setName("ship")

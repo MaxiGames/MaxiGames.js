@@ -49,7 +49,7 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 		const amt = interaction.options.getInteger("amount");
 		const usr = interaction.options.getUser("user");
 
-		if (amt === null || usr === null) return;
+		if (amt === null || usr === null) {return;}
 
 		if (usr.bot) {
 			await interaction.reply({
@@ -126,7 +126,7 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 				MGEmbed(MGStatus.Success)
 					.setTitle("Success!")
 					.setDescription(
-						`Thanks for the donation, I\'m sure ${usr.username} will appreciate it! `
+						`Thanks for the donation, I'm sure ${usr.username} will appreciate it!`
 					)
 					.addFields(
 						{ name: "Shared:", value: `${amt}`, inline: false },

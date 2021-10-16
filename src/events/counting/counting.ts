@@ -31,10 +31,10 @@ const countingListener = {
 		let number = parseInt(content);
 		if (isNaN(number)) {
 			// do more checks
-			const arr = content.split(/[^0-9, +,\-, *, \/]/g);
-			if (arr[0] === "") return;
+			const arr = content.split(/[^0-9, +,\-, *, /]/g);
+			if (arr[0] === "") {return;}
 			number = parseInt(math.evaluate(arr[0]));
-			if (isNaN(number)) return;
+			if (isNaN(number)) {return;}
 		}
 
 		// Yay time to check if it's right :)
@@ -92,7 +92,7 @@ const countingListener = {
 						.setTitle(`${msg.author.username} ruined it!`)
 						.setDescription(
 							`${msg.author.username} counted ${number}, but the next count was ` +
-                `${curCount + 1}. The counter has been reset to 0.`
+							`${curCount + 1}. The counter has been reset to 0.`
 						),
 				],
 			});

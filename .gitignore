@@ -8,3 +8,5 @@ serviceAccountKey*.json
 api-token.json
 
 *.swp
+*.d.ts
+.eslintcache

@@ -104,32 +104,33 @@ const convertCase: MGCommand = {
 
 	// execute command
 	async execute(interaction) {
-		const toConvert = interaction.options.getString("string")!;
-
-		const subcommand = interaction.options.getSubcommand()!;
+		const toConvert = interaction.options.getString("string") ?? "";
+		const subcommand = interaction.options.getSubcommand() ?? "";
 
 		let f = (a: string) => a;
 		switch (
 			subcommand // no I will not exec()
 		) {
-		case "camel":
-			f = camelCase;
-			break;
-		case "lisp":
-			f = lispCase;
-			break;
-		case "pascal":
-			f = pascalCase;
-			break;
-		case "snake":
-			f = snakeCase;
-			break;
-		case "upper":
-			f = upperCase;
-			break;
-		case "lower":
-			f = lowerCase;
-			break;
+			case "camel":
+				f = camelCase;
+				break;
+			case "lisp":
+				f = lispCase;
+				break;
+			case "pascal":
+				f = pascalCase;
+				break;
+			case "snake":
+				f = snakeCase;
+				break;
+			case "upper":
+				f = upperCase;
+				break;
+			case "lower":
+				f = lowerCase;
+				break;
+			default:
+				break;
 		}
 
 		const embed = MGEmbed(MGStatus.Success)

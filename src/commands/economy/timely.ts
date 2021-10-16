@@ -46,14 +46,14 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
 		const subCommand = interaction.options.getString("category")!;
 		let moneyAdd: number;
 
-		if (subCommand === "hourly") moneyAdd = 30 + Math.ceil(Math.random() * 30);
+		if (subCommand === "hourly") {moneyAdd = 30 + Math.ceil(Math.random() * 30);}
 		else if (subCommand === "daily")
-			moneyAdd = 50 + Math.ceil(Math.random() * 50);
+		{moneyAdd = 50 + Math.ceil(Math.random() * 50);}
 		else if (subCommand === "weekly")
-			moneyAdd = 250 + Math.ceil(Math.random() * 250);
+		{moneyAdd = 250 + Math.ceil(Math.random() * 250);}
 		else if (subCommand === "monthly")
-			moneyAdd = 1000 + Math.ceil(Math.random() * 1000);
-		else moneyAdd = 5000 + Math.ceil(Math.random() * 5000);
+		{moneyAdd = 1000 + Math.ceil(Math.random() * 1000);}
+		else {moneyAdd = 5000 + Math.ceil(Math.random() * 5000);}
 
 		MGFirebase.initUser(`${interaction.user.id}`);
 
@@ -66,21 +66,21 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
 		const date = Math.ceil(new Date().getTime() / 1000);
 
 		switch (subCommand) {
-		case "hourly":
-			interval = 3600;
-			break;
-		case "daily":
-			interval = 86400;
-			break;
-		case "weekly":
-			interval = 604800;
-			break;
-		case "monthly":
-			interval = 2592000;
-			break;
-		default:
-			interval = 31536000;
-			break;
+			case "hourly":
+				interval = 3600;
+				break;
+			case "daily":
+				interval = 86400;
+				break;
+			case "weekly":
+				interval = 604800;
+				break;
+			case "monthly":
+				interval = 2592000;
+				break;
+			default:
+				interval = 31536000;
+				break;
 		}
 
 		let embed;

@@ -150,8 +150,8 @@ const help: MGCommand = {
 	async execute(interaction) {
 		const subcommand = interaction.options.getSubcommand();
 		switch (subcommand) {
-		case "main":
-			await interaction.reply(await mainHelp(interaction, "main"));
+			case "main":
+				await interaction.reply(await mainHelp(interaction, "main"));
 		}
 	},
 };

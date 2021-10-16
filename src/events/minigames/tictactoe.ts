@@ -36,7 +36,7 @@ import {
 const tictactoe = {
 	name: "interactionCreate",
 	async execute(interaction: Interaction) {
-		if (!interaction.isButton()) return;
+		if (!interaction.isButton()) {return;}
 
 		if (interaction.customId.startsWith("tictactoe")) {
 			const row = interaction.message.components as MessageActionRow[];

@@ -20,7 +20,6 @@ import { Client } from "discord.js";
 import * as admin from "firebase-admin";
 import {
 	DataModel,
-	initialAdmin,
 	initialData,
 	initialGuild,
 	initialUser,
@@ -207,11 +206,11 @@ export class FirebaseManager {
 	}
 
 	private async announcement(client: Client) {
-		if (this.db === null || client === null) return;
+		if (this.db === null || client === null) {return;}
 		this.db?.ref("/announcement").on("value", (snapshot) => {
 			if (snapshot.exists()) {
 				const data = snapshot.val() as string;
-				if (data === "") return;
+				if (data === "") {return;}
 				client.guilds.cache.forEach((guild) => {
 					guild.systemChannel?.send({
 						embeds: [

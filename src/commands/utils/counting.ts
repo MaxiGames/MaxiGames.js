@@ -141,7 +141,7 @@ async function removeChannel(
 		serverData["countingChannels"] === 0 ||
     serverData["countingChannels"][channel.id] === undefined
 	) {
-		if (channel === null) return;
+		if (channel === null) {return;}
 		await interaction.reply({
 			embeds: [
 				MGEmbed(MGStatus.Error)
@@ -154,7 +154,7 @@ async function removeChannel(
 	} else {
 		delete serverData["countingChannels"][channel.id];
 		await MGFirebase.setData(`guild/${guild.id}`, serverData).then(async () => {
-			if (channel === null) return;
+			if (channel === null) {return;}
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)

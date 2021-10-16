@@ -103,9 +103,9 @@ export async function generateEndResult(
 	const userData2 = MGFirebase.getData(`user/${player2ID}`);
 
 	const diff =
-    Math.abs(
-    	userData1["minigames"]["tictactoe"] - userData2["minigames"]["tictactoe"]
-    ) + Math.ceil(Math.random() * 50);
+	Math.abs(
+		userData1["minigames"]["tictactoe"] - userData2["minigames"]["tictactoe"]
+	) + Math.ceil(Math.random() * 50);
 
 	if (result === endResult.draw) {
 		const multFactor = Math.ceil(Math.random() * 25 - Math.random() * 50);
@@ -176,7 +176,7 @@ export async function generateEndResult(
 					value: `${userData2["minigames"]["tictactoe"]}`,
 				},
 			]);
-	} else return;
+	} else {return;}
 
 	await MGFirebase.setData(`user/${player1ID}`, userData1);
 	await MGFirebase.setData(`user/${player2ID}`, userData2);

@@ -38,7 +38,7 @@ const eventFiles: Array<Array<string>> = fs
 // load 'em in!
 for (const filecol of eventFiles) {
 	for (const name of filecol) {
-		const event = require(`../../../${name}`);
+		const event = require(`../../../${name}`); // eslint-disable-line no-var-requires
 		events.push(event.default);
 	}
 }

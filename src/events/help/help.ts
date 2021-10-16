@@ -25,7 +25,7 @@ import { mainHelp } from "../../commands/general/help";
 const help = {
 	name: "interactionCreate",
 	async execute(interaction: Interaction) {
-		if (!interaction.isSelectMenu()) return;
+		if (!interaction.isSelectMenu()) {return;}
 
 		if (interaction.customId === "help-main") {
 			const content = await mainHelp(interaction, interaction.values[0]);

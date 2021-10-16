@@ -64,6 +64,7 @@ if (process.env.NODE_ENV == "production") {
  */
 
 // Register event handlers
+
 for (const event of events) {
 	if (event.once) {
 		client.once(event.name, event.execute);
@@ -73,6 +74,7 @@ for (const event of events) {
 
 	moan(MGS.Info, `Registered event handler for "${event.name}."`);
 }
+
 
 // Wait for interaction & handle commands
 client.on("interactionCreate", async (interaction) => {

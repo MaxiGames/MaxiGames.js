@@ -80,30 +80,33 @@ const starboard: MGCommand = withChecks(
 			}
 
 			switch (subcommand) {
-			case "addchannel":
-				addchannel(interaction, guild, guildData);
-				break;
-			case "rmchannel":
-				rmchannel(interaction, guild, guildData);
-				break;
-			case "threshold":
-				const newthresh = interaction.options.getInteger("threshold")!;
-				let embed;
-
-				if (newthresh < 1) {
-					embed = MGEmbed(MGStatus.Error).setTitle(
-						"Error: threshold must be greater than zero!"
-					);
-				} else {
-					embed = MGEmbed(MGStatus.Success).setTitle(
-						`Starboard threshold set to ${newthresh}.`
-					);
-					guildData["starboardChannel"]["thresh"] = newthresh;
-					await MGFirebase.setData(`guild/${guild.id}`, guildData);
+				case "addchannel": {
+					addchannel(interaction, guild, guildData);
+					break;
 				}
+				case "rmchannel": {
+					rmchannel(interaction, guild, guildData);
+					break;
+				}
+				case "threshold": {
+					const newthresh = interaction.options.getInteger("threshold")!;
+					let embed;
 
-				await interaction.reply({ embeds: [embed] });
-				break;
+					if (newthresh < 1) {
+						embed = MGEmbed(MGStatus.Error).setTitle(
+							"Error: threshold must be greater than zero!"
+						);
+					} else {
+						embed = MGEmbed(MGStatus.Success).setTitle(
+							`Starboard threshold set to ${newthresh}.`
+						);
+						guildData["starboardChannel"]["thresh"] = newthresh;
+						await MGFirebase.setData(`guild/${guild.id}`, guildData);
+					}
+
+					await interaction.reply({ embeds: [embed] });
+					break;
+				}
 			}
 		},
 	}

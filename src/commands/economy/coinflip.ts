@@ -29,8 +29,8 @@ import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
 function otherOption(name: string) {
-	if (name === "heads") return "tails";
-	else return "heads";
+	if (name === "heads") {return "tails";}
+	else {return "heads";}
 }
 
 const gamble = withChecks([cooldownTest(10)], {
