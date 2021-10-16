@@ -64,5 +64,9 @@
   "lint-staged": {
     "*.ts": "eslint --cache --fix",
     "*.ts": "prettier -w"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "useTabs": true
   }
 }
