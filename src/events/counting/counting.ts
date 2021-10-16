@@ -23,6 +23,9 @@ const countingListener = {
     if (guildData["countingChannels"][msg.channel.id] === undefined) {
       return;
     }
+
+    await MGFirebase.initUser(`${msg.author.id}`);
+
     // parse string
     let content = msg.content;
     let number = parseInt(content);
