@@ -25,7 +25,13 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { camelCase, kebabCase as lispCase, snakeCase, upperCase, lowerCase } from "lodash";
+import {
+	camelCase,
+	kebabCase as lispCase,
+	snakeCase,
+	upperCase,
+	lowerCase,
+} from "lodash";
 
 const pascalCase = (param: string) =>
 	camelCase(param).replace(/\w/, (c) => c.toUpperCase());
