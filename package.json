@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "prepare": "husky install",
-    "init": "node dist/src/index.js",
+    "init": "node --experimental-top-level-await dist/src/index.js",
     "build": "rm -rf dist; tsc",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
     "check-commands": "node .scripts/check-commands.js",
@@ -31,8 +31,13 @@
   "devDependencies": {
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "chai": "^4.3.4",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
     "husky": "^7.0.0",
+    "lint-staged": "^11.2.3",
     "mocha": "^9.1.1",
     "pretty-quick": "^3.1.1",
     "ts-mockito": "^2.6.1",
@@ -55,5 +60,13 @@
     "reflect-metadata": "^0.1.13",
     "top.gg-core": "^1.0.0-b",
     "typescript": "^4.4.2"
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache --fix",
+    "*.ts": "prettier -w"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "useTabs": true
   }
 }

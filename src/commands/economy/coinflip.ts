@@ -29,116 +29,119 @@ import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
 function otherOption(name: string) {
-  if (name === "heads") return "tails";
-  else return "heads";
+	if (name === "heads") {
+		return "tails";
+	} else {
+		return "heads";
+	}
 }
 
 const gamble = withChecks([cooldownTest(10)], {
-  data: new SlashCommandBuilder()
-    .setName("coinflip")
-    .setDescription(
-      "Would you like to try your luck and see if the coins are in your favour?"
-    )
-    .addStringOption((option) =>
-      option
-        .setName("option")
-        .setDescription("Heads or Tails?")
-        .setRequired(true)
-        .addChoice("heads", "heads")
-        .addChoice("tails", "tails")
-    )
-    .addIntegerOption((option) =>
-      option
-        .setName("amount")
-        .setDescription("How much money are ya going to gamble?")
-        .setRequired(true)
-    ),
+	data: new SlashCommandBuilder()
+		.setName("coinflip")
+		.setDescription(
+			"Would you like to try your luck and see if the coins are in your favour?"
+		)
+		.addStringOption((option) =>
+			option
+				.setName("option")
+				.setDescription("Heads or Tails?")
+				.setRequired(true)
+				.addChoice("heads", "heads")
+				.addChoice("tails", "tails")
+		)
+		.addIntegerOption((option) =>
+			option
+				.setName("amount")
+				.setDescription("How much money are ya going to gamble?")
+				.setRequired(true)
+		),
 
-  async execute(interaction) {
-    const amt = interaction.options.getInteger("amount"); // read bet amt
-    const option = interaction.options.getString("option"); // read bet on which coin side
-    if (amt === null || option === null) {
-      return;
-    }
+	async execute(interaction) {
+		const amt = interaction.options.getInteger("amount"); // read bet amt
+		const option = interaction.options.getString("option"); // read bet on which coin side
+		if (amt === null || option === null) {
+			return;
+		}
 
-    await MGFirebase.initUser(interaction.user.id); // init firebase
+		await MGFirebase.initUser(interaction.user.id); // init firebase
 
-    let data = MGFirebase.getData(`user/${interaction.user.id}`); // get user balance
-    if (data === undefined) {
-      return;
-    }
+		const data = MGFirebase.getData(`user/${interaction.user.id}`); // get user balance
+		if (data === undefined) {
+			return;
+		}
 
-    if (amt <= 0) {
-      let deduct = Math.ceil(Math.random() * 5);
-      data["money"] -= deduct;
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Error)
-            .setTitle("Stop trying to trick the system, you fool!")
-            .setDescription("No negative numbers.")
-            .addField("Deducted money:", `${deduct}`),
-        ],
-      });
-      MGFirebase.setData(`user/${interaction.user.id}`, data);
-      return;
-    }
+		if (amt <= 0) {
+			const deduct = Math.ceil(Math.random() * 5);
+			data["money"] -= deduct;
+			interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Error)
+						.setTitle("Stop trying to trick the system, you fool!")
+						.setDescription("No negative numbers.")
+						.addField("Deducted money:", `${deduct}`),
+				],
+			});
+			MGFirebase.setData(`user/${interaction.user.id}`, data);
+			return;
+		}
 
-    if (data["money"] < amt) {
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Success)
-            .setTitle("Oops! Not enough money!!")
-            .addFields(
-              { name: "Balance", value: `${data["money"]}` },
-              { name: "Amount required:", value: `${amt}` }
-            ),
-        ],
-      });
-    }
+		if (data["money"] < amt) {
+			interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Success)
+						.setTitle("Oops! Not enough money!!")
+						.addFields(
+							{ name: "Balance", value: `${data["money"]}` },
+							{ name: "Amount required:", value: `${amt}` }
+						),
+				],
+			});
+		}
 
-    const compOption = Math.ceil(Math.random() * 2);
+		const compOption = Math.ceil(Math.random() * 2);
 
-    // user's option is correct (really, it's unnecessary because you can just choose true/false randomly)
-    if (
-      (option === "heads" && compOption === 1) ||
-      (option === "tails" && compOption === 2)
-    ) {
-      data["money"] += amt;
-      MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
+		// user's option is correct (really, it's unnecessary because you can just choose true/false randomly)
+		if (
+			(option === "heads" && compOption === 1) ||
+			(option === "tails" && compOption === 2)
+		) {
+			data["money"] += amt;
+			MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
 
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Success)
-            .setTitle("You won!")
-            .setDescription(
-              `You guessed the coin flip right! :) it flipped on **${option}**`
-            )
-            .addFields(
-              { name: "Balance", value: `${data["money"]}` },
-              { name: "Amount earned:", value: `${amt}` }
-            ),
-        ],
-      });
-    } else {
-      data["money"] -= amt;
-      MGFirebase.setData(`user/${interaction.user.id}`, data);
-      interaction.reply({
-        embeds: [
-          MGEmbed(MGStatus.Success)
-            .setTitle("You lost!")
-            .setDescription(
-              `You guessed the coin flip wrong! :( it flipped on **${otherOption(
-                option
-              )}**`
-            )
-            .addFields(
-              { name: "Balance", value: `${data["money"]}` },
-              { name: "Amount lost:", value: `${amt}` }
-            ),
-        ],
-      });
-    }
-  },
+			interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Success)
+						.setTitle("You won!")
+						.setDescription(
+							`You guessed the coin flip right! :) it flipped on **${option}**`
+						)
+						.addFields(
+							{ name: "Balance", value: `${data["money"]}` },
+							{ name: "Amount earned:", value: `${amt}` }
+						),
+				],
+			});
+		} else {
+			data["money"] -= amt;
+			MGFirebase.setData(`user/${interaction.user.id}`, data);
+			interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Success)
+						.setTitle("You lost!")
+						.setDescription(
+							`You guessed the coin flip wrong! :( it flipped on **${otherOption(
+								option
+							)}**`
+						)
+						.addFields(
+							{ name: "Balance", value: `${data["money"]}` },
+							{ name: "Amount lost:", value: `${amt}` }
+						),
+				],
+			});
+		}
+	},
 });
 
 export default gamble;

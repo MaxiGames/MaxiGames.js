@@ -9,16 +9,15 @@ if [ -z "${DIRTY+1}" ]; then
     npm run build || exit
     rm -f DIRTY.md
     git rm --cached DIRTY.md >/dev/null 2>&1 || true
+    npm run --silent check-commands
+    # Lint and format files
 else
     # indentation matters until after EOF
     cat << EOF > DIRTY.md
 # WARNING
-Beware! This commit will _not_ compile correctly.
+Beware! This commit will _not_ work; it may not even compile correctly.
 EOF
     git add DIRTY.md
 fi
 
-npm run --silent check-commands
-
-# Format files
-npx pretty-quick --staged
+npx lint-staged

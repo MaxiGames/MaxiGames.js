@@ -8,18 +8,21 @@
 - Split long strings: So instead of `"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."`, do:
 
 ```
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed " +
- "do eiusmod tempor incididunt ut labore et dolore magna " +
- "aliqua. Ut enim ad minim veniam, quis nostrud exercitation " +
- ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis " +
- "aute irure dolor in reprehenderit in voluptate velit esse " +
- "cillum dolore eu fugiat nulla pariatur. Excepteur sint " +
- "occaecat cupidatat non proident, sunt in culpa qui officia " +
- "deserunt mollit anim id est laborum."`
+(
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed " +
+    "do eiusmod tempor incididunt ut labore et dolore magna " +
+    "aliqua. Ut enim ad minim veniam, quis nostrud exercitation " +
+    ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis " +
+    "aute irure dolor in reprehenderit in voluptate velit esse " +
+    "cillum dolore eu fugiat nulla pariatur. Excepteur sint " +
+    "occaecat cupidatat non proident, sunt in culpa qui officia " +
+    "deserunt mollit anim id est laborum."`
+)
 ```
 
-- Use `datatype[]` instead of `Array<datatype>`
-- Use `const` wherever possible, but `let` over `var` otherwise.
+- Use `a[]` instead of `Array<a>`
+- Wrap case bodies in braces
+- Use `const` wherever possible, and `let` over `var` otherwise.
 - Use `camelCase` for variables, `PascalCase` for classes, types, interfaces,
   and enums.
 - Fully annoate function signatures, including return types (except for toplevel
@@ -29,7 +32,7 @@
 - `// spaces after comment markers`
 - When only exporting one item, use a default export, otherwise named exports.
 - Always use ES module syntax
-- Descriptive variable names. Use plural for arrays.
+- Use descriptive variable names. Use plural for arrays.
 - Write useful comments; don't write any if unneeded
 - Use JSDoc style comments for functions
 - One newline between file header and code begin; 4 newlines between chunks (e.g.

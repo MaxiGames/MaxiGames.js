@@ -25,32 +25,32 @@ import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
 const money: MGCommand = withChecks([cooldownTest(20)], {
-  data: new SlashCommandBuilder()
-    .setName("money")
-    .setDescription("Get more money!!!"),
+	data: new SlashCommandBuilder()
+		.setName("money")
+		.setDescription("Get more money!!!"),
 
-  async execute(interaction) {
-    await MGFirebase.initUser(interaction.user.id);
+	async execute(interaction) {
+		await MGFirebase.initUser(interaction.user.id);
 
-    let data = MGFirebase.getData(`user/${interaction.user.id}`);
-    let toAdd = Math.ceil(Math.random() * 30);
-    if (data === undefined) {
-      return;
-    }
+		const data = MGFirebase.getData(`user/${interaction.user.id}`);
+		const toAdd = Math.ceil(Math.random() * 30);
+		if (data === undefined) {
+			return;
+		}
 
-    data.money += toAdd;
+		data.money += toAdd;
 
-    await MGFirebase.setData(`user/${interaction.user.id}`, data);
+		await MGFirebase.setData(`user/${interaction.user.id}`, data);
 
-    const embed = MGEmbed(MGStatus.Success)
-      .setTitle("You have successfully earned MaxiCoins!")
-      .setDescription("Yay!")
-      .addFields(
-        { name: "Added:", value: `${toAdd}`, inline: true },
-        { name: "Balance:", value: `${data.money}`, inline: true }
-      );
-    await interaction.reply({ embeds: [embed] });
-  },
+		const embed = MGEmbed(MGStatus.Success)
+			.setTitle("You have successfully earned MaxiCoins!")
+			.setDescription("Yay!")
+			.addFields(
+				{ name: "Added:", value: `${toAdd}`, inline: true },
+				{ name: "Balance:", value: `${data.money}`, inline: true }
+			);
+		await interaction.reply({ embeds: [embed] });
+	},
 });
 
 export default money;

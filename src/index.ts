@@ -33,30 +33,30 @@ import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
 
 export const client = new Client({
-  intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_PRESENCES,
-    Intents.FLAGS.GUILD_MESSAGES,
-  ],
-  // partials: ["MESSAGE", "CHANNEL", "REACTION"],
+	intents: [
+		Intents.FLAGS.GUILDS,
+		Intents.FLAGS.GUILD_MESSAGES,
+		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+		Intents.FLAGS.GUILD_MEMBERS,
+		Intents.FLAGS.GUILD_PRESENCES,
+		Intents.FLAGS.GUILD_MESSAGES,
+	],
+	// partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
 
 /*
  * Top.gg Initialisation
  */
 
-let dbl = new DBL.Client(apiConfig["top.GG"]["token"]);
-let webhook = new DBL.Webhook(apiConfig["top.GG"]["password"]);
+const dbl = new DBL.Client(apiConfig["top.GG"]["token"]);
+const webhook = new DBL.Webhook(apiConfig["top.GG"]["password"]);
 
 if (process.env.NODE_ENV == "production") {
-  webhook.login("/top.gg/bot/863419048041381920/vote", "3000");
+	webhook.login("/top.gg/bot/863419048041381920/vote", "3000");
 
-  webhook.on("vote", (vote: any) => {
-    console.log(`User id: ${vote.user}\nAll data: ${vote}`);
-  });
+	webhook.on("vote", (vote: any) => {
+		console.log(`User id: ${vote.user}\nAll data: ${vote}`);
+	});
 }
 
 /*
@@ -64,37 +64,38 @@ if (process.env.NODE_ENV == "production") {
  */
 
 // Register event handlers
-for (const event of events) {
-  if (event.once) {
-    client.once(event.name, event.execute);
-  } else {
-    client.on(event.name, event.execute);
-  }
 
-  moan(MGS.Info, `Registered event handler for "${event.name}."`);
+for (const event of events) {
+	if (event.once) {
+		client.once(event.name, event.execute);
+	} else {
+		client.on(event.name, event.execute);
+	}
+
+	moan(MGS.Info, `Registered event handler for "${event.name}."`);
 }
 
 // Wait for interaction & handle commands
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) {
-    return;
-  }
+	if (!interaction.isCommand()) {
+		return;
+	}
 
-  const command = commands.get(interaction.commandName);
-  if (!command) {
-    return;
-  }
+	const command = commands.get(interaction.commandName);
+	if (!command) {
+		return;
+	}
 
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    moan(MGS.Error, JSON.stringify(error));
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		moan(MGS.Error, JSON.stringify(error));
 
-    await interaction.reply({
-      content: "There was an error while executing this command!",
-      ephemeral: true,
-    });
-  }
+		await interaction.reply({
+			content: "There was an error while executing this command!",
+			ephemeral: true,
+		});
+	}
 });
 
 /*
@@ -103,68 +104,68 @@ client.on("interactionCreate", async (interaction) => {
 
 // firebase and maxigames bot login
 admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: firebaseConfig,
+	credential: admin.credential.applicationDefault(),
+	databaseURL: firebaseConfig,
 });
 
 // set bot activity upon guild events
 client.login(config.tokenId).then(() => {
-  //delete all slash commands before
-  let user = client.user;
-  let currentGuildCount = client.guilds.cache.size;
-  if (process.env.NODE_ENV == "production") {
-    dbl
-      .post({ servers: currentGuildCount })
-      .then(moan(MGS.Info, "Posted new count to top.gg"));
-  }
+	// delete all slash commands before
+	const user = client.user;
+	let currentGuildCount = client.guilds.cache.size;
+	if (process.env.NODE_ENV == "production") {
+		dbl.post({ servers: currentGuildCount }).then(
+			moan(MGS.Info, "Posted new count to top.gg")
+		);
+	}
 
-  if (user === null) {
-    throw "User is null and this is very bad!!!";
-  }
+	if (user === null) {
+		throw "User is null and this is very bad!!!";
+	}
 
-  user.setActivity(`/help on ${currentGuildCount} servers!`, {
-    type: "WATCHING",
-  }); // initialize activity as "Watching m!help on <number> servers!"
+	user.setActivity(`/help on ${currentGuildCount} servers!`, {
+		type: "WATCHING",
+	}); // initialize activity as "Watching m!help on <number> servers!"
 
-  // change activity on guild join
-  client.on("guildCreate", (guild) => {
-    moan(MGS.Info, `joined new guild "${guild.name}"`);
-    currentGuildCount++;
-    if (process.env.NODE_ENV == "production") {
-      dbl
-        .post({ servers: currentGuildCount })
-        .then(moan(MGS.Info, "Posted new count to top.gg"));
-    }
+	// change activity on guild join
+	client.on("guildCreate", (guild) => {
+		moan(MGS.Info, `joined new guild "${guild.name}"`);
+		currentGuildCount++;
+		if (process.env.NODE_ENV == "production") {
+			dbl.post({ servers: currentGuildCount }).then(
+				moan(MGS.Info, "Posted new count to top.gg")
+			);
+		}
 
-    if (user === null) {
-      throw "User is null and this is very bad!!!";
-    }
+		if (user === null) {
+			throw "User is null and this is very bad!!!";
+		}
 
-    MGFirebase.setData(`server/${guild.id}`, initialGuild);
+		MGFirebase.setData(`server/${guild.id}`, initialGuild);
 
-    user.setActivity(`/help on ${currentGuildCount} servers!`, {
-      type: "WATCHING",
-    });
-  });
+		user.setActivity(`/help on ${currentGuildCount} servers!`, {
+			type: "WATCHING",
+		});
+	});
 
-  // change activity on guild leave
-  client.on("guildDelete", (guild) => {
-    moan(MGS.Info, `left guild: "${guild.name}"`);
-    currentGuildCount--;
-    if (process.env.NODE_ENV == "production") {
-      dbl
-        .post({ servers: currentGuildCount })
-        .then(moan(MGS.Info, "Posted new count to top.gg"));
-    }
+	// change activity on guild leave
+	client.on("guildDelete", (guild) => {
+		moan(MGS.Info, `left guild: "${guild.name}"`);
+		currentGuildCount--;
+		if (process.env.NODE_ENV == "production") {
+			dbl.post({ servers: currentGuildCount }).then(
+				moan(MGS.Info, "Posted new count to top.gg")
+			);
+		}
 
-    if (user === null) {
-      throw "User is null and this is very bad!!!";
-    }
+		if (user === null) {
+			throw "User is null and this is very bad!!!";
+		}
 
-    user.setActivity(`/help on ${currentGuildCount} servers!`, {
-      type: "WATCHING",
-    });
-  });
+		user.setActivity(`/help on ${currentGuildCount} servers!`, {
+			type: "WATCHING",
+		});
+	});
 });
 
 // Firebase init

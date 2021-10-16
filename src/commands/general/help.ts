@@ -18,11 +18,11 @@
 
 import { SlashCommandBuilder } from "@discordjs/builders";
 import {
-  CommandInteraction,
-  MessageActionRow,
-  MessageButton,
-  MessageSelectMenu,
-  SelectMenuInteraction,
+	CommandInteraction,
+	MessageActionRow,
+	MessageButton,
+	MessageSelectMenu,
+	SelectMenuInteraction,
 } from "discord.js";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
@@ -31,129 +31,129 @@ import fs from "fs";
 import { lowerCase, startCase } from "lodash";
 
 function getDirectories(path: string) {
-  return fs.readdirSync(path).filter(function (file) {
-    return fs.statSync(path + "/" + file).isDirectory();
-  });
+	return fs.readdirSync(path).filter(function (file) {
+		return fs.statSync(path + "/" + file).isDirectory();
+	});
 }
 
 function getFiles(path: string) {
-  return fs.readdirSync(path).filter(function (file) {
-    return fs.statSync(path + "/" + file).isFile();
-  });
+	return fs.readdirSync(path).filter(function (file) {
+		return fs.statSync(path + "/" + file).isFile();
+	});
 }
 
 export function getLinks() {
-  const inviteButton = new MessageButton()
-    .setLabel("Invite the bot!")
-    .setStyle("LINK")
-    .setURL(
-      "https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=261188091120&scope=bot%20applications.commands"
-    );
-  const topGGVote = new MessageButton()
-    .setLabel("Vote (Top.gg)")
-    .setStyle("LINK")
-    .setURL("https://tinyurl.com/votemaxigamesTopgg");
-  const discordsVote = new MessageButton()
-    .setLabel("Vote (discords.com)")
-    .setStyle("LINK")
-    .setURL("https://tinyurl.com/votemaxigamesDiscordcom");
-  const supportServer = new MessageButton()
-    .setLabel("Support Server")
-    .setStyle("LINK")
-    .setURL("https://discord.gg/BNm87Cvdx3");
-  return [inviteButton, topGGVote, discordsVote, supportServer];
+	const inviteButton = new MessageButton()
+		.setLabel("Invite the bot!")
+		.setStyle("LINK")
+		.setURL(
+			"https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=261188091120&scope=bot%20applications.commands"
+		);
+	const topGGVote = new MessageButton()
+		.setLabel("Vote (Top.gg)")
+		.setStyle("LINK")
+		.setURL("https://tinyurl.com/votemaxigamesTopgg");
+	const discordsVote = new MessageButton()
+		.setLabel("Vote (discords.com)")
+		.setStyle("LINK")
+		.setURL("https://tinyurl.com/votemaxigamesDiscordcom");
+	const supportServer = new MessageButton()
+		.setLabel("Support Server")
+		.setStyle("LINK")
+		.setURL("https://discord.gg/BNm87Cvdx3");
+	return [inviteButton, topGGVote, discordsVote, supportServer];
 }
 
 export async function mainHelp(
-  interaction: SelectMenuInteraction | CommandInteraction,
-  page: string
+	interaction: SelectMenuInteraction | CommandInteraction,
+	page: string
 ) {
-  const commandFiles = getDirectories("./dist/src/commands");
+	const commandFiles = getDirectories("./dist/src/commands");
 
-  let options: { label: string; description: string; value: string }[] = [];
+	const options: { label: string; description: string; value: string }[] = [];
 
-  // forming the select menus
-  for (let dir of commandFiles) {
-    dir = startCase(dir);
-    options.push({
-      label: dir,
-      description: `Find out what commands there is for the category: ${dir}`,
-      value: dir,
-    });
-  }
+	// forming the select menus
+	for (let dir of commandFiles) {
+		dir = startCase(dir);
+		options.push({
+			label: dir,
+			description: `Find out what commands there is for the category: ${dir}`,
+			value: dir,
+		});
+	}
 
-  const row = new MessageActionRow().addComponents(
-    new MessageSelectMenu()
-      .setCustomId("help-main")
-      .setPlaceholder(page === "main" ? "Initial landing page" : page)
-      .addOptions(options)
-  );
+	const row = new MessageActionRow().addComponents(
+		new MessageSelectMenu()
+			.setCustomId("help-main")
+			.setPlaceholder(page === "main" ? "Initial landing page" : page)
+			.addOptions(options)
+	);
 
-  //making the buttons
-  let [inviteButton, topGGVote, discordsVote, supportServer] = getLinks();
+	//making the buttons
+	const [inviteButton, topGGVote, discordsVote, supportServer] = getLinks();
 
-  let row2 = new MessageActionRow().addComponents(
-    inviteButton,
-    topGGVote,
-    discordsVote,
-    supportServer
-  );
+	const row2 = new MessageActionRow().addComponents(
+		inviteButton,
+		topGGVote,
+		discordsVote,
+		supportServer
+	);
 
-  if (page === "main") {
-    return {
-      embeds: [
-        MGEmbed(MGStatus.Info)
-          .setTitle("Help!")
-          .setDescription(
-            "Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
-          ),
-      ],
-      components: [row, row2],
-    };
-  }
+	if (page === "main") {
+		return {
+			embeds: [
+				MGEmbed(MGStatus.Info)
+					.setTitle("Help!")
+					.setDescription(
+						"Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
+					),
+			],
+			components: [row, row2],
+		};
+	}
 
-  //if its a category page, find the commands
-  let cmds = getFiles(`./dist/src/commands/${lowerCase(page)}/`);
-  let fields: { name: string; value: string; inline: boolean }[] = [];
+	//if its a category page, find the commands
+	const cmds = getFiles(`./dist/src/commands/${lowerCase(page)}/`);
+	const fields: { name: string; value: string; inline: boolean }[] = [];
 
-  let counter = 1;
-  for (let i of cmds) {
-    fields.push({
-      name: `${counter}`,
-      value: startCase(i.replace(`.js`, "")),
-      inline: true,
-    });
-    counter++;
-  }
+	let counter = 1;
+	for (const i of cmds) {
+		fields.push({
+			name: `${counter}`,
+			value: startCase(i.replace(".js", "")),
+			inline: true,
+		});
+		counter++;
+	}
 
-  return {
-    embeds: [
-      MGEmbed(MGStatus.Info)
-        .setTitle("Help!")
-        .setDescription(`Category: ${page}`)
-        .addFields(fields),
-    ],
-    components: [row, row2],
-  };
+	return {
+		embeds: [
+			MGEmbed(MGStatus.Info)
+				.setTitle("Help!")
+				.setDescription(`Category: ${page}`)
+				.addFields(fields),
+		],
+		components: [row, row2],
+	};
 }
 
 const help: MGCommand = {
-  data: new SlashCommandBuilder()
-    .setName("help")
-    .setDescription("Find out the details of certain commands")
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("main")
-        .setDescription("Provides a list for all commands of the bot")
-    ),
+	data: new SlashCommandBuilder()
+		.setName("help")
+		.setDescription("Find out the details of certain commands")
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("main")
+				.setDescription("Provides a list for all commands of the bot")
+		),
 
-  async execute(interaction) {
-    let subcommand = interaction.options.getSubcommand();
-    switch (subcommand) {
-      case "main":
-        await interaction.reply(await mainHelp(interaction, "main"));
-    }
-  },
+	async execute(interaction) {
+		const subcommand = interaction.options.getSubcommand();
+		switch (subcommand) {
+			case "main":
+				await interaction.reply(await mainHelp(interaction, "main"));
+		}
+	},
 };
 
 export default help;

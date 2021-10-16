@@ -22,14 +22,16 @@ import MGStatus from "../../lib/statuses";
 import { MessageReaction, TextChannel, User } from "discord.js";
 
 const starboardwatch = {
-  name: "messageReactionRemove",
-  async execute(reaction: MessageReaction, user: User) {
-    let guildData = MGFirebase.getData(`guild/${reaction.message.guildId}`);
-    if (guildData === undefined) {
-      return;
-    }
+	name: "messageReactionRemove",
+	async execute(reaction: MessageReaction, user: User) {
+		const guildData = MGFirebase.getData(
+			`guild/${reaction.message.guildId}`
+		);
+		if (guildData === undefined) {
+			return;
+		}
 
-    /*
+		/*
     if (reaction.partial) {
       try {
         await reaction.fetch();
@@ -40,67 +42,67 @@ const starboardwatch = {
     }
     */
 
-    if (reaction.emoji.name !== "⭐") {
-      return;
-    }
+		if (reaction.emoji.name !== "⭐") {
+			return;
+		}
 
-    if (guildData["starboardChannel"] === 0) {
-      return; // no starboard channel set
-    }
+		if (guildData["starboardChannel"] === 0) {
+			return; // no starboard channel set
+		}
 
-    if (!guildData["starboardMsgs"]) {
-      return;
-    }
-    if (guildData["starboardMsgs"][reaction.message.id] === undefined) {
-      return;
-    }
+		if (!guildData["starboardMsgs"]) {
+			return;
+		}
+		if (guildData["starboardMsgs"][reaction.message.id] === undefined) {
+			return;
+		}
 
-    guildData["starboardMsgs"][reaction.message.id]["stars"] -= 1;
+		guildData["starboardMsgs"][reaction.message.id]["stars"] -= 1;
 
-    try {
-      await MGFirebase.setData(
-        `guild/${reaction.message.guild!.id}`,
-        guildData
-      );
+		try {
+			await MGFirebase.setData(
+				`guild/${reaction.message.guild!.id}`,
+				guildData
+			);
 
-      let sbchan = reaction.client.channels.cache.get(
-        guildData["starboardChannel"].id
-      ) as TextChannel;
+			const sbchan = reaction.client.channels.cache.get(
+				guildData["starboardChannel"].id
+			) as TextChannel;
 
-      let oldmsg = await sbchan.messages.fetch(
-        guildData["starboardMsgs"][reaction.message.id]["rxnid"]
-      );
+			const oldmsg = await sbchan.messages.fetch(
+				guildData["starboardMsgs"][reaction.message.id]["rxnid"]
+			);
 
-      if (reaction.count < guildData["starboardChannel"].thresh) {
-        oldmsg.delete();
-      }
+			if (reaction.count < guildData["starboardChannel"].thresh) {
+				oldmsg.delete();
+			}
 
-      if (reaction.message.content!.trim() !== "") {
-        // if there's no message content don't show just a >; it's ugly
-        // yes I know this code is even uglier, but quite frankly, I don't care.
-        reaction.message.content =
-          "\n\n> " + reaction.message.content!.replace(/\n/g, "\n> ");
-      }
+			if (reaction.message.content!.trim() !== "") {
+				// if there's no message content don't show just a >; it's ugly
+				// yes I know this code is even uglier, but quite frankly, I don't care.
+				reaction.message.content =
+					"\n\n> " + reaction.message.content!.replace(/\n/g, "\n> ");
+			}
 
-      let embed = MGEmbed(MGStatus.Info)
-        .setTitle(`Starred ${reaction.count} times!`)
-        .setDescription(
-          `[Click to jump to message](${reaction.message.url})` +
-            reaction.message.content
-        )
-        .setFooter("React with ⭐ to star this message")
-        .setAuthor(
-          reaction.message.author!.username,
-          reaction.message.author!.avatarURL() ??
-            reaction.message.author!.defaultAvatarURL
-        );
-      reaction.message.attachments.each((a) => embed.setImage(a.url));
+			const embed = MGEmbed(MGStatus.Info)
+				.setTitle(`Starred ${reaction.count} times!`)
+				.setDescription(
+					`[Click to jump to message](${reaction.message.url})` +
+						reaction.message.content
+				)
+				.setFooter("React with ⭐ to star this message")
+				.setAuthor(
+					reaction.message.author!.username,
+					reaction.message.author!.avatarURL() ??
+						reaction.message.author!.defaultAvatarURL
+				);
+			reaction.message.attachments.each((a) => embed.setImage(a.url));
 
-      await oldmsg.edit({ embeds: [embed] });
-    } catch {
-      // oops I guess?
-    }
-  },
+			await oldmsg.edit({ embeds: [embed] });
+		} catch {
+			// oops I guess?
+		}
+	},
 };
 
 export default starboardwatch;
