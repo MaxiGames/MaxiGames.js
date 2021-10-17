@@ -198,16 +198,15 @@ export class FirebaseManager {
 	}
 
 	private async initData(data: any) {
-		for (const i in data["user"]) {
-			if (!data["user"][i]["minigames"]) {
-				data["user"][i]["minigames"] = initialUser.minigames;
+		for (const i in data["guild"]) {
+			if (!data["guild"][i]["autoresponse"]) {
+				data["guild"][i]["autoresponse"] = initialGuild.autoresponse;
 			}
 		}
 
 		for (const i in data["user"]) {
-			if (!data["user"][i]["cooldowns"]["suggestion"]) {
-				data["user"][i]["cooldowns"]["suggestion"] = 0;
-				data["user"][i]["cooldowns"]["bugreport"] = 0;
+			if (data["user"][i]["cooldowns"]["autoresponse"]) {
+				delete data["user"][i]["cooldowns"]["autoresponse"];
 			}
 		}
 		await this.db?.ref("/").set(data);

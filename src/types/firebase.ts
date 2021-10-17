@@ -50,6 +50,7 @@ export interface Guild {
 	countingChannels: { [id: string]: { count: number; id: number } } | number;
 	starboardChannel: { id: string; thresh: number } | number;
 	starboardMsgs: { [id: string]: { stars: number; rxnid: string } } | number;
+	autoresponse: { [trigger: string]: string };
 }
 
 export const initialGuild: Guild = {
@@ -59,6 +60,10 @@ export const initialGuild: Guild = {
 	statistics: {
 		highestCount: 0,
 		totalCount: 0,
+	},
+	autoresponse: {
+		maxigames:
+			"Hello there! Did you call me? (This is a default autoresponse for every guild. You can remove or add more autoresponses using the /autoresponse commands, but only admins can do it!)",
 	},
 };
 
