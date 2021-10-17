@@ -27,6 +27,7 @@ const ticketListener = {
 	name: "messageCreate",
 	async execute(msg: Message) {
 		if (msg.guild === null) return;
+		if (msg.author.bot) return;
 		let autoresponse = MGFirebase.getData(`guild/${msg.guild!.id}`)[
 			"autoresponse"
 		];
