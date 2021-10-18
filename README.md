@@ -45,17 +45,17 @@ Exact details are listed in LICENSE.md
 
 ### Cases
 
-- `/convertcase <camel | lisp | pascal | snake | lower | upper> <text>`: Converts specified text to specified case.
+-   `/convertcase <camel | lisp | pascal | snake | lower | upper> <text>`: Converts specified text to specified case.
 
 ### Economy
 
-- `/balance <user>`: Get the balance of the specified user
-- `/coinflip <side of coin> <amount>`: Try your luck and flip a virtual coin!
-- `/gamble <amount (default=5)>`: Gamble some money :O (Minimum: 5; Maximum: 10000)
-- `/money`: Get more money!!!
-- `/share <user> <amount>`: Share money with another server member!
-- `/timely <hourly | daily | weekly | monthly | yearly>`: Get money!
+-   `/balance <user>`: Get the balance of the specified user
+-   `/coinflip <side of coin> <amount>`: Try your luck and flip a virtual coin!
+-   `/gamble <amount (default=5)>`: Gamble some money :O (Minimum: 5; Maximum: 10000)
+-   `/money`: Get more money!!!
+-   `/share <user> <amount>`: Share money with another server member!
+-   `/timely <hourly | daily | weekly | monthly | yearly>`: Get money!
 
 ### General
 
-- nope im not doing that today
+-   nope im not doing that today

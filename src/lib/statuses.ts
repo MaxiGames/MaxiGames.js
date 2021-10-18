@@ -17,11 +17,11 @@
  */
 
 enum MGStatus {
-  Default,
-  Info,
-  Success,
-  Error,
-  Warn,
+	Default,
+	Info,
+	Success,
+	Error,
+	Warn,
 }
 
 export default MGStatus;
