@@ -16,18 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import type MGCommand from "../../types/command";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
-import cooldownTest from "../../lib/cooldown";
-import withChecks from "../../lib/withs";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import type MGCommand from '../../types/command';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import { MGFirebase } from '../../utils/firebase';
+import cooldownTest from '../../lib/cooldown';
+import withChecks from '../../lib/withs';
 
 const money: MGCommand = withChecks([cooldownTest(20)], {
 	data: new SlashCommandBuilder()
-		.setName("money")
-		.setDescription("Get more money!!!"),
+		.setName('money')
+		.setDescription('Get more money!!!'),
 
 	async execute(interaction) {
 		await MGFirebase.initUser(interaction.user.id);
@@ -43,11 +43,11 @@ const money: MGCommand = withChecks([cooldownTest(20)], {
 		await MGFirebase.setData(`user/${interaction.user.id}`, data);
 
 		const embed = MGEmbed(MGStatus.Success)
-			.setTitle("You have successfully earned MaxiCoins!")
-			.setDescription("Yay!")
+			.setTitle('You have successfully earned MaxiCoins!')
+			.setDescription('Yay!')
 			.addFields(
-				{ name: "Added:", value: `${toAdd}`, inline: true },
-				{ name: "Balance:", value: `${data.money}`, inline: true }
+				{ name: 'Added:', value: `${toAdd}`, inline: true },
+				{ name: 'Balance:', value: `${data.money}`, inline: true }
 			);
 		await interaction.reply({ embeds: [embed] });
 	},

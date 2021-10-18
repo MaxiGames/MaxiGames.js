@@ -16,20 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type MGEvent from "../../types/event";
-import moan from "../../lib/moan";
-import MGS from "../../lib/statuses";
-import { Interaction } from "discord.js";
-import { mainHelp } from "../../commands/general/help";
+import type MGEvent from '../../types/event';
+import moan from '../../lib/moan';
+import MGS from '../../lib/statuses';
+import { Interaction } from 'discord.js';
+import { mainHelp } from '../../commands/general/help';
 
 const help = {
-	name: "interactionCreate",
+	name: 'interactionCreate',
 	async execute(interaction: Interaction) {
 		if (!interaction.isSelectMenu()) {
 			return;
 		}
 
-		if (interaction.customId === "help-main") {
+		if (interaction.customId === 'help-main') {
 			const content = await mainHelp(interaction, interaction.values[0]);
 
 			await interaction.update(content);

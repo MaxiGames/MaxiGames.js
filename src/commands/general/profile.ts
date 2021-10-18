@@ -16,25 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
-import MGCommand from "../../types/command";
-import moan from "../../lib/moan";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import { MGFirebase } from '../../utils/firebase';
+import MGCommand from '../../types/command';
+import moan from '../../lib/moan';
 
 function calculateRating(userData: any) {
-	let str = "";
-	for (const i in userData["minigames"]) {
-		str += `${i.toUpperCase()}'s Rating: ${userData["minigames"][i]}\n`;
+	let str = '';
+	for (const i in userData['minigames']) {
+		str += `${i.toUpperCase()}'s Rating: ${userData['minigames'][i]}\n`;
 	}
 	return str;
 }
 
 const profile: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName("profile")
-		.setDescription("View your statistics in the bot!"),
+		.setName('profile')
+		.setDescription('View your statistics in the bot!'),
 
 	async execute(interaction) {
 		const userData = await MGFirebase.getData(
@@ -44,21 +44,21 @@ const profile: MGCommand = {
 			.setTitle(
 				`${interaction.user.username} #${interaction.user.discriminator}'s profile`
 			)
-			.setDescription("View your statistics on the bot!")
+			.setDescription('View your statistics on the bot!')
 			.setThumbnail(interaction.user.avatarURL()!)
 			.setFields([
 				{
-					name: "Counting: ",
-					value: `Highest Count: ${userData["count"]["highestCount"]} \n Total Counts: ${userData["count"]["totalCount"]}`,
+					name: 'Counting: ',
+					value: `Highest Count: ${userData['count']['highestCount']} \n Total Counts: ${userData['count']['totalCount']}`,
 					inline: false,
 				},
 				{
-					name: "Money:",
-					value: `${userData["money"]}`,
+					name: 'Money:',
+					value: `${userData['money']}`,
 					inline: false,
 				},
 				{
-					name: "Minigames:",
+					name: 'Minigames:',
 					value: `${calculateRating(userData)}`,
 				},
 			]);

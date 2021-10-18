@@ -21,17 +21,17 @@
  * Description: Handles command for converting text to another case
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import type MGCommand from "../../types/command";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import type MGCommand from '../../types/command';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
 import {
 	camelCase,
 	kebabCase as lispCase,
 	snakeCase,
 	upperCase,
 	lowerCase,
-} from "lodash";
+} from 'lodash';
 
 const pascalCase = (param: string) =>
 	camelCase(param).replace(/\w/, (c) => c.toUpperCase());
@@ -39,100 +39,100 @@ const pascalCase = (param: string) =>
 const convertCase: MGCommand = {
 	// exports (self explanatory)
 	data: new SlashCommandBuilder()
-		.setName("convertcase")
-		.setDescription("Convert some text another case")
+		.setName('convertcase')
+		.setDescription('Convert some text another case')
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("camel")
-				.setDescription("Convert text to camelCase")
+				.setName('camel')
+				.setDescription('Convert text to camelCase')
 				.addStringOption((option) =>
 					option
-						.setName("string")
-						.setDescription("Text that you want to convert")
+						.setName('string')
+						.setDescription('Text that you want to convert')
 						.setRequired(true)
 				)
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("lisp")
-				.setDescription("Convert text to lisp-case")
+				.setName('lisp')
+				.setDescription('Convert text to lisp-case')
 				.addStringOption((option) =>
 					option
-						.setName("string")
-						.setDescription("Text that you want to convert")
+						.setName('string')
+						.setDescription('Text that you want to convert')
 						.setRequired(true)
 				)
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("pascal")
-				.setDescription("Convert text to PascalCase")
+				.setName('pascal')
+				.setDescription('Convert text to PascalCase')
 				.addStringOption((option) =>
 					option
-						.setName("string")
-						.setDescription("Text that you want to convert")
+						.setName('string')
+						.setDescription('Text that you want to convert')
 						.setRequired(true)
 				)
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("snake")
-				.setDescription("Convert text to snake_case")
+				.setName('snake')
+				.setDescription('Convert text to snake_case')
 				.addStringOption((option) =>
 					option
-						.setName("string")
-						.setDescription("Text that you want to convert")
+						.setName('string')
+						.setDescription('Text that you want to convert')
 						.setRequired(true)
 				)
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("lower")
-				.setDescription("Convert text to lower case")
+				.setName('lower')
+				.setDescription('Convert text to lower case')
 				.addStringOption((option) =>
 					option
-						.setName("string")
-						.setDescription("Text that you want to convert")
+						.setName('string')
+						.setDescription('Text that you want to convert')
 						.setRequired(true)
 				)
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("upper")
-				.setDescription("Convert text to UPPER CASE")
+				.setName('upper')
+				.setDescription('Convert text to UPPER CASE')
 				.addStringOption((option) =>
 					option
-						.setName("string")
-						.setDescription("Text that you want to convert")
+						.setName('string')
+						.setDescription('Text that you want to convert')
 						.setRequired(true)
 				)
 		),
 
 	// execute command
 	async execute(interaction) {
-		const toConvert = interaction.options.getString("string") ?? "";
-		const subcommand = interaction.options.getSubcommand() ?? "";
+		const toConvert = interaction.options.getString('string') ?? '';
+		const subcommand = interaction.options.getSubcommand() ?? '';
 
 		let f = (a: string) => a;
 		switch (
 			subcommand // no I will not exec()
 		) {
-			case "camel":
+			case 'camel':
 				f = camelCase;
 				break;
-			case "lisp":
+			case 'lisp':
 				f = lispCase;
 				break;
-			case "pascal":
+			case 'pascal':
 				f = pascalCase;
 				break;
-			case "snake":
+			case 'snake':
 				f = snakeCase;
 				break;
-			case "upper":
+			case 'upper':
 				f = upperCase;
 				break;
-			case "lower":
+			case 'lower':
 				f = lowerCase;
 				break;
 			default:

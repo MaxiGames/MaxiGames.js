@@ -16,45 +16,45 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
-import MGCommand from "../../types/command";
-import { ThreadChannel } from "discord.js";
-import { BugReports } from "../../types/firebase";
-import withChecks from "../../lib/withs";
-import cooldownTest from "../../lib/cooldown";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import { MGFirebase } from '../../utils/firebase';
+import MGCommand from '../../types/command';
+import { ThreadChannel } from 'discord.js';
+import { BugReports } from '../../types/firebase';
+import withChecks from '../../lib/withs';
+import cooldownTest from '../../lib/cooldown';
 
 const bug: MGCommand = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
-		.setName("bugreport")
-		.setDescription("Report a bug!")
+		.setName('bugreport')
+		.setDescription('Report a bug!')
 		.addStringOption((option) =>
 			option
-				.setName("bug")
-				.setDescription("What bug do you want to report?")
+				.setName('bug')
+				.setDescription('What bug do you want to report?')
 				.setRequired(true)
 		),
 
 	async execute(interaction) {
 		await interaction.reply({
-			embeds: [MGEmbed(MGStatus.Info).setTitle("Working on it...")],
+			embeds: [MGEmbed(MGStatus.Info).setTitle('Working on it...')],
 		});
-		const bug = interaction.options.getString("bug")!;
-		const data = MGFirebase.getData("admin/bugreports");
+		const bug = interaction.options.getString('bug')!;
+		const data = MGFirebase.getData('admin/bugreports');
 
 		//check if its a repeated bug report
 		for (const i in data) {
-			if (data[i]["bug"] === bug) {
+			if (data[i]['bug'] === bug) {
 				await interaction.editReply({
 					embeds: [
 						MGEmbed(MGStatus.Error)
 							.setTitle(
-								"A bug report with that title already exists!"
+								'A bug report with that title already exists!'
 							)
 							.setDescription(
-								"Check open bugs at https://discord.gg/hkkkTqhGAz."
+								'Check open bugs at https://discord.gg/hkkkTqhGAz.'
 							),
 					],
 				});
@@ -64,8 +64,8 @@ const bug: MGCommand = withChecks([cooldownTest(10)], {
 
 		// send it to the MG server
 		const channel = interaction.client.guilds.cache
-			.get("837522963389349909")
-			?.channels.cache.get("869960880631218196") as ThreadChannel;
+			.get('837522963389349909')
+			?.channels.cache.get('869960880631218196') as ThreadChannel;
 		const msg = await channel.send({
 			embeds: [
 				MGEmbed(MGStatus.Success)
@@ -79,23 +79,23 @@ const bug: MGCommand = withChecks([cooldownTest(10)], {
 
 		const bugReport: BugReports = {
 			bug: bug,
-			status: "in-progress",
+			status: 'in-progress',
 			user: parseInt(interaction.user.id),
 		};
 		data[msg.id] = bugReport;
-		await MGFirebase.setData("admin/bugreports", data);
+		await MGFirebase.setData('admin/bugreports', data);
 		await interaction.editReply({
 			embeds: [
 				MGEmbed(MGStatus.Success)
-					.setTitle("Submitted Bug Report!")
+					.setTitle('Submitted Bug Report!')
 					.setDescription(
-						"Your bug report has been submitted to the MaxiGames Official server: https://discord.gg/hkkkTqhGAz. You will be notified once it has been addressed! Thanks :D"
+						'Your bug report has been submitted to the MaxiGames Official server: https://discord.gg/hkkkTqhGAz. You will be notified once it has been addressed! Thanks :D'
 					),
 			],
 		});
-		await msg.react("⬆️");
-		await msg.react("🤷");
-		await msg.react("⬇️");
+		await msg.react('⬆️');
+		await msg.react('🤷');
+		await msg.react('⬇️');
 	},
 });
 

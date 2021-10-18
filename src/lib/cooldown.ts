@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CommandInteraction } from "discord.js";
-import { MGFirebase } from "../utils/firebase";
-import { MGEmbed } from "./flavoured";
-import type MGCmdTest from "../types/checks";
-import MGStatus from "./statuses";
+import { CommandInteraction } from 'discord.js';
+import { MGFirebase } from '../utils/firebase';
+import { MGEmbed } from './flavoured';
+import type MGCmdTest from '../types/checks';
+import MGStatus from './statuses';
 
 export default function cooldownTest(
 	cooldown: number,
@@ -34,7 +34,7 @@ export default function cooldownTest(
 				return true;
 			}
 
-			const lastDate = data["cooldowns"][command.data.name!];
+			const lastDate = data['cooldowns'][command.data.name!];
 			const date = Math.ceil(new Date().getTime() / 1000);
 
 			return lastDate + cooldown < date || validator(interaction);
@@ -47,7 +47,7 @@ export default function cooldownTest(
 				return;
 			}
 
-			data["cooldowns"][command.data.name!] = Math.ceil(
+			data['cooldowns'][command.data.name!] = Math.ceil(
 				new Date().getTime() / 1000
 			);
 			await MGFirebase.setData(`user/${interaction.user.id}`, data);
@@ -59,7 +59,7 @@ export default function cooldownTest(
 				return;
 			}
 
-			const lastDate = data["cooldowns"][command.data.name!];
+			const lastDate = data['cooldowns'][command.data.name!];
 			const date = Math.ceil(new Date().getTime() / 1000);
 
 			await interaction.reply({
@@ -68,9 +68,9 @@ export default function cooldownTest(
 						.setTitle(
 							`The command ${command.data.name} is on cooldown!`
 						)
-						.setDescription("Be patient :)")
+						.setDescription('Be patient :)')
 						.addField(
-							"Time left",
+							'Time left',
 							`${convertSecondsToDay(lastDate + cooldown - date)}`
 						),
 				],
@@ -94,23 +94,23 @@ export function convertSecondsToDay(n: number) {
 
 	const seconds = Math.floor(n);
 
-	const dayStr = day === 0 ? "" : `${day} day(s)`;
-	const hourStr = hour === 0 ? "" : `${hour} hour(s)`;
-	const minutesStr = minutes === 0 ? "" : `${minutes.toFixed()} minute(s)`;
-	const secondStr = seconds === 0 ? "" : `${seconds.toFixed()} second(s)`;
+	const dayStr = day === 0 ? '' : `${day} day(s)`;
+	const hourStr = hour === 0 ? '' : `${hour} hour(s)`;
+	const minutesStr = minutes === 0 ? '' : `${minutes.toFixed()} minute(s)`;
+	const secondStr = seconds === 0 ? '' : `${seconds.toFixed()} second(s)`;
 
-	let message = "";
+	let message = '';
 
-	if (dayStr !== "") {
+	if (dayStr !== '') {
 		message = `${dayStr}, ${hourStr}, ${minutesStr} and ${secondStr}`;
 	} else {
-		if (hourStr !== "") {
+		if (hourStr !== '') {
 			message = `${hourStr}, ${minutesStr} and ${secondStr}`;
 		} else {
-			if (minutesStr !== "") {
+			if (minutesStr !== '') {
 				message = `${minutesStr} and ${secondStr}`;
 			} else {
-				if (secondStr !== "") {
+				if (secondStr !== '') {
 					message = `${secondStr}`;
 				}
 			}

@@ -16,51 +16,51 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import type MGCommand from "../../types/command";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
-import { Permissions, CommandInteraction, Guild } from "discord.js";
-import withChecks from "../../lib/withs";
-import cooldownTest from "../../lib/cooldown";
-import { userPermsTest } from "../../lib/permscheck";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import type MGCommand from '../../types/command';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import { MGFirebase } from '../../utils/firebase';
+import { Permissions, CommandInteraction, Guild } from 'discord.js';
+import withChecks from '../../lib/withs';
+import cooldownTest from '../../lib/cooldown';
+import { userPermsTest } from '../../lib/permscheck';
 
 async function addAutoresponse(interaction: CommandInteraction, data: any) {
-	let autoresponse = data["autoresponse"];
-	let trigger = interaction.options.getString("trigger")!;
-	let response = interaction.options.getString("response")!;
+	let autoresponse = data['autoresponse'];
+	let trigger = interaction.options.getString('trigger')!;
+	let response = interaction.options.getString('response')!;
 	if (autoresponse[trigger]) {
 		await interaction.reply({
 			embeds: [
 				MGEmbed(MGStatus.Error)
-					.setTitle("That autoresponse already exists!")
+					.setTitle('That autoresponse already exists!')
 					.setDescription(
-						"Remove it first using /autoresponse remove!"
+						'Remove it first using /autoresponse remove!'
 					),
 			],
 		});
 		return;
 	}
-	data["autoresponse"][trigger] = response;
+	data['autoresponse'][trigger] = response;
 	await MGFirebase.setData(`guild/${interaction.guild!.id}`, data);
 	await interaction.reply({
 		embeds: [
 			MGEmbed(MGStatus.Success)
-				.setTitle("Autoresponse added!")
+				.setTitle('Autoresponse added!')
 				.setDescription(`Trigger: ${trigger}, Response: ${response}`),
 		],
 	});
 }
 
 async function removeAutoresponse(interaction: CommandInteraction, data: any) {
-	let autoresponse = data["autoresponse"];
-	let trigger = interaction.options.getString("trigger")!;
+	let autoresponse = data['autoresponse'];
+	let trigger = interaction.options.getString('trigger')!;
 	if (!autoresponse[trigger]) {
 		await interaction.reply({
 			embeds: [
 				MGEmbed(MGStatus.Error)
-					.setTitle("That autoresponse does not exist!")
+					.setTitle('That autoresponse does not exist!')
 					.setDescription(
 						"You can't remove an autoresponse that doesn't exist!"
 					),
@@ -68,12 +68,12 @@ async function removeAutoresponse(interaction: CommandInteraction, data: any) {
 		});
 		return;
 	}
-	delete data["autoresponse"][trigger];
+	delete data['autoresponse'][trigger];
 	await MGFirebase.setData(`guild/${interaction.guild!.id}`, data);
 	await interaction.reply({
 		embeds: [
 			MGEmbed(MGStatus.Success)
-				.setTitle("Autoresponse deleted!")
+				.setTitle('Autoresponse deleted!')
 				.setDescription(
 					`Autresponse with trigger: ${trigger} successfully removed.`
 				),
@@ -82,17 +82,17 @@ async function removeAutoresponse(interaction: CommandInteraction, data: any) {
 }
 
 async function listAutoresponse(interaction: CommandInteraction, data: any) {
-	let autoresponse = data["autoresponse"];
+	let autoresponse = data['autoresponse'];
 	let embed = MGEmbed(MGStatus.Success)
 		.setTitle(`Autoresponses for ${interaction.guild!.name}`)
-		.setDescription("[Number]. [Trigger]: [Response]");
-	let str = "";
+		.setDescription('[Number]. [Trigger]: [Response]');
+	let str = '';
 	let count = 0;
 	for (let i in autoresponse) {
 		str += `${count}. **${i}:** ${autoresponse[i]} \n`;
 		count++;
 	}
-	embed.addField("Autoresponses", str);
+	embed.addField('Autoresponses', str);
 	await interaction.reply({ embeds: [embed] });
 }
 
@@ -100,40 +100,40 @@ const autoresponse: MGCommand = withChecks(
 	[userPermsTest(Permissions.FLAGS.ADMINISTRATOR)],
 	{
 		data: new SlashCommandBuilder()
-			.setName("autorsponse")
+			.setName('autorsponse')
 			.setDescription("configure your server's autoresponses!")
 			.addSubcommand((subcommand) =>
 				subcommand
-					.setName("add")
-					.setDescription("add an autoresponse")
+					.setName('add')
+					.setDescription('add an autoresponse')
 					.addStringOption((option) =>
 						option
-							.setName("trigger")
-							.setDescription("What triggers the autoresponse?")
+							.setName('trigger')
+							.setDescription('What triggers the autoresponse?')
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
 						option
-							.setName("response")
-							.setDescription("What should we respond with?")
+							.setName('response')
+							.setDescription('What should we respond with?')
 							.setRequired(true)
 					)
 			)
 			.addSubcommand((subcommand) =>
 				subcommand
-					.setName("remove")
-					.setDescription("add an autoresponse")
+					.setName('remove')
+					.setDescription('add an autoresponse')
 					.addStringOption((option) =>
 						option
-							.setName("trigger")
+							.setName('trigger')
 							.setDescription(
-								"Which trigger do you want to remove"
+								'Which trigger do you want to remove'
 							)
 							.setRequired(true)
 					)
 			)
 			.addSubcommand((subcommand) =>
-				subcommand.setName("list").setDescription("add an autoresponse")
+				subcommand.setName('list').setDescription('add an autoresponse')
 			),
 
 		async execute(interaction) {
@@ -142,20 +142,20 @@ const autoresponse: MGCommand = withChecks(
 				interaction.reply({
 					embeds: [
 						MGEmbed(MGStatus.Error).setTitle(
-							"This command cannot be used in DMs!"
+							'This command cannot be used in DMs!'
 						),
 					],
 				});
 			}
 			let data = MGFirebase.getData(`guild/${interaction.guild?.id}`);
 			switch (subcommand) {
-				case "add":
+				case 'add':
 					await addAutoresponse(interaction, data);
 					return;
-				case "remove":
+				case 'remove':
 					await removeAutoresponse(interaction, data);
 					return;
-				case "list":
+				case 'list':
 					await listAutoresponse(interaction, data);
 					return;
 			}

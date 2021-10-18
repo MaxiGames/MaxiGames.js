@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MGFirebase } from "../../utils/firebase";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import { MessageReaction, TextChannel, User } from "discord.js";
+import { MGFirebase } from '../../utils/firebase';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import { MessageReaction, TextChannel, User } from 'discord.js';
 
 const starboardwatch = {
-	name: "messageReactionRemove",
+	name: 'messageReactionRemove',
 	async execute(reaction: MessageReaction, user: User) {
 		const guildData = MGFirebase.getData(
 			`guild/${reaction.message.guildId}`
@@ -42,22 +42,22 @@ const starboardwatch = {
     }
     */
 
-		if (reaction.emoji.name !== "⭐") {
+		if (reaction.emoji.name !== '⭐') {
 			return;
 		}
 
-		if (guildData["starboardChannel"] === 0) {
+		if (guildData['starboardChannel'] === 0) {
 			return; // no starboard channel set
 		}
 
-		if (!guildData["starboardMsgs"]) {
+		if (!guildData['starboardMsgs']) {
 			return;
 		}
-		if (guildData["starboardMsgs"][reaction.message.id] === undefined) {
+		if (guildData['starboardMsgs'][reaction.message.id] === undefined) {
 			return;
 		}
 
-		guildData["starboardMsgs"][reaction.message.id]["stars"] -= 1;
+		guildData['starboardMsgs'][reaction.message.id]['stars'] -= 1;
 
 		try {
 			await MGFirebase.setData(
@@ -66,22 +66,22 @@ const starboardwatch = {
 			);
 
 			const sbchan = reaction.client.channels.cache.get(
-				guildData["starboardChannel"].id
+				guildData['starboardChannel'].id
 			) as TextChannel;
 
 			const oldmsg = await sbchan.messages.fetch(
-				guildData["starboardMsgs"][reaction.message.id]["rxnid"]
+				guildData['starboardMsgs'][reaction.message.id]['rxnid']
 			);
 
-			if (reaction.count < guildData["starboardChannel"].thresh) {
+			if (reaction.count < guildData['starboardChannel'].thresh) {
 				oldmsg.delete();
 			}
 
-			if (reaction.message.content!.trim() !== "") {
+			if (reaction.message.content!.trim() !== '') {
 				// if there's no message content don't show just a >; it's ugly
 				// yes I know this code is even uglier, but quite frankly, I don't care.
 				reaction.message.content =
-					"\n\n> " + reaction.message.content!.replace(/\n/g, "\n> ");
+					'\n\n> ' + reaction.message.content!.replace(/\n/g, '\n> ');
 			}
 
 			const embed = MGEmbed(MGStatus.Info)
@@ -90,7 +90,7 @@ const starboardwatch = {
 					`[Click to jump to message](${reaction.message.url})` +
 						reaction.message.content
 				)
-				.setFooter("React with ⭐ to star this message")
+				.setFooter('React with ⭐ to star this message')
 				.setAuthor(
 					reaction.message.author!.username,
 					reaction.message.author!.avatarURL() ??

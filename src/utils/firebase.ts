@@ -16,18 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client } from "discord.js";
-import * as admin from "firebase-admin";
+import { Client } from 'discord.js';
+import * as admin from 'firebase-admin';
 import {
 	DataModel,
 	initialData,
 	initialGuild,
 	initialUser,
-} from "../types/firebase";
-import moan from "../lib/moan";
-import MGS from "../lib/statuses";
-import { MGEmbed } from "../lib/flavoured";
-import MGStatus from "../lib/statuses";
+} from '../types/firebase';
+import moan from '../lib/moan';
+import MGS from '../lib/statuses';
+import { MGEmbed } from '../lib/flavoured';
+import MGStatus from '../lib/statuses';
 
 export class FirebaseManager {
 	db: admin.database.Database | undefined = undefined;
@@ -38,25 +38,25 @@ export class FirebaseManager {
 		this.initDone = true;
 		this.db = admin.database();
 		if (this.db === undefined) {
-			throw "cannot find database";
+			throw 'cannot find database';
 		}
 
 		// initialise and cast data
-		const snapshot = await this.db.ref("/").get();
+		const snapshot = await this.db.ref('/').get();
 		if (!snapshot.exists()) {
-			moan(MGS.Error, "No database found!");
+			moan(MGS.Error, 'No database found!');
 			this.data = initialData as DataModel;
 
 			// set it on firebase
-			this.db?.ref("/").set(this.data);
+			this.db?.ref('/').set(this.data);
 
 			if (this.db === undefined) {
-				moan(MGS.Error, "No database available!");
+				moan(MGS.Error, 'No database available!');
 				return;
 			}
 			// if db doesn't exist, get data set on the guild
-			await this.db.ref("/").set(this.data);
-			moan(MGS.Success, "Initialised data.");
+			await this.db.ref('/').set(this.data);
+			moan(MGS.Success, 'Initialised data.');
 		} else {
 			let data = snapshot.val();
 			try {
@@ -66,9 +66,9 @@ export class FirebaseManager {
 				const castedData = data as DataModel;
 				this.data = castedData;
 				this.announcement(client);
-				moan(MGS.Success, "Initialised database.");
+				moan(MGS.Success, 'Initialised database.');
 			} catch {
-				moan(MGS.Error, "Data casting failed!");
+				moan(MGS.Error, 'Data casting failed!');
 				return;
 			}
 		}
@@ -76,11 +76,11 @@ export class FirebaseManager {
 
 	public async setData(ref: string, data: any): Promise<void> {
 		if (!this.initDone) {
-			moan(MGS.Warn, "Init not done.");
+			moan(MGS.Warn, 'Init not done.');
 			return;
 		}
 
-		const referencePoints = ref.split("/");
+		const referencePoints = ref.split('/');
 
 		// validate reference input
 		if (referencePoints.length < 1) {
@@ -99,20 +99,20 @@ export class FirebaseManager {
 			// then try setting and casting the data into the DataModel
 			this.setDeepArray(referencePoints, referencedData, data);
 		} catch {
-			moan(MGS.Error, "");
+			moan(MGS.Error, '');
 			return;
 		}
 
 		// set the data on firebase
 		if (this.db === undefined) {
-			moan(MGS.Error, "No database!");
+			moan(MGS.Error, 'No database!');
 			return;
 		}
 
 		try {
-			await this.db.ref("/" + ref).set(data);
+			await this.db.ref('/' + ref).set(data);
 		} catch {
-			moan(MGS.Error, "Upload failure!");
+			moan(MGS.Error, 'Upload failure!');
 			return;
 		}
 
@@ -121,14 +121,14 @@ export class FirebaseManager {
 
 	public getData(ref: string): any {
 		if (!this.initDone) {
-			moan(MGS.Warn, "Init not done.");
+			moan(MGS.Warn, 'Init not done.');
 			return;
 		}
 
 		// reference validation
-		const referencePoints = ref.split("/");
+		const referencePoints = ref.split('/');
 		if (referencePoints.length < 1) {
-			moan(MGS.Error, "No database!");
+			moan(MGS.Error, 'No database!');
 			return;
 		}
 
@@ -141,7 +141,7 @@ export class FirebaseManager {
 
 			return temp;
 		} catch {
-			moan(MGS.Error, "Invalid reference!");
+			moan(MGS.Error, 'Invalid reference!');
 			return;
 		}
 	}
@@ -149,7 +149,7 @@ export class FirebaseManager {
 	public async initUser(id: string) {
 		// initialise user's properties if its not already is initialised
 		if (this.db === undefined) {
-			moan(MGS.Error, "No database!");
+			moan(MGS.Error, 'No database!');
 			return;
 		}
 
@@ -164,12 +164,12 @@ export class FirebaseManager {
 			setTimeout(() => this.initAllServer, 2000); //recurse if its not defined yet
 		} else {
 			client.guilds.cache.forEach(async (guild) => {
-				if (data["guild"][guild.id] === undefined) {
-					data["guild"][guild.id] = initialGuild;
+				if (data['guild'][guild.id] === undefined) {
+					data['guild'][guild.id] = initialGuild;
 					await this.setData(`guild/${guild.id}`, data);
 					moan(
 						MGS.Success,
-						"Initialised server with name: " + guild.name
+						'Initialised server with name: ' + guild.name
 					);
 				}
 			});
@@ -192,25 +192,25 @@ export class FirebaseManager {
 			}
 			this.setDeepArray(referencePoint.slice(1), data[ref], toset);
 		} catch {
-			moan(MGS.Error, "Invalid operation!");
+			moan(MGS.Error, 'Invalid operation!');
 			return;
 		}
 	}
 
 	private async initData(data: any) {
-		for (const i in data["guild"]) {
-			if (!data["guild"][i]["autoresponse"]) {
-				data["guild"][i]["autoresponse"] = initialGuild.autoresponse;
+		for (const i in data['guild']) {
+			if (!data['guild'][i]['autoresponse']) {
+				data['guild'][i]['autoresponse'] = initialGuild.autoresponse;
 			}
 		}
 
-		for (const i in data["user"]) {
-			if (data["user"][i]["cooldowns"]["autoresponse"]) {
-				delete data["user"][i]["cooldowns"]["autoresponse"];
+		for (const i in data['user']) {
+			if (data['user'][i]['cooldowns']['autoresponse']) {
+				delete data['user'][i]['cooldowns']['autoresponse'];
 			}
 		}
-		await this.db?.ref("/").set(data);
-		moan(MGS.Success, "initialised data for minigames");
+		await this.db?.ref('/').set(data);
+		moan(MGS.Success, 'initialised data for minigames');
 		return data;
 	}
 
@@ -218,10 +218,10 @@ export class FirebaseManager {
 		if (this.db === null || client === null) {
 			return;
 		}
-		this.db?.ref("/announcement").on("value", (snapshot) => {
+		this.db?.ref('/announcement').on('value', (snapshot) => {
 			if (snapshot.exists()) {
 				const data = snapshot.val() as string;
-				if (data === "") {
+				if (data === '') {
 					return;
 				}
 				client.guilds.cache.forEach((guild) => {
@@ -229,13 +229,13 @@ export class FirebaseManager {
 						embeds: [
 							MGEmbed(MGStatus.Success)
 								.setTitle(
-									"Important announcement by MaxiGames developers to all severs"
+									'Important announcement by MaxiGames developers to all severs'
 								)
 								.setDescription(data),
 						],
 					});
 				});
-				this.db?.ref("/announcement").set("");
+				this.db?.ref('/announcement').set('');
 			}
 		});
 	}

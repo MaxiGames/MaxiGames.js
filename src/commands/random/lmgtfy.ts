@@ -16,51 +16,51 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import MGCommand from "../../types/command";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import MGCommand from '../../types/command';
 
 const lmgtfy: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName("lmgtfy")
+		.setName('lmgtfy')
 		.setDescription("For people who don't know how to STFW")
 		.addStringOption((option) =>
 			option
-				.setName("searchstring")
-				.setDescription("what to search for")
+				.setName('searchstring')
+				.setDescription('what to search for')
 				.setRequired(true)
 		)
 		.addUserOption((option) =>
 			option
-				.setName("whichidiot")
+				.setName('whichidiot')
 				.setDescription("which idiot didn't know how to STFW?")
 				.setRequired(false)
 		)
 		.addBooleanOption((option) =>
 			option
-				.setName("bruhmode")
-				.setDescription("very bruh")
+				.setName('bruhmode')
+				.setDescription('very bruh')
 				.setRequired(false)
 		)
 		.addBooleanOption((option) =>
 			option
-				.setName("insult")
+				.setName('insult')
 				.setDescription(
-					"enable the internet explainer; has no effect if bruh mode was activated"
+					'enable the internet explainer; has no effect if bruh mode was activated'
 				)
 				.setRequired(false)
 		),
 
 	async execute(interaction) {
 		const searchstr: string =
-			interaction.options.getString("searchstring")!;
+			interaction.options.getString('searchstring')!;
 
 		// the bruh mode
-		if (interaction.options.getBoolean("bruhmode")) {
+		if (interaction.options.getBoolean('bruhmode')) {
 			const embed = MGEmbed()
 				.setTitle(`${searchstr}?`)
-				.setDescription("[Find ye answer](https://www.google.com)");
+				.setDescription('[Find ye answer](https://www.google.com)');
 
 			await interaction.reply({ embeds: [embed] });
 		}
@@ -69,9 +69,9 @@ const lmgtfy: MGCommand = {
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
-						.setTitle("Search string too long...")
+						.setTitle('Search string too long...')
 						.setDescription(
-							"search string should be less than or equal to 128 chars"
+							'search string should be less than or equal to 128 chars'
 						),
 				],
 				ephemeral: true,
@@ -79,9 +79,9 @@ const lmgtfy: MGCommand = {
 			return;
 		}
 
-		const iie = interaction.options.getBoolean("insult") ? "&iie=1" : "";
-		const idiot = interaction.options.getUser("whichidiot");
-		const prefixstr = idiot ? `<@${idiot.id}>, [f` : "[F";
+		const iie = interaction.options.getBoolean('insult') ? '&iie=1' : '';
+		const idiot = interaction.options.getUser('whichidiot');
+		const prefixstr = idiot ? `<@${idiot.id}>, [f` : '[F';
 
 		await interaction.reply({
 			embeds: [

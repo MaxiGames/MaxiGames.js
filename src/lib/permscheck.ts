@@ -16,14 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MGEmbed } from "./flavoured";
-import type MGCmdTest from "../types/checks";
-import MGStatus from "./statuses";
+import { MGEmbed } from './flavoured';
+import type MGCmdTest from '../types/checks';
+import MGStatus from './statuses';
 import {
 	GuildMemberRoleManager,
 	Permissions,
 	PermissionResolvable,
-} from "discord.js";
+} from 'discord.js';
 
 export function userPermsTest(perms: PermissionResolvable) {
 	const ret: MGCmdTest = {

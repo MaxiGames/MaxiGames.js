@@ -16,15 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client } from "discord.js";
-import math from "mathjs";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
-import { Interaction, ButtonInteraction } from "discord.js";
+import { Client } from 'discord.js';
+import math from 'mathjs';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import { MGFirebase } from '../../utils/firebase';
+import { Interaction, ButtonInteraction } from 'discord.js';
 
 const ticketListener = {
-	name: "interactionCreate",
+	name: 'interactionCreate',
 	async execute(int: Interaction) {
 		if (int.isButton()) {
 			// console.log(`Button interaction created by ${int.user} in message by ${int.message.author} with the id ${int.message.id} in channel ${int.channel}`);

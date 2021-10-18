@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MessageEmbed } from "discord.js";
-import MGStatus from "./statuses";
-import COLOR_PALETTE from "./colors";
+import { MessageEmbed } from 'discord.js';
+import MGStatus from './statuses';
+import COLOR_PALETTE from './colors';
 
 export function MGEmbed(stat: MGStatus = MGStatus.Default): MessageEmbed {
 	return new MessageEmbed().setColor(COLOR_PALETTE[stat]);

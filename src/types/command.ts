@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { CommandInteraction } from "discord.js";
+import type { CommandInteraction } from 'discord.js';
 import type {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
-} from "@discordjs/builders";
+} from '@discordjs/builders';
 
 export default interface MGCommand {
 	data: Partial<SlashCommandBuilder> | SlashCommandSubcommandsOnlyBuilder;

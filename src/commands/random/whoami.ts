@@ -16,36 +16,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { GuildMember } from "discord.js";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { GuildMember } from 'discord.js';
 
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import MGCommand from "../../types/command";
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import MGCommand from '../../types/command';
 
 const whoami: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName("whoami")
-		.setDescription("Analyse ur statistics! :D"),
+		.setName('whoami')
+		.setDescription('Analyse ur statistics! :D'),
 	async execute(interaction) {
 		const embed = MGEmbed(MGStatus.Info)
 			.setTitle(
 				`You are ${interaction.user.username}#${interaction.user.discriminator} :D`
 			)
-			.setDescription("What a cool name! :D")
+			.setDescription('What a cool name! :D')
 			.addFields(
 				{
-					name: "Created On:",
+					name: 'Created On:',
 					value: `${interaction.user.createdAt}`.replace(
-						"(Singapore Standard Time)",
-						""
+						'(Singapore Standard Time)',
+						''
 					),
 				},
 				{
-					name: "Joined On:",
+					name: 'Joined On:',
 					value: `${interaction.guild?.joinedAt}`.replace(
-						"(Singapore Standard Time)",
-						""
+						'(Singapore Standard Time)',
+						''
 					),
 				}
 			)
@@ -56,7 +56,7 @@ const whoami: MGCommand = {
 				(previousValue, currentValue) =>
 					`${previousValue} ${currentValue}`
 			);
-			embed.addField("Roles", roles);
+			embed.addField('Roles', roles);
 		}
 
 		await interaction.reply({ embeds: [embed] });

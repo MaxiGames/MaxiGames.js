@@ -21,42 +21,42 @@
  * Description: Handles command for converting text to another case
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import type MGCommand from "../../types/command";
-import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
-import { Permissions, CommandInteraction, Guild } from "discord.js";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import type MGCommand from '../../types/command';
+import { MGEmbed } from '../../lib/flavoured';
+import MGStatus from '../../lib/statuses';
+import { MGFirebase } from '../../utils/firebase';
+import { Permissions, CommandInteraction, Guild } from 'discord.js';
 
 const counting: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName("channel")
+		.setName('channel')
 		.setDescription(
-			"Create your own private channel to ask questions or have discussions :D"
+			'Create your own private channel to ask questions or have discussions :D'
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("adduser")
+				.setName('adduser')
 				.setDescription(
-					"(ADMINS ONLY) Allow a user to view all private channels"
+					'(ADMINS ONLY) Allow a user to view all private channels'
 				)
 				.addUserOption((option) =>
 					option
-						.setName("user")
-						.setDescription("User to be allowed to view")
+						.setName('user')
+						.setDescription('User to be allowed to view')
 						.setRequired(true)
 				)
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("removeuser")
+				.setName('removeuser')
 				.setDescription(
-					"(ADMINS ONLY) Stop a user from being able to view all private channels"
+					'(ADMINS ONLY) Stop a user from being able to view all private channels'
 				)
 				.addUserOption((option) =>
 					option
-						.setName("user")
-						.setDescription("User no longer to be allowed to view")
+						.setName('user')
+						.setDescription('User no longer to be allowed to view')
 						.setRequired(true)
 				)
 		),

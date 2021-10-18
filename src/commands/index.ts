@@ -21,22 +21,22 @@
  * Description: indexes all commands in this directory.
  */
 
-import fs from "fs";
-import path from "path";
-import type MGCommand from "../types/command";
+import fs from 'fs';
+import path from 'path';
+import type MGCommand from '../types/command';
 
 const commands: Map<string, MGCommand> = new Map();
 
 // NOTE: The directory "commands" should contain subdirectories to organise commands.
 // get command files
 const commandFiles: Array<Array<string>> = fs
-	.readdirSync("./dist/src/commands")
-	.map((file: string) => path.join("./dist/src/commands", file))
+	.readdirSync('./dist/src/commands')
+	.map((file: string) => path.join('./dist/src/commands', file))
 	.filter((file: string) => fs.lstatSync(file).isDirectory())
 	.map((dir: string) =>
 		fs
 			.readdirSync(dir)
-			.filter((file: string) => file.endsWith(".js"))
+			.filter((file: string) => file.endsWith('.js'))
 			.map((file: string) => path.join(dir, file))
 	);
 

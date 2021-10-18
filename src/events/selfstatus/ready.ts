@@ -16,18 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type MGEvent from "../../types/event";
-import moan from "../../lib/moan";
-import MGS from "../../lib/statuses";
+import type MGEvent from '../../types/event';
+import moan from '../../lib/moan';
+import MGS from '../../lib/statuses';
 
 const ready: MGEvent = {
-	name: "ready",
+	name: 'ready',
 	once: true,
 	async execute(client) {
 		if (client.user === null) {
 			return;
 		}
-		moan(MGS.Success, "Ready.");
+		moan(MGS.Success, 'Ready.');
 		moan(MGS.Info, `Logged in as ${client.user.tag}.`);
 	},
 };
