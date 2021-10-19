@@ -42,7 +42,7 @@ const bug: MGCommand = withChecks([cooldownTest(10)], {
 			embeds: [MGEmbed(MGStatus.Info).setTitle('Working on it...')],
 		});
 		const bug = interaction.options.getString('bug')!;
-		const data = MGFirebase.getData('admin/bugreports');
+		const data = await MGFirebase.getData('admin/bugreports');
 
 		//check if its a repeated bug report
 		for (const i in data) {

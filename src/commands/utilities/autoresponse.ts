@@ -147,7 +147,9 @@ const autoresponse: MGCommand = withChecks(
 					],
 				});
 			}
-			let data = MGFirebase.getData(`guild/${interaction.guild?.id}`);
+			let data = await MGFirebase.getData(
+				`guild/${interaction.guild?.id}`
+			);
 			switch (subcommand) {
 				case 'add':
 					await addAutoresponse(interaction, data);

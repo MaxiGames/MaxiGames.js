@@ -56,7 +56,7 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 
 		await MGFirebase.initUser(interaction.user.id);
 		//check if player has enough money to pay for what they are gambling
-		const data = MGFirebase.getData(`user/${interaction.user.id}`);
+		const data = await MGFirebase.getData(`user/${interaction.user.id}`);
 		if (data === undefined) {
 			return;
 		}

@@ -29,7 +29,9 @@ export default function cooldownTest(
 	const ret: MGCmdTest = {
 		async check(command, interaction) {
 			MGFirebase.initUser(interaction.user.id);
-			const data = MGFirebase.getData(`user/${interaction.user.id}`);
+			const data = await MGFirebase.getData(
+				`user/${interaction.user.id}`
+			);
 			if (data === undefined) {
 				return true;
 			}
@@ -42,7 +44,9 @@ export default function cooldownTest(
 
 		async succ(command, interaction) {
 			MGFirebase.initUser(interaction.user.id);
-			const data = MGFirebase.getData(`user/${interaction.user.id}`);
+			const data = await MGFirebase.getData(
+				`user/${interaction.user.id}`
+			);
 			if (data === undefined) {
 				return;
 			}
@@ -54,7 +58,9 @@ export default function cooldownTest(
 		},
 
 		async fail(command, interaction) {
-			const data = MGFirebase.getData(`user/${interaction.user.id}`);
+			const data = await MGFirebase.getData(
+				`user/${interaction.user.id}`
+			);
 			if (data === undefined) {
 				return;
 			}

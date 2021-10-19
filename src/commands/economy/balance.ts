@@ -47,7 +47,7 @@ const balance: MGCommand = {
 		if (user === null) {
 			user = interaction.user;
 		}
-		const data = MGFirebase.getData(`user/${interaction.user.id}`);
+		const data = await MGFirebase.getData(`user/${interaction.user.id}`);
 
 		if (data === undefined) {
 			return;

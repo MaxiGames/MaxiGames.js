@@ -106,8 +106,8 @@ export async function generateEndResult(
 
 	let embed: MessageEmbed;
 
-	const userData1 = MGFirebase.getData(`user/${player1ID}`);
-	const userData2 = MGFirebase.getData(`user/${player2ID}`);
+	const userData1 = await MGFirebase.getData(`user/${player1ID}`);
+	const userData2 = await MGFirebase.getData(`user/${player2ID}`);
 
 	const diff =
 		Math.abs(

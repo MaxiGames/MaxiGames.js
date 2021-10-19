@@ -74,7 +74,7 @@ const counting: MGCommand = {
 		//     });
 		//     return;
 		// }
-		// let guildData = MGFirebase.getData(`guild/${guild.id}`);
+		// let guildData = await MGFirebase.getData(`guild/${guild.id}`);
 		// if (subcommand === "addchannel") {
 		//     addChannel(interaction, guild, guildData);
 		// } else if (subcommand === "removechannel") {

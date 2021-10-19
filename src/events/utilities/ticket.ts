@@ -34,7 +34,7 @@ const ticketListener = {
 		//   return;
 		// }
 
-		// let guildData = MGFirebase.getData(`guild/${msg?.guild?.id}`);
+		// let guildData = await MGFirebase.getData(`guild/${msg?.guild?.id}`);
 		// if (guildData === undefined) {
 		//   return;
 		// }
@@ -94,7 +94,7 @@ const ticketListener = {
 		//   await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
 
 		//   //add to personal statistics
-		//   let userData = MGFirebase.getData(`user/${msg.author.id}`);
+		//   let userData = await MGFirebase.getData(`user/${msg.author.id}`);
 		//   userData["count"]["totalCount"]++;
 		//   if (userData["count"]["highestCount"] < number) {
 		//     userData["count"]["highestCount"] = number;

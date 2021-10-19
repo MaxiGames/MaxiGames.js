@@ -28,9 +28,10 @@ const serverProfile: MGCommand = {
 		.setDescription('View your statistics of the server!'),
 
 	async execute(interaction) {
-		const guildData = await MGFirebase.getData(
+		let guildData = await MGFirebase.getData(
 			`guild/${interaction.guild?.id}`
-		)['statistics'];
+		);
+		guildData = guildData['statistics'];
 		console.log(guildData);
 		if (interaction.guild === null) {
 			interaction.reply({

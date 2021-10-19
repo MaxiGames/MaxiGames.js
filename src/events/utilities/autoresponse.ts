@@ -28,9 +28,8 @@ const ticketListener = {
 	async execute(msg: Message) {
 		if (msg.guild === null) return;
 		if (msg.author.bot) return;
-		let autoresponse = MGFirebase.getData(`guild/${msg.guild!.id}`)[
-			'autoresponse'
-		];
+		let autoresponse = await MGFirebase.getData(`guild/${msg.guild!.id}`);
+		autoresponse = autoresponse['autoresponse'];
 		let response = '';
 		for (let i in autoresponse) {
 			if (msg.content.includes(i)) {

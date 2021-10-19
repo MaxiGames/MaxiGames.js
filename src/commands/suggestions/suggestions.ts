@@ -42,7 +42,7 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
 			embeds: [MGEmbed(MGStatus.Info).setTitle('Working on it...')],
 		});
 		const suggestion = interaction.options.getString('suggestion')!;
-		const data = MGFirebase.getData('admin/suggestions');
+		const data = await MGFirebase.getData('admin/suggestions');
 
 		//check if its a repeated suggestion
 		for (const i in data) {

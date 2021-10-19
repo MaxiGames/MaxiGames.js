@@ -76,7 +76,7 @@ const starboard: MGCommand = withChecks(
 				return;
 			}
 
-			const guildData = MGFirebase.getData(`guild/${guild.id}`);
+			const guildData = await MGFirebase.getData(`guild/${guild.id}`);
 			if (guildData === undefined) {
 				return;
 			}

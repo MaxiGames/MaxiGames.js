@@ -24,7 +24,7 @@ import { MessageReaction, TextChannel, User } from 'discord.js';
 const starboardwatch = {
 	name: 'messageReactionAdd',
 	async execute(reaction: MessageReaction, user: User) {
-		const guildData = MGFirebase.getData(
+		const guildData = await MGFirebase.getData(
 			`guild/${reaction.message.guildId}`
 		);
 		if (guildData === undefined) {

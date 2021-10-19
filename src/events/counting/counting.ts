@@ -12,7 +12,7 @@ const countingListener = {
 			return;
 		}
 
-		const guildData = MGFirebase.getData(`guild/${msg?.guild?.id}`);
+		const guildData = await MGFirebase.getData(`guild/${msg?.guild?.id}`);
 		if (guildData === undefined) {
 			return;
 		}
@@ -79,7 +79,7 @@ const countingListener = {
 			await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
 
 			//add to personal statistics
-			const userData = MGFirebase.getData(`user/${msg.author.id}`);
+			const userData = await MGFirebase.getData(`user/${msg.author.id}`);
 			userData['count']['totalCount']++;
 			if (userData['count']['highestCount'] < number) {
 				userData['count']['highestCount'] = number;

@@ -31,7 +31,6 @@ import MGStatus from '../lib/statuses';
 
 export class FirebaseManager {
 	db: admin.database.Database | undefined = undefined;
-	data: DataModel = initialData;
 	initDone = false;
 
 	async init(client: Client) {
@@ -45,18 +44,9 @@ export class FirebaseManager {
 		const snapshot = await this.db.ref('/').get();
 		if (!snapshot.exists()) {
 			moan(MGS.Error, 'No database found!');
-			this.data = initialData as DataModel;
-
 			// set it on firebase
-			this.db?.ref('/').set(this.data);
-
-			if (this.db === undefined) {
-				moan(MGS.Error, 'No database available!');
-				return;
-			}
-			// if db doesn't exist, get data set on the guild
-			await this.db.ref('/').set(this.data);
-			moan(MGS.Success, 'Initialised data.');
+			this.db?.ref('/').set(initialData);
+			moan(MGS.Success, 'Initialised data on database.');
 		} else {
 			let data = snapshot.val();
 			try {
@@ -64,11 +54,10 @@ export class FirebaseManager {
 				data = await this.initData(data);
 				await this.initAllServer(client, data);
 				const castedData = data as DataModel;
-				this.data = castedData;
 				this.announcement(client);
-				moan(MGS.Success, 'Initialised database.');
+				moan(MGS.Success, 'Verified data as data model successfully.');
 			} catch {
-				moan(MGS.Error, 'Data casting failed!');
+				moan(MGS.Error, 'Attention! Data casting failed!');
 				return;
 			}
 		}
@@ -87,19 +76,19 @@ export class FirebaseManager {
 			return;
 		}
 
-		const referencedData = this.data as unknown as { [id: string]: any };
+		let dataInitial = await this.db?.ref(`/`).get();
+		let dataInitial1 = dataInitial?.val();
+
+		let referencedData = dataInitial1;
 		try {
 			// check validity of reference
 			// first check by seeing if it's possible to go into the endpoint of the reference
-			referencedData;
 			for (const i of referencePoints) {
-				referencedData[i];
+				referencedData = referencedData[i];
 			}
-
-			// then try setting and casting the data into the DataModel
-			this.setDeepArray(referencePoints, referencedData, data);
+			referencedData = data;
 		} catch {
-			moan(MGS.Error, '');
+			moan(MGS.Error, 'Cannot cast data that has been set.');
 			return;
 		}
 
@@ -109,8 +98,10 @@ export class FirebaseManager {
 			return;
 		}
 
+		if (ref !== '/') ref = `/${ref}`;
+
 		try {
-			await this.db.ref('/' + ref).set(data);
+			await this.db.ref(ref).set(data);
 		} catch {
 			moan(MGS.Error, 'Upload failure!');
 			return;
@@ -119,43 +110,28 @@ export class FirebaseManager {
 		return;
 	}
 
-	public getData(ref: string): any {
+	public async getData(ref: string): Promise<any> {
 		if (!this.initDone) {
-			moan(MGS.Warn, 'Init not done.');
+			moan(MGS.Warn, 'Init not done. Abort getData.');
 			return;
 		}
-
-		// reference validation
-		const referencePoints = ref.split('/');
-		if (referencePoints.length < 1) {
-			moan(MGS.Error, 'No database!');
-			return;
-		}
-
-		try {
-			// Check if data is valid just by seeing if the reference exists
-			let temp = this.data as any;
-			for (const i of referencePoints) {
-				temp = temp[i];
-			}
-
-			return temp;
-		} catch {
-			moan(MGS.Error, 'Invalid reference!');
-			return;
-		}
+		if (ref !== '/') ref = `/${ref}`;
+		let data = await this.db?.ref(ref).get();
+		if (data === undefined) return data;
+		return data.val();
 	}
 
 	public async initUser(id: string) {
+		let data = await this.getData(`/`);
 		// initialise user's properties if its not already is initialised
 		if (this.db === undefined) {
 			moan(MGS.Error, 'No database!');
 			return;
 		}
 
-		if (this.data.user[id] === undefined) {
-			this.data.user[id] = initialUser;
-			await this.db.ref(`user/${id}`).set(this.data.user[id]);
+		if (data.user[id] === undefined) {
+			data.user[id] = initialUser;
+			await this.db.ref(`user/${id}`).set(data.user[id]);
 		}
 	}
 
@@ -173,27 +149,6 @@ export class FirebaseManager {
 					);
 				}
 			});
-		}
-	}
-
-	private setDeepArray(
-		referencePoint: string[],
-		data: { [id: string]: any },
-		toset: unknown
-	) {
-		// use the reference to the data array and set the data at the back of the function
-		try {
-			const ref = referencePoint[0];
-
-			if (referencePoint.length === 1) {
-				// if there is only one more object left to go into
-				data[ref] = toset;
-				return;
-			}
-			this.setDeepArray(referencePoint.slice(1), data[ref], toset);
-		} catch {
-			moan(MGS.Error, 'Invalid operation!');
-			return;
 		}
 	}
 
