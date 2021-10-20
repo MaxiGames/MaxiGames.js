@@ -41,82 +41,32 @@ const convertCase: MGCommand = {
 	data: new SlashCommandBuilder()
 		.setName('convertcase')
 		.setDescription('Convert some text another case')
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('camel')
-				.setDescription('Convert text to camelCase')
-				.addStringOption((option) =>
-					option
-						.setName('string')
-						.setDescription('Text that you want to convert')
-						.setRequired(true)
-				)
+		.addStringOption((option) =>
+			option
+				.setName('conversion')
+				.setDescription('Type of conversion you want')
+				.setRequired(true)
+				.addChoice('camel', 'camel')
+				.addChoice('lisp', 'lisp')
+				.addChoice('snake', 'snake')
+				.addChoice('pascal', 'pascal')
+				.addChoice('upper', 'upper')
+				.addChoice('lower', 'lower')
 		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('lisp')
-				.setDescription('Convert text to lisp-case')
-				.addStringOption((option) =>
-					option
-						.setName('string')
-						.setDescription('Text that you want to convert')
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('pascal')
-				.setDescription('Convert text to PascalCase')
-				.addStringOption((option) =>
-					option
-						.setName('string')
-						.setDescription('Text that you want to convert')
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('snake')
-				.setDescription('Convert text to snake_case')
-				.addStringOption((option) =>
-					option
-						.setName('string')
-						.setDescription('Text that you want to convert')
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('lower')
-				.setDescription('Convert text to lower case')
-				.addStringOption((option) =>
-					option
-						.setName('string')
-						.setDescription('Text that you want to convert')
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('upper')
-				.setDescription('Convert text to UPPER CASE')
-				.addStringOption((option) =>
-					option
-						.setName('string')
-						.setDescription('Text that you want to convert')
-						.setRequired(true)
-				)
+		.addStringOption((option) =>
+			option
+				.setName('text')
+				.setDescription('Text that you want to convert')
+				.setRequired(true)
 		),
 
 	// execute command
 	async execute(interaction) {
-		const toConvert = interaction.options.getString('string') ?? '';
-		const subcommand = interaction.options.getSubcommand() ?? '';
+		const toConvert = interaction.options.getString('text') ?? '';
+		const conversion = interaction.options.getString('conversion') ?? '';
 
 		let f = (a: string) => a;
-		switch (
-			subcommand // no I will not exec()
-		) {
+		switch (conversion) {
 			case 'camel':
 				f = camelCase;
 				break;
@@ -140,7 +90,7 @@ const convertCase: MGCommand = {
 		}
 
 		const embed = MGEmbed(MGStatus.Success)
-			.setTitle(`Converted case to: ${subcommand}`)
+			.setTitle(`Converted case to: ${conversion}`)
 			.setDescription(f(toConvert));
 
 		await interaction.reply({ embeds: [embed] });

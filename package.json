@@ -10,6 +10,7 @@
 		"test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
 		"check-commands": "node .scripts/check-commands.js",
 		"deploy-commands": "node .scripts/deploy-commands.js",
+		"delete-commands": "node .scripts/delete-commands.js",
 		"deploy": "./.scripts/heroku-deploy.sh",
 		"start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
 		"start-prod": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-prod.json\" npm run init",
