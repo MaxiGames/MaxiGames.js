@@ -54,8 +54,8 @@ const balance: MGCommand = {
 		}
 
 		const embed = MGEmbed(MGStatus.Info)
-			.setTitle('Balance!')
-			.setDescription(`${user.username} #${user.discriminator}'s balance`)
+			.setTitle(`${user.username} #${user.discriminator}\'s balance!`)
+			.setDescription(`MaxiCoins!`)
 			.addFields({ name: 'Balance', value: `${data.money} MaxiCoins` });
 
 		await interaction.reply({ embeds: [embed] });

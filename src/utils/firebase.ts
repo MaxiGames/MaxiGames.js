@@ -18,130 +18,53 @@
 
 import { Client } from 'discord.js';
 import * as admin from 'firebase-admin';
-import {
-	DataModel,
-	initialData,
-	initialGuild,
-	initialUser,
-} from '../types/firebase';
 import moan from '../lib/moan';
 import MGS from '../lib/statuses';
 import { MGEmbed } from '../lib/flavoured';
 import MGStatus from '../lib/statuses';
+import { initialGuild, initialUser } from '../types/firebase';
 
 export class FirebaseManager {
 	db: admin.database.Database | undefined = undefined;
-	initDone = false;
 
-	async init(client: Client) {
-		this.initDone = true;
+	public async init(client: Client) {
 		this.db = admin.database();
-		if (this.db === undefined) {
-			throw 'cannot find database';
-		}
-
-		// initialise and cast data
-		const snapshot = await this.db.ref('/').get();
-		if (!snapshot.exists()) {
-			moan(MGS.Error, 'No database found!');
-			// set it on firebase
-			this.db?.ref('/').set(initialData);
-			moan(MGS.Success, 'Initialised data on database.');
-		} else {
-			let data = snapshot.val();
-			try {
-				// casting data
-				data = await this.initData(data);
-				await this.initAllServer(client, data);
-				const castedData = data as DataModel;
-				this.announcement(client);
-				moan(MGS.Success, 'Verified data as data model successfully.');
-			} catch {
-				moan(MGS.Error, 'Attention! Data casting failed!');
-				return;
-			}
-		}
+		this.initAllServer(client);
+		this.initData();
+		this.announcement(client);
 	}
 
 	public async setData(ref: string, data: any): Promise<void> {
-		if (!this.initDone) {
-			moan(MGS.Warn, 'Init not done.');
-			return;
-		}
-
-		const referencePoints = ref.split('/');
-
-		// validate reference input
-		if (referencePoints.length < 1) {
-			return;
-		}
-
-		let dataInitial = await this.db?.ref(`/`).get();
-		let dataInitial1 = dataInitial?.val();
-
-		let referencedData = dataInitial1;
-		try {
-			// check validity of reference
-			// first check by seeing if it's possible to go into the endpoint of the reference
-			for (const i of referencePoints) {
-				referencedData = referencedData[i];
-			}
-			referencedData = data;
-		} catch {
-			moan(MGS.Error, 'Cannot cast data that has been set.');
-			return;
-		}
-
-		// set the data on firebase
-		if (this.db === undefined) {
-			moan(MGS.Error, 'No database!');
-			return;
-		}
-
-		if (ref !== '/') ref = `/${ref}`;
-
-		try {
-			await this.db.ref(ref).set(data);
-		} catch {
-			moan(MGS.Error, 'Upload failure!');
-			return;
-		}
-
-		return;
+		await this.db?.ref(ref).set(data);
 	}
 
 	public async getData(ref: string): Promise<any> {
-		if (!this.initDone) {
-			moan(MGS.Warn, 'Init not done. Abort getData.');
-			return;
-		}
-		if (ref !== '/') ref = `/${ref}`;
 		let data = await this.db?.ref(ref).get();
-		if (data === undefined) return data;
-		return data.val();
+		return data?.val();
 	}
 
 	public async initUser(id: string) {
-		let data = await this.getData(`/`);
+		let data = await this.getData(`/user/${id}`);
 		// initialise user's properties if its not already is initialised
 		if (this.db === undefined) {
 			moan(MGS.Error, 'No database!');
 			return;
 		}
 
-		if (data.user[id] === undefined) {
+		if (data === undefined) {
 			data.user[id] = initialUser;
 			await this.db.ref(`user/${id}`).set(data.user[id]);
 		}
 	}
 
-	private async initAllServer(client: Client, data: any) {
+	private async initAllServer(client: Client) {
 		if (client === undefined) {
 			setTimeout(() => this.initAllServer, 2000); //recurse if its not defined yet
 		} else {
 			client.guilds.cache.forEach(async (guild) => {
-				if (data['guild'][guild.id] === undefined) {
-					data['guild'][guild.id] = initialGuild;
+				let data = await this.getData(`guild/${guild.id}`);
+				if (data === undefined) {
+					data = initialGuild;
 					await this.setData(`guild/${guild.id}`, data);
 					moan(
 						MGS.Success,
@@ -152,21 +75,8 @@ export class FirebaseManager {
 		}
 	}
 
-	private async initData(data: any) {
-		for (const i in data['guild']) {
-			if (!data['guild'][i]['autoresponse']) {
-				data['guild'][i]['autoresponse'] = initialGuild.autoresponse;
-			}
-		}
-
-		for (const i in data['user']) {
-			if (data['user'][i]['cooldowns']['autoresponse']) {
-				delete data['user'][i]['cooldowns']['autoresponse'];
-			}
-		}
-		await this.db?.ref('/').set(data);
-		moan(MGS.Success, 'initialised data for minigames');
-		return data;
+	private async initData() {
+		moan(MGS.Success, 'initialised data for nothing');
 	}
 
 	private async announcement(client: Client) {
