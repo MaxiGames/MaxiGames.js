@@ -86,6 +86,7 @@ interface User {
 		starboard: number;
 		bugreport: number;
 		suggestion: number;
+		trivia: number;
 	};
 	count: {
 		totalCount: number;
@@ -93,6 +94,7 @@ interface User {
 	};
 	minigames: {
 		tictactoe: number;
+		trivia: number;
 	};
 }
 
@@ -115,6 +117,7 @@ export const initialUser: User = {
 		starboard: 0,
 		bugreport: 0,
 		suggestion: 0,
+		trivia: 0,
 	},
 	count: {
 		totalCount: 0,
@@ -122,6 +125,7 @@ export const initialUser: User = {
 	},
 	minigames: {
 		tictactoe: 1000,
+		trivia: 1000,
 	},
 };
 

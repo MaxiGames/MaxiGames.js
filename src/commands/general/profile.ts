@@ -26,7 +26,7 @@ import moan from '../../lib/moan';
 function calculateRating(userData: any) {
 	let str = '';
 	for (const i in userData['minigames']) {
-		str += `${i.toUpperCase()}'s Rating: ${userData['minigames'][i]}\n`;
+		str += `${i}'s Rating: ${userData['minigames'][i]}\n`;
 	}
 	return str;
 }

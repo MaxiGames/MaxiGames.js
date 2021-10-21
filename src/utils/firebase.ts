@@ -76,6 +76,17 @@ export class FirebaseManager {
 	}
 
 	private async initData() {
+		let usr = await this.db?.ref(`/user`).get();
+		let data = usr?.val();
+		for (let i in data) {
+			if (!data[i]['cooldowns']['trivia'])
+				data[i]['cooldowns']['trivia'] = initialUser.cooldowns.trivia;
+		}
+		for (let i in data) {
+			if (!data[i]['minigames']['trivia'])
+				data[i]['minigames']['trivia'] = initialUser.minigames.trivia;
+		}
+		await this.db?.ref(`/user`).set(data);
 		moan(MGS.Success, 'initialised data for nothing');
 	}
 
