@@ -38,16 +38,13 @@ const bug: MGCommand = withChecks([cooldownTest(10)], {
 		),
 
 	async execute(interaction) {
-		await interaction.reply({
-			embeds: [MGEmbed(MGStatus.Info).setTitle('Working on it...')],
-		});
 		const bug = interaction.options.getString('bug')!;
 		const data = await MGFirebase.getData('admin/bugreports');
 
 		//check if its a repeated bug report
 		for (const i in data) {
 			if (data[i]['bug'] === bug) {
-				await interaction.editReply({
+				await interaction.reply({
 					embeds: [
 						MGEmbed(MGStatus.Error)
 							.setTitle(
@@ -72,7 +69,12 @@ const bug: MGCommand = withChecks([cooldownTest(10)], {
 					.setTitle(
 						`Bug report from ${interaction.user.username}#${interaction.user.discriminator}`
 					)
-					.setThumbnail(`${interaction.user.avatarURL()}`)
+					.setThumbnail(
+						`${
+							interaction.user.avatarURL() ??
+							'https://avatars.githubusercontent.com/u/88721933?s=200&v=4'
+						}`
+					)
 					.setDescription(bug),
 			],
 		});
@@ -84,7 +86,7 @@ const bug: MGCommand = withChecks([cooldownTest(10)], {
 		};
 		data[msg.id] = bugReport;
 		await MGFirebase.setData('admin/bugreports', data);
-		await interaction.editReply({
+		await interaction.reply({
 			embeds: [
 				MGEmbed(MGStatus.Success)
 					.setTitle('Submitted Bug Report!')

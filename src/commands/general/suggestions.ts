@@ -38,16 +38,13 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
 		),
 
 	async execute(interaction) {
-		await interaction.reply({
-			embeds: [MGEmbed(MGStatus.Info).setTitle('Working on it...')],
-		});
 		const suggestion = interaction.options.getString('suggestion')!;
 		const data = await MGFirebase.getData('admin/suggestions');
 
 		//check if its a repeated suggestion
 		for (const i in data) {
-			if (data[i]['suggeston'] === suggestions) {
-				await interaction.editReply({
+			if (data[i]['suggestion'] === suggestions) {
+				await interaction.reply({
 					embeds: [
 						MGEmbed(MGStatus.Error)
 							.setTitle('That suggestion already exists!')
@@ -70,7 +67,12 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
 					.setTitle(
 						`Suggestion from ${interaction.user.username}#${interaction.user.discriminator}`
 					)
-					.setThumbnail(`${interaction.user.avatarURL()}`)
+					.setThumbnail(
+						`${
+							interaction.user.avatarURL() ??
+							'https://avatars.githubusercontent.com/u/88721933?s=200&v=4'
+						}`
+					)
 					.setDescription(suggestion),
 			],
 		});
@@ -80,7 +82,7 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
 			user: parseInt(interaction.user.id),
 		};
 		data[message.id] = suggestion1;
-		await interaction.editReply({
+		await interaction.reply({
 			embeds: [
 				MGEmbed(MGStatus.Success)
 					.setTitle('Submitted suggestion!')
