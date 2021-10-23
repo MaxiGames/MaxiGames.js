@@ -48,15 +48,21 @@ export const client = new Client({
  * Top.gg Initialisation
  */
 
-const dbl = new DBL.Client(apiConfig['top.GG']['token']);
-const webhook = new DBL.Webhook(apiConfig['top.GG']['password']);
+let dbl: any | undefined, webhook: any | undefined;
 
-if (process.env.NODE_ENV == 'production') {
-	webhook.login('/top.gg/bot/863419048041381920/vote', '3000');
+try {
+	dbl = new DBL.Client(apiConfig['top.GG']['token']);
+	webhook = new DBL.Webhook(apiConfig['top.GG']['password']);
 
-	webhook.on('vote', (vote: any) => {
-		console.log(`User id: ${vote.user}\nAll data: ${vote}`);
-	});
+	if (process.env.NODE_ENV == 'production') {
+		webhook.login('/top.gg/bot/863419048041381920/vote', '3000');
+
+		webhook.on('vote', (vote: any) => {
+			console.log(`User id: ${vote.user}\nAll data: ${vote}`);
+		});
+	}
+} catch {
+	moan(MGS.Error, 'Top.gg API not responding!');
 }
 
 /*
@@ -114,7 +120,7 @@ client.login(config.tokenId).then(() => {
 	const user = client.user;
 	let currentGuildCount = client.guilds.cache.size;
 	if (process.env.NODE_ENV == 'production') {
-		dbl.post({ servers: currentGuildCount }).then(
+		dbl?.post({ servers: currentGuildCount }).then(
 			moan(MGS.Info, 'Posted new count to top.gg')
 		);
 	}
@@ -132,7 +138,7 @@ client.login(config.tokenId).then(() => {
 		moan(MGS.Info, `joined new guild "${guild.name}"`);
 		currentGuildCount++;
 		if (process.env.NODE_ENV == 'production') {
-			dbl.post({ servers: currentGuildCount }).then(
+			dbl?.post({ servers: currentGuildCount }).then(
 				moan(MGS.Info, 'Posted new count to top.gg')
 			);
 		}
@@ -153,7 +159,7 @@ client.login(config.tokenId).then(() => {
 		moan(MGS.Info, `left guild: "${guild.name}"`);
 		currentGuildCount--;
 		if (process.env.NODE_ENV == 'production') {
-			dbl.post({ servers: currentGuildCount }).then(
+			dbl?.post({ servers: currentGuildCount }).then(
 				moan(MGS.Info, 'Posted new count to top.gg')
 			);
 		}
