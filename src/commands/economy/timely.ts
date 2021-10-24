@@ -58,8 +58,6 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
 			moneyAdd = 5000 + Math.ceil(Math.random() * 5000);
 		}
 
-		MGFirebase.initUser(`${interaction.user.id}`);
-
 		const data = await MGFirebase.getData(`user/${interaction.user.id}`);
 		if (data === undefined) {
 			return;

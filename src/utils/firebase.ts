@@ -40,22 +40,12 @@ export class FirebaseManager {
 
 	public async getData(ref: string): Promise<any> {
 		let data = await this.db?.ref(ref).get();
-		console.trace();
+		if (ref.split(`/`)[0] === 'user' && data?.exists() === false) {
+			await this.db?.ref(`user/${ref.split('/')[1]}`).set(initialUser);
+			return initialUser;
+		}
+		moan(MGS.Error, 'getData ran');
 		return data?.val();
-	}
-
-	public async initUser(id: string) {
-		let data = await this.getData(`user/${id}`);
-		// initialise user's properties if its not already is initialised
-		if (this.db === undefined) {
-			moan(MGS.Error, 'No database!');
-			return;
-		}
-
-		if (data === undefined) {
-			data.user[id] = initialUser;
-			await this.db.ref(`user/${id}`).set(data.user[id]);
-		}
 	}
 
 	private async initAllServer(client: Client) {

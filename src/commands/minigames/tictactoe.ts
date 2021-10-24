@@ -283,8 +283,6 @@ const tictactoe: MGCommand = {
 			});
 			return;
 		}
-		await MGFirebase.initUser(player1.id);
-		await MGFirebase.initUser(player2.id);
 
 		const board = [
 			['_', '_', '_'],

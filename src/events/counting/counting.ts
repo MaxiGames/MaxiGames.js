@@ -24,8 +24,6 @@ const countingListener = {
 			return;
 		}
 
-		await MGFirebase.initUser(`${msg.author.id}`);
-
 		// parse string
 		const content = msg.content;
 		let number = parseInt(content);

@@ -30,8 +30,6 @@ const money: MGCommand = withChecks([cooldownTest(20)], {
 		.setDescription('Get more money!!!'),
 
 	async execute(interaction) {
-		await MGFirebase.initUser(interaction.user.id);
-
 		const data = await MGFirebase.getData(`user/${interaction.user.id}`);
 		const toAdd = Math.ceil(Math.random() * 30);
 		if (data === undefined) {

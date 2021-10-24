@@ -64,7 +64,7 @@ const gamble = withChecks([cooldownTest(10)], {
 			return;
 		}
 
-		await MGFirebase.initUser(interaction.user.id); // init firebase
+		// init firebase
 
 		const data = await MGFirebase.getData(`user/${interaction.user.id}`); // get user balance
 		if (data === undefined) {

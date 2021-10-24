@@ -41,8 +41,6 @@ const balance: MGCommand = {
 		),
 
 	async execute(interaction) {
-		await MGFirebase.initUser(interaction.user.id);
-
 		let user = interaction.options.getUser('user');
 		if (user === null) {
 			user = interaction.user;

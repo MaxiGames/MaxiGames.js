@@ -65,9 +65,6 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 			});
 		}
 
-		await MGFirebase.initUser(interaction.user.id);
-		await MGFirebase.initUser(usr.id);
-
 		const data = await MGFirebase.getData(`user/${interaction.user.id}`);
 		if (data === undefined) {
 			return;
