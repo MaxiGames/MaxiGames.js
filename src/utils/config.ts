@@ -25,7 +25,7 @@ export const config =
 
 export const firebaseConfig =
 	process.env.NODE_ENV == 'production'
-		? 'https://maxgmaesbeta-default-rtdb.firebaseio.com'
+		? 'https://maxigmaesbeta-default-rtdb.firebaseio.com'
 		: 'https://maxigamesbeta-default-rtdb.firebaseio.com';
 
 export const apiConfig = api;
