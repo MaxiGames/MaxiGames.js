@@ -29,7 +29,6 @@ export class FirebaseManager {
 
 	public async init(client: Client) {
 		this.db = admin.database();
-		await this.initAllServer(client);
 		await this.initData();
 		await this.announcement(client);
 	}
@@ -44,28 +43,12 @@ export class FirebaseManager {
 			await this.db?.ref(`user/${ref.split('/')[1]}`).set(initialUser);
 			return initialUser;
 		}
+		if (ref.split(`/`)[0] === 'guild' && data?.exists() === false) {
+			await this.db?.ref(`guild/${ref.split('/')[1]}`).set(initialGuild);
+			return initialGuild;
+		}
 		moan(MGS.Error, 'getData ran');
 		return data?.val();
-	}
-
-	private async initAllServer(client: Client) {
-		if (client.guilds.cache.size === 0) {
-			setTimeout(() => {
-				this.initAllServer(client);
-			}, 2000);
-			return;
-		}
-		client.guilds.cache.forEach(async (guild) => {
-			let data = await this.getData(`guild/${guild.id}`);
-			if (data === null) {
-				data = initialGuild;
-				await this.setData(`guild/${guild.id}`, data);
-				moan(
-					MGS.Success,
-					'Initialised server with name: ' + guild.name
-				);
-			}
-		});
 	}
 
 	private async initData() {
