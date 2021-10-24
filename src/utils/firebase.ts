@@ -50,7 +50,7 @@ export class FirebaseManager {
 
 	private async initAllServer(client: Client) {
 		if (client === undefined) {
-			setTimeout(() => this.initAllServer, 2000); //recurse if its not defined yet
+			setTimeout(() => this.initAllServer(client), 2000); //recurse if its not defined yet
 		} else {
 			client.guilds.cache.forEach(async (guild) => {
 				let data = await this.getData(`guild/${guild.id}`);
