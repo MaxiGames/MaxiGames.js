@@ -47,7 +47,35 @@ export class FirebaseManager {
 			await this.db?.ref(`guild/${ref.split("/")[1]}`).set(initialGuild);
 			return initialGuild;
 		}
-		moan(MGS.Error, "getData ran");
+
+		{
+			const stack = new Error().stack;
+			if (stack !== undefined) {
+				const caller = stack
+					.split("\n")
+					.map((x) => x.trim())
+					.map((x) => [
+						/\(.+\)/.exec(x),
+						/at (.+) \(/.exec(x),
+						/\(.+:(?:.+:)?([0-9]+):[0-9]+\)/.exec(x),
+					])
+					.filter(
+						(x) => x[0] !== null && x[1] !== null && x[2] !== null
+					)
+					.map((x) => [
+						x[0]![0].slice(1).split(":")[0],
+						x[1]![1],
+						x[2]![1],
+					])
+					.filter((x) => x[0] !== __filename)[0];
+
+				moan(
+					MGS.Info,
+					`getData was called in ${caller[1]}, in file ${caller[0]}`
+				);
+			}
+		}
+
 		return data?.val();
 	}
 
