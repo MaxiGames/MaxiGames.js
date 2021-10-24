@@ -16,48 +16,48 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import type MGCommand from '../../types/command';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import { MGFirebase } from '../../utils/firebase';
-import { Permissions, CommandInteraction, Guild } from 'discord.js';
-import withChecks from '../../lib/withs';
-import cooldownTest from '../../lib/cooldown';
-import { userPermsTest } from '../../lib/permscheck';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type MGCommand from "../../types/command";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import { MGFirebase } from "../../utils/firebase";
+import { Permissions, CommandInteraction, Guild } from "discord.js";
+import withChecks from "../../lib/withs";
+import cooldownTest from "../../lib/cooldown";
+import { userPermsTest } from "../../lib/permscheck";
 
 const starboard: MGCommand = withChecks(
 	[cooldownTest(5), userPermsTest(Permissions.FLAGS.ADMINISTRATOR)],
 	{
 		data: new SlashCommandBuilder()
-			.setName('starboard')
+			.setName("starboard")
 			.setDescription("configure your server's starboard")
 			.addSubcommand((subcommand) =>
 				subcommand
-					.setName('addchannel')
+					.setName("addchannel")
 					.setDescription(
-						'register a channel as the starboard channel'
+						"register a channel as the starboard channel"
 					)
 					.addChannelOption((option) =>
 						option
-							.setName('channel')
-							.setDescription('channel you want to register')
+							.setName("channel")
+							.setDescription("channel you want to register")
 							.setRequired(true)
 					)
 			)
 			.addSubcommand((subcommand) =>
 				subcommand
-					.setName('rmchannel')
-					.setDescription('remove a channel as the starboard channel')
+					.setName("rmchannel")
+					.setDescription("remove a channel as the starboard channel")
 			)
 			.addSubcommand((subcommand) =>
 				subcommand
-					.setName('threshold')
-					.setDescription('set the starboard threshold')
+					.setName("threshold")
+					.setDescription("set the starboard threshold")
 					.addIntegerOption((option) =>
 						option
-							.setName('threshold')
-							.setDescription('desired threshold')
+							.setName("threshold")
+							.setDescription("desired threshold")
 							.setRequired(true)
 					)
 			),
@@ -69,7 +69,7 @@ const starboard: MGCommand = withChecks(
 				await interaction.reply({
 					embeds: [
 						MGEmbed(MGStatus.Error).setTitle(
-							'This command is not usable outside of a server channel.'
+							"This command is not usable outside of a server channel."
 						),
 					],
 				});
@@ -82,28 +82,28 @@ const starboard: MGCommand = withChecks(
 			}
 
 			switch (subcommand) {
-				case 'addchannel': {
+				case "addchannel": {
 					addchannel(interaction, guild, guildData);
 					break;
 				}
-				case 'rmchannel': {
+				case "rmchannel": {
 					rmchannel(interaction, guild, guildData);
 					break;
 				}
-				case 'threshold': {
+				case "threshold": {
 					const newthresh =
-						interaction.options.getInteger('threshold')!;
+						interaction.options.getInteger("threshold")!;
 					let embed;
 
 					if (newthresh < 1) {
 						embed = MGEmbed(MGStatus.Error).setTitle(
-							'Error: threshold must be greater than zero!'
+							"Error: threshold must be greater than zero!"
 						);
 					} else {
 						embed = MGEmbed(MGStatus.Success).setTitle(
 							`Starboard threshold set to ${newthresh}.`
 						);
-						guildData['starboardChannel']['thresh'] = newthresh;
+						guildData["starboardChannel"]["thresh"] = newthresh;
 						await MGFirebase.setData(
 							`guild/${guild.id}`,
 							guildData
@@ -123,21 +123,21 @@ async function addchannel(
 	guild: Guild,
 	guildData: any
 ) {
-	const channel = interaction.options.getChannel('channel')!;
-	const oldc = guildData['starboardChannel'];
-	guildData['starboardChannel'] = { id: channel.id, thresh: 1 };
+	const channel = interaction.options.getChannel("channel")!;
+	const oldc = guildData["starboardChannel"];
+	guildData["starboardChannel"] = { id: channel.id, thresh: 1 };
 
 	await MGFirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
 		let embed;
 		if (!oldc) {
 			embed = MGEmbed(MGStatus.Success)
-				.setTitle('Success!')
+				.setTitle("Success!")
 				.setDescription(
 					`**<#${channel.id}>** is now the starboard channel.`
 				);
 		} else {
 			embed = MGEmbed(MGStatus.Success)
-				.setTitle('Success!')
+				.setTitle("Success!")
 				.setDescription(
 					`**<#${channel.id}>** is now the starboard channel ` +
 						`(from <#${oldc.id}>).`
@@ -153,18 +153,18 @@ async function rmchannel(
 	guildData: any
 ) {
 	let embed;
-	if (guildData['starboardChannel']) {
+	if (guildData["starboardChannel"]) {
 		embed = MGEmbed(MGStatus.Success)
-			.setTitle('Success!')
+			.setTitle("Success!")
 			.setDescription(
-				'The starboard channel is no longer a starboard channel.'
+				"The starboard channel is no longer a starboard channel."
 			);
 
-		guildData['starboardChannel'] = 0;
+		guildData["starboardChannel"] = 0;
 		await MGFirebase.setData(`guild/${guild.id}`, guildData);
 	} else {
 		embed = MGEmbed(MGStatus.Error).setTitle(
-			'This server had no starboard channel in the first place.'
+			"This server had no starboard channel in the first place."
 		);
 	}
 	await interaction.reply({ embeds: [embed] });

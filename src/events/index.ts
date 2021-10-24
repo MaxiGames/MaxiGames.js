@@ -16,22 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import fs from 'fs';
-import path from 'path';
-import MGEvent from '../types/event';
+import fs from "fs";
+import path from "path";
+import MGEvent from "../types/event";
 
 const events: MGEvent[] = [];
 
 // NOTE: The directory "events" should contain subdirectories to organise commands.
 // get event files
 const eventFiles: Array<Array<string>> = fs
-	.readdirSync('./dist/src/events')
-	.map((file: string) => path.join('./dist/src/events', file))
+	.readdirSync("./dist/src/events")
+	.map((file: string) => path.join("./dist/src/events", file))
 	.filter((file: string) => fs.lstatSync(file).isDirectory())
 	.map((dir: string) =>
 		fs
 			.readdirSync(dir)
-			.filter((file: string) => file.endsWith('.js'))
+			.filter((file: string) => file.endsWith(".js"))
 			.map((file: string) => path.join(dir, file))
 	);
 

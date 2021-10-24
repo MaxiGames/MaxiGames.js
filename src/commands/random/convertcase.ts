@@ -21,17 +21,17 @@
  * Description: Handles command for converting text to another case
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import type MGCommand from '../../types/command';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type MGCommand from "../../types/command";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
 import {
 	camelCase,
 	kebabCase as lispCase,
 	snakeCase,
 	upperCase,
 	lowerCase,
-} from 'lodash';
+} from "lodash";
 
 const pascalCase = (param: string) =>
 	camelCase(param).replace(/\w/, (c) => c.toUpperCase());
@@ -39,50 +39,50 @@ const pascalCase = (param: string) =>
 const convertCase: MGCommand = {
 	// exports (self explanatory)
 	data: new SlashCommandBuilder()
-		.setName('convertcase')
-		.setDescription('Convert some text another case')
+		.setName("convertcase")
+		.setDescription("Convert some text another case")
 		.addStringOption((option) =>
 			option
-				.setName('conversion')
-				.setDescription('Type of conversion you want')
+				.setName("conversion")
+				.setDescription("Type of conversion you want")
 				.setRequired(true)
-				.addChoice('camel', 'camel')
-				.addChoice('lisp', 'lisp')
-				.addChoice('snake', 'snake')
-				.addChoice('pascal', 'pascal')
-				.addChoice('upper', 'upper')
-				.addChoice('lower', 'lower')
+				.addChoice("camel", "camel")
+				.addChoice("lisp", "lisp")
+				.addChoice("snake", "snake")
+				.addChoice("pascal", "pascal")
+				.addChoice("upper", "upper")
+				.addChoice("lower", "lower")
 		)
 		.addStringOption((option) =>
 			option
-				.setName('text')
-				.setDescription('Text that you want to convert')
+				.setName("text")
+				.setDescription("Text that you want to convert")
 				.setRequired(true)
 		),
 
 	// execute command
 	async execute(interaction) {
-		const toConvert = interaction.options.getString('text') ?? '';
-		const conversion = interaction.options.getString('conversion') ?? '';
+		const toConvert = interaction.options.getString("text") ?? "";
+		const conversion = interaction.options.getString("conversion") ?? "";
 
 		let f = (a: string) => a;
 		switch (conversion) {
-			case 'camel':
+			case "camel":
 				f = camelCase;
 				break;
-			case 'lisp':
+			case "lisp":
 				f = lispCase;
 				break;
-			case 'pascal':
+			case "pascal":
 				f = pascalCase;
 				break;
-			case 'snake':
+			case "snake":
 				f = snakeCase;
 				break;
-			case 'upper':
+			case "upper":
 				f = upperCase;
 				break;
-			case 'lower':
+			case "lower":
 				f = lowerCase;
 				break;
 			default:

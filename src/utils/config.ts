@@ -16,16 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import configProd from '../../config-prod.json';
-import configDev from '../../config-dev.json';
-import api from '../../api-token.json';
+import configProd from "../../config-prod.json";
+import configDev from "../../config-dev.json";
+import api from "../../api-token.json";
 
 export const config =
-	process.env.NODE_ENV == 'production' ? configProd : configProd;
+	process.env.NODE_ENV == "production" ? configProd : configProd;
 
 export const firebaseConfig =
-	process.env.NODE_ENV == 'production'
-		? 'https://maxigamesbeta-default-rtdb.firebaseio.com'
-		: 'https://maxigamesbeta-default-rtdb.firebaseio.com';
+	process.env.NODE_ENV == "production"
+		? "https://maxigamesbeta-default-rtdb.firebaseio.com"
+		: "https://maxigamesbeta-default-rtdb.firebaseio.com";
 
 export const apiConfig = api;

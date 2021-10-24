@@ -16,50 +16,50 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type MGEvent from '../../types/event';
-import moan from '../../lib/moan';
-import MGS from '../../lib/statuses';
+import type MGEvent from "../../types/event";
+import moan from "../../lib/moan";
+import MGS from "../../lib/statuses";
 import {
 	CommandInteraction,
 	EmbedField,
 	Interaction,
 	MessageActionRow,
 	MessageEmbed,
-} from 'discord.js';
+} from "discord.js";
 import {
 	checkForResult,
 	endResult,
 	generateEndResult,
 	generateTTT,
-} from '../../commands/minigames/tictactoe';
+} from "../../commands/minigames/tictactoe";
 
 const tictactoe = {
-	name: 'interactionCreate',
+	name: "interactionCreate",
 	async execute(interaction: Interaction) {
 		if (!interaction.isButton()) {
 			return;
 		}
 
-		if (interaction.customId.startsWith('tictactoe')) {
+		if (interaction.customId.startsWith("tictactoe")) {
 			const row = interaction.message.components as MessageActionRow[];
 			const board: string[][] = [];
 			let count1 = 0;
 			const content = interaction.message.embeds[0].description as string;
-			const players = content.split(',');
-			const player1 = players[0].split(': ')[1];
-			const player2 = players[1].split(': ')[1];
+			const players = content.split(",");
+			const player1 = players[0].split(": ")[1];
+			const player2 = players[1].split(": ")[1];
 			const player1ID = players[0]
-				.split(')')[0]
-				.replace('**Player 1** (', '');
+				.split(")")[0]
+				.replace("**Player 1** (", "");
 			const player2ID = players[1]
-				.split(')')[0]
-				.replace('**Player 2** (', '')
-				.replace(' ', '');
+				.split(")")[0]
+				.replace("**Player 2** (", "")
+				.replace(" ", "");
 			const fields = interaction.message.embeds[0].fields as EmbedField[];
 			const player1Playing = fields[0].value === player1 ? false : true;
 			if (fields[0].value === interaction.user.username) {
 				//if its the right user pressing button
-				const buttonInformation = interaction.customId.split('-');
+				const buttonInformation = interaction.customId.split("-");
 				for (const i of row) {
 					count1++;
 					let count2 = 0;
@@ -68,12 +68,12 @@ const tictactoe = {
 					for (const j of components) {
 						count2++;
 						const customID = j.customId!;
-						const information = customID.split('-');
+						const information = customID.split("-");
 						if (
 							count1 === parseInt(buttonInformation[1]) &&
 							count2 === parseInt(buttonInformation[2])
 						) {
-							information[3] = player1Playing ? 'X' : 'O';
+							information[3] = player1Playing ? "X" : "O";
 						}
 						row.push(information[3]);
 					}

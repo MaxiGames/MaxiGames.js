@@ -1,6 +1,6 @@
-import path from 'path';
-import MGStatus from './statuses';
-import process from 'process';
+import path from "path";
+import MGStatus from "./statuses";
+import process from "process";
 
 const SPC1 = 10; // space for status info
 const SPC2 = 50; // max width for message
@@ -27,10 +27,10 @@ function refmtstr(str: string, threshold: number, indent: number): string {
 		`\x1b[${indent}C` +
 		iter(
 			str
-				.split(' ')
-				.flatMap((x) => x.split('\n'))
-				.filter((x) => x != ' '),
-			'',
+				.split(" ")
+				.flatMap((x) => x.split("\n"))
+				.filter((x) => x != " "),
+			"",
 			0
 		)
 	);
@@ -38,38 +38,38 @@ function refmtstr(str: string, threshold: number, indent: number): string {
 
 // Let out a (dying?) moan.
 export default function moan(status: MGStatus, msg: string | unknown): void {
-	let e = '';
+	let e = "";
 
-	e += '\x1b[2K\x1b[1G';
-	e += '\x1b[1m';
+	e += "\x1b[2K\x1b[1G";
+	e += "\x1b[1m";
 
 	switch (status) {
 		case MGStatus.Default:
 		case MGStatus.Error:
-			e += '\x1b[31mERROR    ';
+			e += "\x1b[31mERROR    ";
 			break;
 		case MGStatus.Success:
-			e += '\x1b[32mSUCCESS  ';
+			e += "\x1b[32mSUCCESS  ";
 			break;
 		case MGStatus.Info:
-			e += '\x1b[34mINFO	   ';
+			e += "\x1b[34mINFO	   ";
 			break;
 		case MGStatus.Warn:
-			e += '\x1b[33mWARN	   ';
+			e += "\x1b[33mWARN	   ";
 			break;
 	}
 
-	e += '\x1b[0m';
+	e += "\x1b[0m";
 
-	e += '\x1b[0G';
-	if (typeof msg === 'string') {
+	e += "\x1b[0G";
+	if (typeof msg === "string") {
 		e += refmtstr(msg, SPC2, SPC1);
 	} else {
 		e += ` Object:\n\x1b[2K\x1b[1G\x1b[${SPC1}C| ${JSON.stringify(
 			msg,
 			null,
 			2
-		).replaceAll('\n', `\n\x1b[2K\x1b[1G|\x1b[${SPC1}C|`)}`;
+		).replaceAll("\n", `\n\x1b[2K\x1b[1G|\x1b[${SPC1}C|`)}`;
 	}
 
 	e += `\x1b[1G\x1b[${SPC1 + 2 + SPC2}C[@ `;
@@ -78,10 +78,10 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
 	// do not touch
 	const stack = new Error().stack;
 	if (stack === undefined) {
-		e += '\x1b[1m???\x1b[0m';
+		e += "\x1b[1m???\x1b[0m";
 	} else {
 		const caller = stack
-			.split('\n')
+			.split("\n")
 			.map((x) => x.trim())
 			.map((x) => [
 				/\(.+\)/.exec(x),
@@ -89,7 +89,7 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
 				/\(.+:(?:.+:)?([0-9]+):[0-9]+\)/.exec(x),
 			])
 			.filter((x) => x[0] !== null && x[1] !== null && x[2] !== null)
-			.map((x) => [x[0]![0].slice(1).split(':')[0], x[1]![1], x[2]![1]])
+			.map((x) => [x[0]![0].slice(1).split(":")[0], x[1]![1], x[2]![1]])
 			.filter((x) => x[0] !== __filename)[0];
 
 		e +=
@@ -98,7 +98,7 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
 			`in \x1b[1m${caller[1]}\x1b[0m (line ${caller[2]})`;
 	}
 
-	e += '].\n';
+	e += "].\n";
 
 	process.stderr.write(e);
 }

@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client } from 'discord.js';
-import * as admin from 'firebase-admin';
-import moan from '../lib/moan';
-import MGS from '../lib/statuses';
-import { MGEmbed } from '../lib/flavoured';
-import MGStatus from '../lib/statuses';
-import { initialGuild, initialUser } from '../types/firebase';
+import { Client } from "discord.js";
+import * as admin from "firebase-admin";
+import moan from "../lib/moan";
+import MGS from "../lib/statuses";
+import { MGEmbed } from "../lib/flavoured";
+import MGStatus from "../lib/statuses";
+import { initialGuild, initialUser } from "../types/firebase";
 
 export class FirebaseManager {
 	db: admin.database.Database | undefined = undefined;
@@ -39,15 +39,15 @@ export class FirebaseManager {
 
 	public async getData(ref: string): Promise<any> {
 		let data = await this.db?.ref(ref).get();
-		if (ref.split(`/`)[0] === 'user' && data?.exists() === false) {
-			await this.db?.ref(`user/${ref.split('/')[1]}`).set(initialUser);
+		if (ref.split(`/`)[0] === "user" && data?.exists() === false) {
+			await this.db?.ref(`user/${ref.split("/")[1]}`).set(initialUser);
 			return initialUser;
 		}
-		if (ref.split(`/`)[0] === 'guild' && data?.exists() === false) {
-			await this.db?.ref(`guild/${ref.split('/')[1]}`).set(initialGuild);
+		if (ref.split(`/`)[0] === "guild" && data?.exists() === false) {
+			await this.db?.ref(`guild/${ref.split("/")[1]}`).set(initialGuild);
 			return initialGuild;
 		}
-		moan(MGS.Error, 'getData ran');
+		moan(MGS.Error, "getData ran");
 		return data?.val();
 	}
 
@@ -55,25 +55,25 @@ export class FirebaseManager {
 		let usr = await this.db?.ref(`/user`).get();
 		let data = usr?.val();
 		for (let i in data) {
-			if (!data[i]['cooldowns']['trivia'])
-				data[i]['cooldowns']['trivia'] = initialUser.cooldowns.trivia;
+			if (!data[i]["cooldowns"]["trivia"])
+				data[i]["cooldowns"]["trivia"] = initialUser.cooldowns.trivia;
 		}
 		for (let i in data) {
-			if (!data[i]['minigames']['trivia'])
-				data[i]['minigames']['trivia'] = initialUser.minigames.trivia;
+			if (!data[i]["minigames"]["trivia"])
+				data[i]["minigames"]["trivia"] = initialUser.minigames.trivia;
 		}
 		await this.db?.ref(`/user`).set(data);
-		moan(MGS.Success, 'initialised data for nothing');
+		moan(MGS.Success, "initialised data for nothing");
 	}
 
 	private async announcement(client: Client) {
 		if (this.db === null || client === null) {
 			return;
 		}
-		this.db?.ref('/announcement').on('value', (snapshot) => {
+		this.db?.ref("/announcement").on("value", (snapshot) => {
 			if (snapshot.exists()) {
 				const data = snapshot.val() as string;
-				if (data === '') {
+				if (data === "") {
 					return;
 				}
 				client.guilds.cache.forEach((guild) => {
@@ -81,13 +81,13 @@ export class FirebaseManager {
 						embeds: [
 							MGEmbed(MGStatus.Success)
 								.setTitle(
-									'Important announcement by MaxiGames developers to all severs'
+									"Important announcement by MaxiGames developers to all severs"
 								)
 								.setDescription(data),
 						],
 					});
 				});
-				this.db?.ref('/announcement').set('');
+				this.db?.ref("/announcement").set("");
 			}
 		});
 	}

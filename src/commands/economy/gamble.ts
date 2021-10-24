@@ -16,32 +16,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import withcooldown from '../../lib/cooldown';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import MGCommand from '../../types/command';
-import { MGFirebase } from '../../utils/firebase';
-import cooldownTest from '../../lib/cooldown';
-import withChecks from '../../lib/withs';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import withcooldown from "../../lib/cooldown";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import MGCommand from "../../types/command";
+import { MGFirebase } from "../../utils/firebase";
+import cooldownTest from "../../lib/cooldown";
+import withChecks from "../../lib/withs";
 
 const gamble: MGCommand = withChecks([cooldownTest(20)], {
 	data: new SlashCommandBuilder()
-		.setName('gamble')
-		.setDescription('gamble some money :O')
+		.setName("gamble")
+		.setDescription("gamble some money :O")
 		.addIntegerOption((option) =>
 			option
-				.setName('amount')
+				.setName("amount")
 				.setDescription(
-					'How much money are you going to gamble [default = 5]'
+					"How much money are you going to gamble [default = 5]"
 				)
 				.setRequired(false)
 		),
 	async execute(interaction) {
-		const amt: number = interaction.options.getInteger('amount') || 5;
+		const amt: number = interaction.options.getInteger("amount") || 5;
 		if (amt < 5) {
 			interaction.reply({
-				content: 'You need to gamble at least 5 :(',
+				content: "You need to gamble at least 5 :(",
 				ephemeral: true,
 			});
 			return;
@@ -60,14 +60,14 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 			return;
 		}
 
-		if (data['money'] < amt) {
+		if (data["money"] < amt) {
 			interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
-						.setTitle('You do not have enough money to gamble!!')
+						.setTitle("You do not have enough money to gamble!!")
 						.addFields(
-							{ name: 'Gambling:', value: `${amt}` },
-							{ name: 'Balance', value: `${data['money']}` }
+							{ name: "Gambling:", value: `${amt}` },
+							{ name: "Balance", value: `${data["money"]}` }
 						),
 				],
 			});
@@ -85,26 +85,26 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 			let gain = ((player_roll - bot_roll) / bot_roll) * 1.5;
 			gain *= amt;
 			gain = Math.ceil(gain);
-			data['money'] += gain;
+			data["money"] += gain;
 			const Embed = MGEmbed(MGStatus.Success)
 				.setTitle(
 					`You won! You rolled ${player_roll} and the bot rolled ${bot_roll}`
 				)
 				.setDescription(`You bet ${amt} money and won ${gain} money!`)
-				.addField('Your balance:', `${data['money']}`);
+				.addField("Your balance:", `${data["money"]}`);
 			await interaction.reply({
 				embeds: [Embed],
 			});
 
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 		} else if (player_roll < bot_roll) {
-			data['money'] -= amt;
+			data["money"] -= amt;
 			const Embed = MGEmbed(MGStatus.Success)
 				.setTitle(
 					`You lost! You rolled ${player_roll} and the bot rolled ${bot_roll}`
 				)
 				.setDescription(`You bet ${amt} money and lost all of it!`)
-				.addField('Your balance:', `${data['money']}`);
+				.addField("Your balance:", `${data["money"]}`);
 			await interaction.reply({
 				embeds: [Embed],
 			});
@@ -118,7 +118,7 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 				.setDescription(
 					`You bet ${amt} money and didn't win or lose any money!`
 				)
-				.addField('Your balance:', `${data['money']}`);
+				.addField("Your balance:", `${data["money"]}`);
 			await interaction.reply({
 				embeds: [Embed],
 			});

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { CommandInteraction } from 'discord.js';
-import type MGCommand from './command';
+import type { CommandInteraction } from "discord.js";
+import type MGCommand from "./command";
 
 export default interface MGCmdTest {
 	check: (

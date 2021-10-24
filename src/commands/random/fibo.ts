@@ -16,22 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import MGCommand from '../../types/command';
-import Discord from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import MGCommand from "../../types/command";
+import Discord from "discord.js";
 
 const fibo: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName('fibo')
-		.setDescription('Find the Nth fibonacci number! :D')
+		.setName("fibo")
+		.setDescription("Find the Nth fibonacci number! :D")
 		.addIntegerOption((option) =>
 			option
-				.setName('number')
-				.setDescription('Which fibonacci number do you want?')
+				.setName("number")
+				.setDescription("Which fibonacci number do you want?")
 				.setRequired(true)
 		),
 	async execute(interaction) {
-		const num = interaction.options.getInteger('number') || 1;
+		const num = interaction.options.getInteger("number") || 1;
 		if (num > 1000) {
 			await interaction.reply({
 				content: "Oh no we have a character limit that's too big :(",
@@ -39,7 +39,7 @@ const fibo: MGCommand = {
 			});
 		} else if (num < 1) {
 			await interaction.reply({
-				content: 'hMmmmMmm sussy baka :D',
+				content: "hMmmmMmm sussy baka :D",
 				ephemeral: true,
 			});
 		} else {
@@ -53,10 +53,10 @@ const fibo: MGCommand = {
 				pog = pog2store;
 			}
 			const Embed = new Discord.MessageEmbed()
-				.setColor('#00ff00')
+				.setColor("#00ff00")
 				.setTitle(
 					`The ${num}${
-						num > 3 ? 'th' : ['st', 'nd', 'rd'][num - 1]
+						num > 3 ? "th" : ["st", "nd", "rd"][num - 1]
 					} fibonacci number is:`
 				)
 				.setDescription(`${pog2}! :D`);

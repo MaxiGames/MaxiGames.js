@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from "@discordjs/builders";
 import {
 	ButtonInteraction,
 	Message,
@@ -24,13 +24,13 @@ import {
 	MessageButton,
 	MessageEmbed,
 	MessageInteraction,
-} from 'discord.js';
-import cooldownTest from '../../lib/cooldown';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import withChecks from '../../lib/withs';
-import MGCommand from '../../types/command';
-import { MGFirebase } from '../../utils/firebase';
+} from "discord.js";
+import cooldownTest from "../../lib/cooldown";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import withChecks from "../../lib/withs";
+import MGCommand from "../../types/command";
+import { MGFirebase } from "../../utils/firebase";
 
 function shuffle(array: any[]) {
 	let currentIndex = array.length,
@@ -61,7 +61,7 @@ export async function changeRating(
 	let triviaRating = rating.minigames.trivia;
 	let toChange: number;
 	let difficultyMultiplier =
-		difficulty === 'easy' ? 0.2 : difficulty === 'medium' ? 0.5 : 1;
+		difficulty === "easy" ? 0.2 : difficulty === "medium" ? 0.5 : 1;
 	if (won) {
 		toChange = Math.ceil(
 			triviaRating * 0.05 * Math.random() * 3 * difficultyMultiplier
@@ -82,68 +82,68 @@ export async function changeRating(
 
 const trivia: MGCommand = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
-		.setName('trivia')
-		.setDescription('Want to play a game of trivia?')
+		.setName("trivia")
+		.setDescription("Want to play a game of trivia?")
 		.addIntegerOption((option) =>
 			option
-				.setName('questions')
+				.setName("questions")
 				.setDescription(
-					'How many questions do you want? It MUST be less than 5.'
+					"How many questions do you want? It MUST be less than 5."
 				)
 				.setRequired(true)
 		)
 		.addStringOption((option) =>
 			option
-				.setName('difficulty')
+				.setName("difficulty")
 				.setDescription(
-					'What is the difficulty level you want? (The harder the more points you get)'
+					"What is the difficulty level you want? (The harder the more points you get)"
 				)
 				.setRequired(true)
-				.addChoice('easy', 'easy')
-				.addChoice('medium', 'medium')
-				.addChoice('hard', 'hard')
+				.addChoice("easy", "easy")
+				.addChoice("medium", "medium")
+				.addChoice("hard", "hard")
 		),
 	async execute(interaction) {
-		let no = interaction.options.getInteger('questions') ?? 1;
-		let difficulty = interaction.options.getString('difficulty') ?? 'hard';
+		let no = interaction.options.getInteger("questions") ?? 1;
+		let difficulty = interaction.options.getString("difficulty") ?? "hard";
 		if (no > 5) {
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
-						.setTitle('Too many questions!')
+						.setTitle("Too many questions!")
 						.setDescription(
-							'Maximum number of questions to request at one go is 10.'
+							"Maximum number of questions to request at one go is 10."
 						),
 				],
 			});
 			return;
 		}
 		let url = `https://opentdb.com/api.php?amount=${no}&difficulty=${difficulty}&type=multiple&encode=base64`;
-		let XMLHttpRequest = require('xhr2');
+		let XMLHttpRequest = require("xhr2");
 		let xhr = new XMLHttpRequest();
 
 		await interaction.reply({
 			embeds: [
 				MGEmbed(MGStatus.Success)
-					.setTitle('Retrieving questions!')
-					.setDescription('Sending...'),
+					.setTitle("Retrieving questions!")
+					.setDescription("Sending..."),
 			],
 		});
-		xhr.open('GET', url);
+		xhr.open("GET", url);
 
-		xhr.setRequestHeader('Accept', 'application/json');
+		xhr.setRequestHeader("Accept", "application/json");
 
 		xhr.onreadystatechange = async () => {
 			if (xhr.readyState === 4) {
 				let msg: any[] = [];
 				let responseText = xhr.responseText;
 				let results = JSON.parse(responseText).results;
-				let decode = require('base-64').decode;
+				let decode = require("base-64").decode;
 				let sentMessages: Message[] = [];
 				let timeGiven =
-					difficulty === 'easy'
+					difficulty === "easy"
 						? 5000
-						: difficulty === 'medium'
+						: difficulty === "medium"
 						? 7500
 						: 10000;
 				for (let i of results) {
@@ -175,7 +175,7 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 						component.addComponents(
 							new MessageButton()
 								.setLabel(`${count}`)
-								.setStyle('SUCCESS')
+								.setStyle("SUCCESS")
 								.setCustomId(
 									j === correct_answer
 										? `true${count}trivia`
@@ -206,7 +206,7 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 							.components[0] as MessageActionRow;
 						if (
 							newMessageComponents.components[0].customId?.startsWith(
-								'DONE'
+								"DONE"
 							)
 						)
 							continue;
@@ -219,22 +219,22 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 						let component = i[1] as MessageActionRow;
 						embed.setFooter("Time's up!");
 						embed.addField(
-							'Rating Change',
+							"Rating Change",
 							`${
 								ratingChange > 0
-									? '+' + ratingChange
+									? "+" + ratingChange
 									: ratingChange
 							}`
 						);
-						embed.setColor('DARK_NAVY');
+						embed.setColor("DARK_NAVY");
 						let components =
 							component.components as MessageButton[];
 						let newComponents = new MessageActionRow();
 						for (let j of components) {
 							j.setDisabled(true);
-							if (j.customId?.startsWith('true'))
-								j.setStyle('SUCCESS');
-							else j.setStyle('DANGER');
+							if (j.customId?.startsWith("true"))
+								j.setStyle("SUCCESS");
+							else j.setStyle("DANGER");
 							newComponents.addComponents(j);
 						}
 						await sentMessages[count].edit({

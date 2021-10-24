@@ -1,12 +1,12 @@
-import { Client } from 'discord.js';
-import math from 'mathjs';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import { MGFirebase } from '../../utils/firebase';
-import { Message } from 'discord.js';
+import { Client } from "discord.js";
+import math from "mathjs";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import { MGFirebase } from "../../utils/firebase";
+import { Message } from "discord.js";
 
 const countingListener = {
-	name: 'messageCreate',
+	name: "messageCreate",
 	async execute(msg: Message) {
 		if (msg.guild === null || msg.author.bot) {
 			return;
@@ -18,7 +18,7 @@ const countingListener = {
 		if (isNaN(number)) {
 			// do more checks
 			const arr = content.split(/[^0-9, +,\-, *, /]/g);
-			if (arr[0] === '') {
+			if (arr[0] === "") {
 				return;
 			}
 			number = parseInt(math.evaluate(arr[0]));
@@ -32,23 +32,23 @@ const countingListener = {
 			return;
 		}
 
-		if (!guildData['countingChannels']) {
+		if (!guildData["countingChannels"]) {
 			return;
 		}
-		if (guildData['countingChannels'][msg.channel.id] === undefined) {
+		if (guildData["countingChannels"][msg.channel.id] === undefined) {
 			return;
 		}
 
 		// Yay time to check if it's right :)
 		const curCount: number =
-			guildData['countingChannels'][msg.channel.id]['count'];
-		const id = guildData['countingChannels'][msg.channel.id]['id'];
+			guildData["countingChannels"][msg.channel.id]["count"];
+		const id = guildData["countingChannels"][msg.channel.id]["id"];
 
 		// same person?
 		if (id === msg.author.id) {
-			guildData['countingChannels'][msg.channel.id] = { count: 0, id: 0 };
+			guildData["countingChannels"][msg.channel.id] = { count: 0, id: 0 };
 			await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
-			await msg.react('❌');
+			await msg.react("❌");
 			await msg.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
@@ -63,30 +63,30 @@ const countingListener = {
 
 		if (number - 1 === curCount) {
 			// correct!
-			await msg.react('✅');
-			guildData['countingChannels'][msg.channel.id] = {
+			await msg.react("✅");
+			guildData["countingChannels"][msg.channel.id] = {
 				count: number,
 				id: msg.author.id,
 			};
 
 			//show on statistics
-			guildData['statistics']['totalCount'] += 1;
-			if (guildData['statistics']['highestCount'] < number) {
-				guildData['statistics']['highestCount'] = number;
+			guildData["statistics"]["totalCount"] += 1;
+			if (guildData["statistics"]["highestCount"] < number) {
+				guildData["statistics"]["highestCount"] = number;
 			}
 			await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
 
 			//add to personal statistics
 			const userData = await MGFirebase.getData(`user/${msg.author.id}`);
-			userData['count']['totalCount']++;
-			if (userData['count']['highestCount'] < number) {
-				userData['count']['highestCount'] = number;
+			userData["count"]["totalCount"]++;
+			if (userData["count"]["highestCount"] < number) {
+				userData["count"]["highestCount"] = number;
 			}
 			await MGFirebase.setData(`user/${msg.author.id}`, userData);
 		} else {
 			// wrong.
-			await msg.react('❌');
-			guildData['countingChannels'][msg.channel.id] = { count: 0, id: 0 };
+			await msg.react("❌");
+			guildData["countingChannels"][msg.channel.id] = { count: 0, id: 0 };
 			await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
 			await msg.reply({
 				embeds: [

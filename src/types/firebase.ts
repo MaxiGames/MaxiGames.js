@@ -32,13 +32,13 @@ export interface DataModel {
 
 export interface BugReports {
 	bug: string;
-	status: 'denied' | 'in-progress';
+	status: "denied" | "in-progress";
 	user: number;
 }
 
 export interface Suggestions {
 	suggestion: string;
-	status: 'denied' | 'in-progress';
+	status: "denied" | "in-progress";
 	user: number;
 }
 
@@ -63,7 +63,7 @@ export const initialGuild: Guild = {
 	},
 	autoresponse: {
 		maxigames:
-			'Hello there! Did you call me? (This is a default autoresponse for every guild. You can remove or add more autoresponses using the /autoresponse commands, but only admins can do it!)',
+			"Hello there! Did you call me? (This is a default autoresponse for every guild. You can remove or add more autoresponses using the /autoresponse commands, but only admins can do it!)",
 	},
 };
 
@@ -130,14 +130,14 @@ export const initialUser: User = {
 };
 
 export const initialSuggestion: Suggestions = {
-	suggestion: 'Example Suggestion',
-	status: 'denied',
+	suggestion: "Example Suggestion",
+	status: "denied",
 	user: 123,
 };
 
 export const initialBugReport: BugReports = {
-	bug: 'Example Bug Report',
-	status: 'denied',
+	bug: "Example Bug Report",
+	status: "denied",
 	user: 123,
 };
 
@@ -157,6 +157,6 @@ export const initialData: DataModel = {
 	guild: {
 		1234: initialGuild,
 	},
-	announcement: '',
+	announcement: "",
 	admin: initialAdmin,
 };

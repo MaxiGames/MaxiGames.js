@@ -21,45 +21,45 @@
  * Description:
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import { MGFirebase } from '../../utils/firebase';
-import cooldownTest from '../../lib/cooldown';
-import withChecks from '../../lib/withs';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import { MGFirebase } from "../../utils/firebase";
+import cooldownTest from "../../lib/cooldown";
+import withChecks from "../../lib/withs";
 
 function otherOption(name: string) {
-	if (name === 'heads') {
-		return 'tails';
+	if (name === "heads") {
+		return "tails";
 	} else {
-		return 'heads';
+		return "heads";
 	}
 }
 
 const gamble = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
-		.setName('coinflip')
+		.setName("coinflip")
 		.setDescription(
-			'Would you like to try your luck and see if the coins are in your favour?'
+			"Would you like to try your luck and see if the coins are in your favour?"
 		)
 		.addStringOption((option) =>
 			option
-				.setName('option')
-				.setDescription('Heads or Tails?')
+				.setName("option")
+				.setDescription("Heads or Tails?")
 				.setRequired(true)
-				.addChoice('heads', 'heads')
-				.addChoice('tails', 'tails')
+				.addChoice("heads", "heads")
+				.addChoice("tails", "tails")
 		)
 		.addIntegerOption((option) =>
 			option
-				.setName('amount')
-				.setDescription('How much money are ya going to gamble?')
+				.setName("amount")
+				.setDescription("How much money are ya going to gamble?")
 				.setRequired(true)
 		),
 
 	async execute(interaction) {
-		const amt = interaction.options.getInteger('amount'); // read bet amt
-		const option = interaction.options.getString('option'); // read bet on which coin side
+		const amt = interaction.options.getInteger("amount"); // read bet amt
+		const option = interaction.options.getString("option"); // read bet on which coin side
 		if (amt === null || option === null) {
 			return;
 		}
@@ -73,27 +73,27 @@ const gamble = withChecks([cooldownTest(10)], {
 
 		if (amt <= 0) {
 			const deduct = Math.ceil(Math.random() * 5);
-			data['money'] -= deduct;
+			data["money"] -= deduct;
 			interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
-						.setTitle('Stop trying to trick the system, you fool!')
-						.setDescription('No negative numbers.')
-						.addField('Deducted money:', `${deduct}`),
+						.setTitle("Stop trying to trick the system, you fool!")
+						.setDescription("No negative numbers.")
+						.addField("Deducted money:", `${deduct}`),
 				],
 			});
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 			return;
 		}
 
-		if (data['money'] < amt) {
+		if (data["money"] < amt) {
 			interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
-						.setTitle('Oops! Not enough money!!')
+						.setTitle("Oops! Not enough money!!")
 						.addFields(
-							{ name: 'Balance', value: `${data['money']}` },
-							{ name: 'Amount required:', value: `${amt}` }
+							{ name: "Balance", value: `${data["money"]}` },
+							{ name: "Amount required:", value: `${amt}` }
 						),
 				],
 			});
@@ -103,40 +103,40 @@ const gamble = withChecks([cooldownTest(10)], {
 
 		// user's option is correct (really, it's unnecessary because you can just choose true/false randomly)
 		if (
-			(option === 'heads' && compOption === 1) ||
-			(option === 'tails' && compOption === 2)
+			(option === "heads" && compOption === 1) ||
+			(option === "tails" && compOption === 2)
 		) {
-			data['money'] += amt;
+			data["money"] += amt;
 			MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
 
 			interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
-						.setTitle('You won!')
+						.setTitle("You won!")
 						.setDescription(
 							`You guessed the coin flip right! :) it flipped on **${option}**`
 						)
 						.addFields(
-							{ name: 'Balance', value: `${data['money']}` },
-							{ name: 'Amount earned:', value: `${amt}` }
+							{ name: "Balance", value: `${data["money"]}` },
+							{ name: "Amount earned:", value: `${amt}` }
 						),
 				],
 			});
 		} else {
-			data['money'] -= amt;
+			data["money"] -= amt;
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 			interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
-						.setTitle('You lost!')
+						.setTitle("You lost!")
 						.setDescription(
 							`You guessed the coin flip wrong! :( it flipped on **${otherOption(
 								option
 							)}**`
 						)
 						.addFields(
-							{ name: 'Balance', value: `${data['money']}` },
-							{ name: 'Amount lost:', value: `${amt}` }
+							{ name: "Balance", value: `${data["money"]}` },
+							{ name: "Amount lost:", value: `${amt}` }
 						),
 				],
 			});

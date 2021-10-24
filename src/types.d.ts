@@ -1,1 +1,1 @@
-declare module 'top.gg-core';
+declare module "top.gg-core";

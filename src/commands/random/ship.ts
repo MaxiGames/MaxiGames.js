@@ -16,54 +16,54 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import MGCommand from '../../types/command';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import MGCommand from "../../types/command";
 
 const ship: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName('ship')
+		.setName("ship")
 		.setDescription(
-			'Test your relationship :O [Gives a percentage based on how well two strings complement each other]'
+			"Test your relationship :O [Gives a percentage based on how well two strings complement each other]"
 		)
 		.addStringOption((option) =>
 			option
-				.setName('object')
+				.setName("object")
 				.setDescription(
-					'First object (Any string, use ASCII characters if possible)'
+					"First object (Any string, use ASCII characters if possible)"
 				)
 				.setRequired(true)
 		)
 		.addStringOption((option) =>
 			option
-				.setName('object2')
+				.setName("object2")
 				.setDescription(
-					'Second object (use ASCII characters if possible. Default set as your username)'
+					"Second object (use ASCII characters if possible. Default set as your username)"
 				)
 				.setRequired(false)
 		)
 		.addIntegerOption((option) =>
 			option
-				.setName('leniency')
+				.setName("leniency")
 				.setDescription(
-					'Set as any value from 63 to 128. Using 63 results in higher leniency/ship results. [Default 80]'
+					"Set as any value from 63 to 128. Using 63 results in higher leniency/ship results. [Default 80]"
 				)
 				.setRequired(false)
 		),
 
 	async execute(interaction) {
 		const firstname: string =
-			interaction.options.getString('object') || 'maxigames';
+			interaction.options.getString("object") || "maxigames";
 		const secondname: string =
-			interaction.options.getString('object2') ||
+			interaction.options.getString("object2") ||
 			interaction.user.username;
 		const leniency: number =
-			interaction.options.getInteger('leniency') || 80;
+			interaction.options.getInteger("leniency") || 80;
 
 		if (firstname.length > 1000) {
 			await interaction.reply({
-				content: 'Your first name was too long! Try something shorter!',
+				content: "Your first name was too long! Try something shorter!",
 				ephemeral: true,
 			});
 			return;
@@ -71,7 +71,7 @@ const ship: MGCommand = {
 		if (secondname.length > 1000) {
 			await interaction.reply({
 				content:
-					'Your second name was too long! Try something shorter!',
+					"Your second name was too long! Try something shorter!",
 				ephemeral: true,
 			});
 			return;
@@ -79,7 +79,7 @@ const ship: MGCommand = {
 		if (leniency > 128) {
 			await interaction.reply({
 				content:
-					'Your leniency was too high. Set a value from 1 to 128 [80 default]!',
+					"Your leniency was too high. Set a value from 1 to 128 [80 default]!",
 				ephemeral: true,
 			});
 			return;
@@ -87,7 +87,7 @@ const ship: MGCommand = {
 		if (leniency < 63) {
 			await interaction.reply({
 				content:
-					'Your leniency was too low. Set a value from 1 to 128 [80 default]!',
+					"Your leniency was too low. Set a value from 1 to 128 [80 default]!",
 				ephemeral: true,
 			});
 			return;
@@ -97,7 +97,7 @@ const ship: MGCommand = {
 			calculated_length / Math.max(secondname.length, firstname.length)
 		);
 
-		const dice_rolls = '';
+		const dice_rolls = "";
 		let percentage = length_penalty * 100;
 		for (let i = 0; i < calculated_length; i++) {
 			const char_of_1 = firstname[i];
@@ -113,18 +113,18 @@ const ship: MGCommand = {
 		percentage = Math.max(1, percentage);
 
 		const embed = MGEmbed(MGStatus.Info)
-			.setColor('#00ff00')
+			.setColor("#00ff00")
 			.setTitle(`How well do ${firstname} and ${secondname} ship?`)
 			.setDescription(`**${percentage}%**`)
 			.addFields(
 				{
-					name: 'Actual Percentage :O',
-					value: actual_percentage + '%',
+					name: "Actual Percentage :O",
+					value: actual_percentage + "%",
 					inline: false,
 				},
 				{
-					name: 'Leniency',
-					value: leniency + ' leniency',
+					name: "Leniency",
+					value: leniency + " leniency",
 					inline: false,
 				}
 			);

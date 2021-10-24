@@ -21,21 +21,21 @@ import {
 	MessageActionRow,
 	MessageButton,
 	MessageEmbed,
-} from 'discord.js';
-import { changeRating } from '../../commands/minigames/trivia';
-import MGStatus from '../../lib/statuses';
+} from "discord.js";
+import { changeRating } from "../../commands/minigames/trivia";
+import MGStatus from "../../lib/statuses";
 
 const tictactoe = {
-	name: 'interactionCreate',
+	name: "interactionCreate",
 	async execute(interaction: Interaction) {
 		if (!interaction.isButton()) {
 			return;
 		}
 
-		if (interaction.customId.endsWith('trivia')) {
+		if (interaction.customId.endsWith("trivia")) {
 			let won = interaction.customId.startsWith(`true`);
 			let difficulty =
-				interaction.message.embeds[0].description?.split(':');
+				interaction.message.embeds[0].description?.split(":");
 			let newRating = await changeRating(
 				interaction,
 				won,
@@ -48,19 +48,19 @@ const tictactoe = {
 			let embed = message.embeds[0] as MessageEmbed;
 			let count = 0;
 			for (let i of buttons) {
-				if (i.customId?.startsWith('true')) i.setStyle('SUCCESS');
-				else i.setStyle('DANGER');
-				if (i.customId === interaction.customId) i.setStyle('PRIMARY');
+				if (i.customId?.startsWith("true")) i.setStyle("SUCCESS");
+				else i.setStyle("DANGER");
+				if (i.customId === interaction.customId) i.setStyle("PRIMARY");
 				i.setCustomId(`DONE ${count}`);
 				i.setDisabled(true);
 				newComponents.addComponents(i);
 				count++;
 			}
-			embed.setFooter(`You are ${won ? 'CORRECT' : 'WRONG'}!`);
-			embed.setColor(won ? 'GREEN' : 'RED');
+			embed.setFooter(`You are ${won ? "CORRECT" : "WRONG"}!`);
+			embed.setColor(won ? "GREEN" : "RED");
 			embed.addField(
-				'Rating Change',
-				`${newRating > 0 ? '+' + newRating : newRating}`
+				"Rating Change",
+				`${newRating > 0 ? "+" + newRating : newRating}`
 			);
 			interaction.update({
 				embeds: [embed],

@@ -16,28 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import MGCommand from '../../types/command';
-import Discord from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import MGCommand from "../../types/command";
+import Discord from "discord.js";
 
 const weebify: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName('weebify')
-		.setDescription('Change your message to become a weeb!')
+		.setName("weebify")
+		.setDescription("Change your message to become a weeb!")
 		.addStringOption((option) =>
 			option
-				.setName('message')
+				.setName("message")
 				.setDescription(
-					'can only contain alphabetical characters or spaces'
+					"can only contain alphabetical characters or spaces"
 				)
 				.setRequired(true)
 		),
 	async execute(interaction) {
-		let msg = interaction.options.getString('message') || 'Invalid :(';
+		let msg = interaction.options.getString("message") || "Invalid :(";
 		if (msg.length > 1000) {
 			const Embed = new Discord.MessageEmbed()
-				.setColor('#ff0000')
-				.setTitle('Your message is too long! Try a shorter one.');
+				.setColor("#ff0000")
+				.setTitle("Your message is too long! Try a shorter one.");
 			await interaction.reply({
 				embeds: [Embed],
 				ephemeral: true,
@@ -45,12 +45,12 @@ const weebify: MGCommand = {
 			return;
 		}
 		msg = msg.toLowerCase();
-		const alphabet = 'abcdefghijklmnopqrstuvwxyz ';
+		const alphabet = "abcdefghijklmnopqrstuvwxyz ";
 		for (let i = 0; i < msg.length; i++) {
 			if (!alphabet.includes(msg[i])) {
 				await interaction.reply({
 					content:
-						'Your string contains non-alphabetical characters!',
+						"Your string contains non-alphabetical characters!",
 					ephemeral: true,
 				});
 				return;
@@ -80,57 +80,57 @@ const weebify: MGCommand = {
 				const mchar = message_2[i];
 				const nchar = message_2[i + 1];
 				if (
-					mchar != 'a' &&
-					mchar != 'e' &&
-					mchar != 'i' &&
-					mchar != 'o' &&
-					mchar != 'u' &&
-					nchar != 'a' &&
-					nchar != 'e' &&
-					nchar != 'i' &&
-					nchar != 'o' &&
-					nchar != 'u'
+					mchar != "a" &&
+					mchar != "e" &&
+					mchar != "i" &&
+					mchar != "o" &&
+					mchar != "u" &&
+					nchar != "a" &&
+					nchar != "e" &&
+					nchar != "i" &&
+					nchar != "o" &&
+					nchar != "u"
 				) {
 					if (
-						mchar === 'b' ||
-						mchar === 'f' ||
-						mchar === 'l' ||
-						mchar === 'r' ||
-						mchar === 'z'
+						mchar === "b" ||
+						mchar === "f" ||
+						mchar === "l" ||
+						mchar === "r" ||
+						mchar === "z"
 					) {
 						message_2 =
 							message_2.substring(0, i + 1) +
-							'u' +
+							"u" +
 							message_2.substring(i + 1, message_2.length);
 					} else if (
-						mchar === 'd' ||
-						mchar === 'h' ||
-						mchar === 'p' ||
-						mchar === 's' ||
-						mchar === 'w'
+						mchar === "d" ||
+						mchar === "h" ||
+						mchar === "p" ||
+						mchar === "s" ||
+						mchar === "w"
 					) {
 						message_2 =
 							message_2.substring(0, i + 1) +
-							'a' +
+							"a" +
 							message_2.substring(i + 1, message_2.length);
 					} else if (
-						mchar === 'g' ||
-						mchar === 'm' ||
-						mchar === 'n' ||
-						mchar === 't' ||
-						mchar === 'y'
+						mchar === "g" ||
+						mchar === "m" ||
+						mchar === "n" ||
+						mchar === "t" ||
+						mchar === "y"
 					) {
 						message_2 =
 							message_2.substring(0, i + 1) +
-							'o' +
+							"o" +
 							message_2.substring(i + 1, message_2.length);
-					} else if (mchar === 'j' || mchar === 'k') {
+					} else if (mchar === "j" || mchar === "k") {
 						message_2 =
 							message_2.substring(
 								0,
 								i + 1 + number_of_chars_added
 							) +
-							'i' +
+							"i" +
 							message_2.substring(
 								i + 1 + number_of_chars_added,
 								message_2.length
@@ -141,52 +141,52 @@ const weebify: MGCommand = {
 			} else {
 				const mchar = message_2[i];
 				if (
-					mchar != 'a' &&
-					mchar != 'e' &&
-					mchar != 'i' &&
-					mchar != 'o' &&
-					mchar != 'u'
+					mchar != "a" &&
+					mchar != "e" &&
+					mchar != "i" &&
+					mchar != "o" &&
+					mchar != "u"
 				) {
 					if (
-						mchar === 'b' ||
-						mchar === 'f' ||
-						mchar === 'l' ||
-						mchar === 'r' ||
-						mchar === 'z'
+						mchar === "b" ||
+						mchar === "f" ||
+						mchar === "l" ||
+						mchar === "r" ||
+						mchar === "z"
 					) {
 						message_2 =
 							message_2.substring(0, i + 1) +
-							'u' +
+							"u" +
 							message_2.substring(i + 1, message_2.length);
 					} else if (
-						mchar === 'd' ||
-						mchar === 'h' ||
-						mchar === 'p' ||
-						mchar === 's' ||
-						mchar === 'w'
+						mchar === "d" ||
+						mchar === "h" ||
+						mchar === "p" ||
+						mchar === "s" ||
+						mchar === "w"
 					) {
 						message_2 =
 							message_2.substring(0, i + 1) +
-							'a' +
+							"a" +
 							message_2.substring(i + 1, message_2.length);
 					} else if (
-						mchar === 'g' ||
-						mchar === 'm' ||
-						mchar === 'n' ||
-						mchar === 't' ||
-						mchar === 'y'
+						mchar === "g" ||
+						mchar === "m" ||
+						mchar === "n" ||
+						mchar === "t" ||
+						mchar === "y"
 					) {
 						message_2 =
 							message_2.substring(0, i + 1) +
-							'o' +
+							"o" +
 							message_2.substring(i + 1, message_2.length);
-					} else if (mchar === 'j' || mchar === 'k') {
+					} else if (mchar === "j" || mchar === "k") {
 						message_2 =
 							message_2.substring(
 								0,
 								i + 1 + number_of_chars_added
 							) +
-							'i' +
+							"i" +
 							message_2.substring(
 								i + 1 + number_of_chars_added,
 								message_2.length
@@ -198,8 +198,8 @@ const weebify: MGCommand = {
 		}
 
 		const Embed = new Discord.MessageEmbed()
-			.setColor('#00ff00')
-			.setTitle('Your weebified message: ')
+			.setColor("#00ff00")
+			.setTitle("Your weebified message: ")
 			.setDescription(`${message_2}`);
 		await interaction.reply({
 			embeds: [Embed],

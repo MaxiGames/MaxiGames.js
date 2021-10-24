@@ -21,19 +21,19 @@
  * Description: Handles balance command
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import type MGCommand from '../../types/command';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import { MGFirebase } from '../../utils/firebase';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type MGCommand from "../../types/command";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import { MGFirebase } from "../../utils/firebase";
 
 const balance: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName('balance')
-		.setDescription('Check your balance! Do you have money to spare? :D')
+		.setName("balance")
+		.setDescription("Check your balance! Do you have money to spare? :D")
 		.addUserOption((option) =>
 			option
-				.setName('user')
+				.setName("user")
 				.setDescription(
 					"You can use this option to check another users' balance."
 				)
@@ -41,7 +41,7 @@ const balance: MGCommand = {
 		),
 
 	async execute(interaction) {
-		let user = interaction.options.getUser('user');
+		let user = interaction.options.getUser("user");
 		if (user === null) {
 			user = interaction.user;
 		}
@@ -54,7 +54,7 @@ const balance: MGCommand = {
 		const embed = MGEmbed(MGStatus.Info)
 			.setTitle(`${user.username} #${user.discriminator}\'s balance!`)
 			.setDescription(`MaxiCoins!`)
-			.addFields({ name: 'Balance', value: `${data.money} MaxiCoins` });
+			.addFields({ name: "Balance", value: `${data.money} MaxiCoins` });
 
 		await interaction.reply({ embeds: [embed] });
 	},

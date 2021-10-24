@@ -16,51 +16,51 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from "@discordjs/builders";
 import {
 	CommandInteraction,
 	MessageActionRow,
 	MessageButton,
 	MessageSelectMenu,
 	SelectMenuInteraction,
-} from 'discord.js';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import MGCommand from '../../types/command';
-import fs from 'fs';
-import { lowerCase, startCase } from 'lodash';
+} from "discord.js";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import MGCommand from "../../types/command";
+import fs from "fs";
+import { lowerCase, startCase } from "lodash";
 
 function getDirectories(path: string) {
 	return fs.readdirSync(path).filter(function (file) {
-		return fs.statSync(path + '/' + file).isDirectory();
+		return fs.statSync(path + "/" + file).isDirectory();
 	});
 }
 
 function getFiles(path: string) {
 	return fs.readdirSync(path).filter(function (file) {
-		return fs.statSync(path + '/' + file).isFile();
+		return fs.statSync(path + "/" + file).isFile();
 	});
 }
 
 export function getLinks() {
 	const inviteButton = new MessageButton()
-		.setLabel('Invite the bot!')
-		.setStyle('LINK')
+		.setLabel("Invite the bot!")
+		.setStyle("LINK")
 		.setURL(
-			'https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=261188091120&scope=bot%20applications.commands'
+			"https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=261188091120&scope=bot%20applications.commands"
 		);
 	const topGGVote = new MessageButton()
-		.setLabel('Vote (Top.gg)')
-		.setStyle('LINK')
-		.setURL('https://tinyurl.com/votemaxigamesTopgg');
+		.setLabel("Vote (Top.gg)")
+		.setStyle("LINK")
+		.setURL("https://tinyurl.com/votemaxigamesTopgg");
 	const discordsVote = new MessageButton()
-		.setLabel('Vote (discords.com)')
-		.setStyle('LINK')
-		.setURL('https://tinyurl.com/votemaxigamesDiscordcom');
+		.setLabel("Vote (discords.com)")
+		.setStyle("LINK")
+		.setURL("https://tinyurl.com/votemaxigamesDiscordcom");
 	const supportServer = new MessageButton()
-		.setLabel('Support Server')
-		.setStyle('LINK')
-		.setURL('https://discord.gg/BNm87Cvdx3');
+		.setLabel("Support Server")
+		.setStyle("LINK")
+		.setURL("https://discord.gg/BNm87Cvdx3");
 	return [inviteButton, topGGVote, discordsVote, supportServer];
 }
 
@@ -68,7 +68,7 @@ export async function mainHelp(
 	interaction: SelectMenuInteraction | CommandInteraction,
 	page: string
 ) {
-	const commandFiles = getDirectories('./dist/src/commands');
+	const commandFiles = getDirectories("./dist/src/commands");
 
 	const options: { label: string; description: string; value: string }[] = [];
 
@@ -84,8 +84,8 @@ export async function mainHelp(
 
 	const row = new MessageActionRow().addComponents(
 		new MessageSelectMenu()
-			.setCustomId('help-main')
-			.setPlaceholder(page === 'main' ? 'Initial landing page' : page)
+			.setCustomId("help-main")
+			.setPlaceholder(page === "main" ? "Initial landing page" : page)
 			.addOptions(options)
 	);
 
@@ -99,11 +99,11 @@ export async function mainHelp(
 		supportServer
 	);
 
-	if (page === 'main') {
+	if (page === "main") {
 		return {
 			embeds: [
 				MGEmbed(MGStatus.Info)
-					.setTitle('Help!')
+					.setTitle("Help!")
 					.setDescription(
 						"Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
 					),
@@ -120,7 +120,7 @@ export async function mainHelp(
 	for (const i of cmds) {
 		fields.push({
 			name: `${counter}`,
-			value: startCase(i.replace('.js', '')),
+			value: startCase(i.replace(".js", "")),
 			inline: true,
 		});
 		counter++;
@@ -129,7 +129,7 @@ export async function mainHelp(
 	return {
 		embeds: [
 			MGEmbed(MGStatus.Info)
-				.setTitle('Help!')
+				.setTitle("Help!")
 				.setDescription(`Category: ${page}`)
 				.addFields(fields),
 		],
@@ -139,19 +139,19 @@ export async function mainHelp(
 
 const help: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName('help')
-		.setDescription('Find out the details of certain commands')
+		.setName("help")
+		.setDescription("Find out the details of certain commands")
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName('main')
-				.setDescription('Provides a list for all commands of the bot')
+				.setName("main")
+				.setDescription("Provides a list for all commands of the bot")
 		),
 
 	async execute(interaction) {
 		const subcommand = interaction.options.getSubcommand();
 		switch (subcommand) {
-			case 'main':
-				await interaction.reply(await mainHelp(interaction, 'main'));
+			case "main":
+				await interaction.reply(await mainHelp(interaction, "main"));
 		}
 	},
 };

@@ -16,34 +16,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import MGCommand from '../../types/command';
-import { ColorResolvable, MessageEmbed } from 'discord.js';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import MGCommand from "../../types/command";
+import { ColorResolvable, MessageEmbed } from "discord.js";
 
 const color: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName('randcolor')
-		.setDescription('Get a random color'),
+		.setName("randcolor")
+		.setDescription("Get a random color"),
 	async execute(interaction) {
 		const arr = [
-			'0',
-			'1',
-			'2',
-			'3',
-			'4',
-			'5',
-			'6',
-			'7',
-			'8',
-			'9',
-			'a',
-			'b',
-			'c',
-			'd',
-			'e',
-			'f',
+			"0",
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"a",
+			"b",
+			"c",
+			"d",
+			"e",
+			"f",
 		];
-		let color = '#';
+		let color = "#";
 		for (let i = 0; i < 6; i++) {
 			const randomChar = arr[Math.floor(Math.random() * arr.length)];
 			//append this hex character to our color code

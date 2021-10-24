@@ -16,28 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { MGEmbed } from '../../lib/flavoured';
-import MGStatus from '../../lib/statuses';
-import { MGFirebase } from '../../utils/firebase';
-import MGCommand from '../../types/command';
+import { SlashCommandBuilder } from "@discordjs/builders";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import { MGFirebase } from "../../utils/firebase";
+import MGCommand from "../../types/command";
 
 const serverProfile: MGCommand = {
 	data: new SlashCommandBuilder()
-		.setName('serverprofile')
-		.setDescription('View your statistics of the server!'),
+		.setName("serverprofile")
+		.setDescription("View your statistics of the server!"),
 
 	async execute(interaction) {
 		let guildData = await MGFirebase.getData(
 			`guild/${interaction.guild?.id}`
 		);
-		guildData = guildData['statistics'];
+		guildData = guildData["statistics"];
 		console.log(guildData);
 		if (interaction.guild === null) {
 			interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
-						.setTitle('No profile available')
+						.setTitle("No profile available")
 						.setDescription("You can't show profile in the DMs!"),
 				],
 			});
@@ -47,12 +47,12 @@ const serverProfile: MGCommand = {
 			embeds: [
 				MGEmbed(MGStatus.Info)
 					.setTitle(`${interaction.guild?.name} 's profile`)
-					.setDescription('View your statistics on the bot!')
+					.setDescription("View your statistics on the bot!")
 					.setThumbnail(interaction.guild.iconURL()!)
 					.setFields([
 						{
-							name: 'Counting: ',
-							value: `Highest Count: ${guildData['highestCount']} \n Total Counts: ${guildData['totalCount']}`,
+							name: "Counting: ",
+							value: `Highest Count: ${guildData["highestCount"]} \n Total Counts: ${guildData["totalCount"]}`,
 							inline: false,
 						},
 					]),
