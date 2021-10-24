@@ -6,7 +6,7 @@
 	"scripts": {
 		"prepare": "husky install",
 		"init": "node --experimental-top-level-await dist/src/index.js",
-		"build": "npm run fix; rm -rf dist; tsc;",
+		"build": "rm -rf dist; tsc;",
 		"test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
 		"check-commands": "node .scripts/check-commands.js",
 		"deploy-commands": "node .scripts/deploy-commands.js",
@@ -14,8 +14,7 @@
 		"deploy": "./.scripts/heroku-deploy.sh",
 		"start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
 		"start-prod": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-prod.json\" npm run init",
-		"buildStart": "npm run build; npm run deploy-commands; npm run start;",
-		"fix": "npx prettier --write ."
+		"buildStart": "npm run build; npm run deploy-commands; npm run start;"
 	},
 	"engines": {
 		"node": "16.x"
