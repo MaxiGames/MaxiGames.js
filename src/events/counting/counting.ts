@@ -12,18 +12,6 @@ const countingListener = {
 			return;
 		}
 
-		const guildData = await MGFirebase.getData(`guild/${msg?.guild?.id}`);
-		if (guildData === undefined) {
-			return;
-		}
-
-		if (!guildData['countingChannels']) {
-			return;
-		}
-		if (guildData['countingChannels'][msg.channel.id] === undefined) {
-			return;
-		}
-
 		// parse string
 		const content = msg.content;
 		let number = parseInt(content);
@@ -37,6 +25,18 @@ const countingListener = {
 			if (isNaN(number)) {
 				return;
 			}
+		}
+
+		const guildData = await MGFirebase.getData(`guild/${msg?.guild?.id}`);
+		if (guildData === undefined) {
+			return;
+		}
+
+		if (!guildData['countingChannels']) {
+			return;
+		}
+		if (guildData['countingChannels'][msg.channel.id] === undefined) {
+			return;
 		}
 
 		// Yay time to check if it's right :)

@@ -21,7 +21,7 @@ import configDev from '../../config-dev.json';
 import api from '../../api-token.json';
 
 export const config =
-	process.env.NODE_ENV == 'production' ? configProd : configDev;
+	process.env.NODE_ENV == 'production' ? configProd : configProd;
 
 export const firebaseConfig =
 	process.env.NODE_ENV == 'production'

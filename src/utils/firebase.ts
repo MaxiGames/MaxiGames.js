@@ -49,21 +49,23 @@ export class FirebaseManager {
 	}
 
 	private async initAllServer(client: Client) {
-		if (client === undefined) {
-			setTimeout(() => this.initAllServer(client), 2000); //recurse if its not defined yet
-		} else {
-			client.guilds.cache.forEach(async (guild) => {
-				let data = await this.getData(`guild/${guild.id}`);
-				if (data === undefined) {
-					data = initialGuild;
-					await this.setData(`guild/${guild.id}`, data);
-					moan(
-						MGS.Success,
-						'Initialised server with name: ' + guild.name
-					);
-				}
-			});
+		if (client.guilds.cache.size === 0) {
+			setTimeout(() => {
+				this.initAllServer(client);
+			}, 2000);
+			return;
 		}
+		client.guilds.cache.forEach(async (guild) => {
+			let data = await this.getData(`guild/${guild.id}`);
+			if (data === null) {
+				data = initialGuild;
+				await this.setData(`guild/${guild.id}`, data);
+				moan(
+					MGS.Success,
+					'Initialised server with name: ' + guild.name
+				);
+			}
+		});
 	}
 
 	private async initData() {
