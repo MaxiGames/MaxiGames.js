@@ -29,9 +29,9 @@ export class FirebaseManager {
 
 	public async init(client: Client) {
 		this.db = admin.database();
-		this.initAllServer(client);
-		this.initData();
-		this.announcement(client);
+		await this.initAllServer(client);
+		await this.initData();
+		await this.announcement(client);
 	}
 
 	public async setData(ref: string, data: any): Promise<void> {
