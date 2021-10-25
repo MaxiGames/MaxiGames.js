@@ -66,8 +66,7 @@ export class FirebaseManager {
 						x[0]![0].slice(1).split(":")[0],
 						x[1]![1],
 						x[2]![1],
-					])
-					.filter((x) => x[0] !== __filename)[0];
+					])[0];
 
 				moan(
 					MGS.Info,
