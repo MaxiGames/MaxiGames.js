@@ -95,6 +95,7 @@ interface User {
 	minigames: {
 		tictactoe: number;
 		trivia: number;
+		guessthecolour: number;
 	};
 }
 
@@ -126,6 +127,7 @@ export const initialUser: User = {
 	minigames: {
 		tictactoe: 1000,
 		trivia: 1000,
+		guessthecolour: 1000,
 	},
 };
 

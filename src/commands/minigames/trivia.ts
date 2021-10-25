@@ -166,6 +166,10 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 						.setDescription(
 							`Category: ${category}, Difficulty: ${difficulty}`
 						)
+						.addFields({
+							name: "User ID:",
+							value: `${interaction.user.id}`,
+						})
 						.setFooter(`Time Given: ${timeGiven / 1000} seconds`);
 
 					let component = new MessageActionRow();

@@ -22,10 +22,10 @@ import {
 	MessageButton,
 	MessageEmbed,
 } from "discord.js";
-import { changeRating } from "../../commands/minigames/trivia";
+import { changeRating } from "../../commands/minigames/guessthecolour";
 import MGStatus from "../../lib/statuses";
 
-const tictactoe = {
+const guessthecolour = {
 	name: "interactionCreate",
 	async execute(interaction: Interaction) {
 		if (!interaction.isButton()) {
@@ -33,40 +33,33 @@ const tictactoe = {
 		}
 
 		if (
-			interaction.customId.endsWith("trivia") &&
+			interaction.customId.endsWith("guessthecolour") &&
 			interaction.message.embeds[0].fields![0].value ===
 				interaction.user.id
 		) {
-			let won = interaction.customId.startsWith(`true`);
-			let difficulty =
-				interaction.message.embeds[0].description?.split(":");
-			let newRating = await changeRating(
-				interaction,
-				won,
-				difficulty![difficulty!.length - 1] as string
-			);
-			let message = interaction.message;
-			let component = (message.components as MessageActionRow[])[0];
-			let buttons = component.components as MessageButton[];
+			let won = interaction.customId.startsWith("CORRECT");
+			let valueChange = await changeRating(interaction, won);
+			let embed = interaction.message.embeds[0] as MessageEmbed;
+			let components = interaction.message.components![0];
+			embed.setDescription(`${won === true ? "Correct!" : "Wrong!"}`);
+			embed.addFields([
+				{
+					name: "Rating Change:",
+					value: `${valueChange}`,
+				},
+			]);
 			let newComponents = new MessageActionRow();
-			let embed = message.embeds[0] as MessageEmbed;
-			let count = 0;
-			for (let i of buttons) {
-				if (i.customId?.startsWith("true")) i.setStyle("SUCCESS");
-				else i.setStyle("DANGER");
-				if (i.customId === interaction.customId) i.setStyle("PRIMARY");
-				i.setCustomId(`DONE ${count}`);
-				i.setDisabled(true);
-				newComponents.addComponents(i);
-				count++;
+			for (let i of components.components) {
+				let button = i as MessageButton;
+				if (button.customId?.startsWith("CORRECT"))
+					button.setStyle("SUCCESS");
+				else if (button.customId === interaction.customId)
+					button.setStyle("PRIMARY");
+				else button.setStyle("DANGER");
+				button.setDisabled(true);
+				newComponents.addComponents([button]);
 			}
-			embed.setFooter(`You are ${won ? "CORRECT" : "WRONG"}!`);
-			embed.setColor(won ? "GREEN" : "RED");
-			embed.addField(
-				"Rating Change",
-				`${newRating > 0 ? "+" + newRating : newRating}`
-			);
-			interaction.update({
+			await interaction.update({
 				embeds: [embed],
 				components: [newComponents],
 			});
@@ -74,4 +67,4 @@ const tictactoe = {
 	},
 };
 
-export default tictactoe;
+export default guessthecolour;
