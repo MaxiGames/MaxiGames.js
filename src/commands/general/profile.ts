@@ -34,18 +34,30 @@ function calculateRating(userData: any) {
 const profile: MGCommand = {
 	data: new SlashCommandBuilder()
 		.setName("profile")
-		.setDescription("View your statistics in the bot!"),
+		.setDescription("View your statistics in the bot!")
+		.addUserOption((option) =>
+			option
+				.setName("user")
+				.setRequired(false)
+				.setDescription(
+					"Do you want to see the profile of another user?"
+				)
+		),
 
 	async execute(interaction) {
-		const userData = await MGFirebase.getData(
-			`user/${interaction.user.id}`
-		);
+		let user = interaction.options.getUser("user");
+		let userData;
+		if (user === null) {
+			user = interaction.user;
+		}
+		userData = await MGFirebase.getData(`user/${user.id}`);
 		const embed = MGEmbed(MGStatus.Info)
-			.setTitle(
-				`${interaction.user.username} #${interaction.user.discriminator}'s profile`
-			)
+			.setTitle(`${user.username} #${user.discriminator}'s profile`)
 			.setDescription("View your statistics on the bot!")
-			.setThumbnail(interaction.user.avatarURL()!)
+			.setThumbnail(
+				user.avatarURL() ??
+					"https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
+			)
 			.setFields([
 				{
 					name: "Counting: ",

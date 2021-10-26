@@ -90,7 +90,10 @@ export class FirebaseManager {
 				data[i]["minigames"]["trivia"] = initialUser.minigames.trivia;
 		}
 		for (let i in data) {
-			if (!data[i]["minigames"]["guessthecolour"])
+			if (
+				!data[i]["minigames"]["guessthecolour"] ||
+				typeof data[i]["minigames"]["guessthecolour"] === "string"
+			)
 				data[i]["minigames"]["guessthecolour"] =
 					initialUser.minigames.guessthecolour;
 		}
