@@ -96,7 +96,7 @@ const guessTheColour: MGCommand = {
 		}
 		let embed = MGEmbed()
 			.setTitle("Guess The Colour!")
-			.setFooter("Time given to guess colour: 4 seconds")
+			.setFooter("Time given to see colour: 3 seconds")
 			.setDescription("<--- Guess embed's colour!")
 			.addFields({ name: "User ID:", value: `${interaction.user.id}` })
 			.setColor(`#${colour.slice(1, 7)}`);
@@ -111,28 +111,16 @@ const guessTheColour: MGCommand = {
 				"<--- Guess embed's colour!"
 			)
 				return;
-			let valueChange = await changeRating(interaction, false);
-			embed.setFooter("Time is up!");
-			embed.addFields([
-				{
-					name: "Rating Change:",
-					value: `${valueChange}`,
-				},
-			]);
-			let newComponents = new MessageActionRow();
-			for (let i of components.components) {
-				let button = i as MessageButton;
-				if (i.customId?.startsWith("CORRECT"))
-					button.setStyle("SUCCESS");
-				else button.setStyle("DANGER");
-				button.setDisabled(true);
-				newComponents.addComponents([button]);
-			}
+			embed.setFooter("Time is up! You can no longer see the colour!");
+			embed.setDescription(
+				"The colour has been removed. You still have infinite time to guess it tho..."
+			);
+			embed.setColor("DARK_BUT_NOT_BLACK");
 			await interaction.editReply({
 				embeds: [embed],
-				components: [newComponents],
+				components: [components],
 			});
-		}, 4000);
+		}, 3000);
 	},
 };
 
