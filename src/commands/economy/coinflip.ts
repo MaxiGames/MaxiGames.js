@@ -28,12 +28,21 @@ import { MGFirebase } from "../../utils/firebase";
 import cooldownTest from "../../lib/cooldown";
 import withChecks from "../../lib/withs";
 
-function otherOption(name: string) {
-	if (name === "heads") {
+function otherOption(name: boolean) {
+	if (name) {
 		return "tails";
 	} else {
 		return "heads";
 	}
+}
+
+function toBoolean(toBool: int, trueState: int, falseState: int) {
+	switch (toBool) {
+		case trueState:
+			return true;
+		
+		default:
+			return false;
 }
 
 const gamble = withChecks([cooldownTest(10)], {
@@ -45,7 +54,7 @@ const gamble = withChecks([cooldownTest(10)], {
 		.addStringOption((option) =>
 			option
 				.setName("option")
-				.setDescription("Heads or Tails?")
+				.setDescription("Will ya bet on Heads or Tails?")
 				.setRequired(true)
 				.addChoice("heads", "heads")
 				.addChoice("tails", "tails")
@@ -70,7 +79,9 @@ const gamble = withChecks([cooldownTest(10)], {
 		if (data === undefined) {
 			return;
 		}
-
+		
+		// bad boi no cheat system
+		// deduct balance as punishment
 		if (amt <= 0) {
 			const deduct = Math.ceil(Math.random() * 5);
 			data["money"] -= deduct;
@@ -99,12 +110,14 @@ const gamble = withChecks([cooldownTest(10)], {
 			});
 		}
 
-		const compOption = Math.ceil(Math.random() * 2);
+		// true: heads
+		// false: tails
+		const compOption = toBoolean(Math.ceil(Math.random() * 2), 1, 2);
 
-		// user's option is correct (really, it's unnecessary because you can just choose true/false randomly)
+		// user's option is correct
 		if (
-			(option === "heads" && compOption === 1) ||
-			(option === "tails" && compOption === 2)
+			(option === "heads" && compOption) ||
+			(option === "tails" && !compOption)
 		) {
 			data["money"] += amt;
 			MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
@@ -114,7 +127,7 @@ const gamble = withChecks([cooldownTest(10)], {
 					MGEmbed(MGStatus.Success)
 						.setTitle("You won!")
 						.setDescription(
-							`You guessed the coin flip right! :) it flipped on **${option}**`
+							`You guessed the coin flip right! :) \n It flipped on **${option}**`
 						)
 						.addFields(
 							{ name: "Balance", value: `${data["money"]}` },
@@ -130,10 +143,10 @@ const gamble = withChecks([cooldownTest(10)], {
 					MGEmbed(MGStatus.Success)
 						.setTitle("You lost!")
 						.setDescription(
-							`You guessed the coin flip wrong! :( it flipped on **${otherOption(
+							`You guessed the coin flip wrong! :( \n It flipped on **${otherOption( 
 								option
 							)}**`
-						)
+						) // i know linter demands this, but having only one argument on a seperate line makes it more unreadable...
 						.addFields(
 							{ name: "Balance", value: `${data["money"]}` },
 							{ name: "Amount lost:", value: `${amt}` }
