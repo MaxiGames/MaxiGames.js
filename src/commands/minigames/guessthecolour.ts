@@ -39,7 +39,6 @@ export async function changeRating(
 	let colourRating = await MGFirebase.getData(
 		`user/${interaction.user.id}/minigames/guessthecolour`
 	);
-	console.log(colourRating);
 	let toChange: number;
 	if (won) {
 		toChange = Math.ceil(colourRating * 0.05 * Math.random() * 3);
@@ -48,7 +47,6 @@ export async function changeRating(
 		toChange = -Math.ceil(colourRating * 0.02 * Math.random() * 3);
 		colourRating += toChange;
 	}
-	console.log(colourRating);
 	await MGFirebase.setData(
 		`user/${interaction.user.id}/minigames/guessthecolour`,
 		colourRating

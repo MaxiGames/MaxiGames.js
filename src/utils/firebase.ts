@@ -96,6 +96,9 @@ export class FirebaseManager {
 			)
 				data[i]["minigames"]["guessthecolour"] =
 					initialUser.minigames.guessthecolour;
+			if (!data[i]["minigames"]["escapethehouse"])
+				data[i]["minigames"]["escapethehouse"] =
+					initialUser.minigames.escapethehouse;
 		}
 		await this.db?.ref(`/user`).set(data);
 		moan(MGS.Success, "initialised data for nothing");

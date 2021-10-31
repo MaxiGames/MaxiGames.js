@@ -96,6 +96,7 @@ interface User {
 		tictactoe: number;
 		trivia: number;
 		guessthecolour: number;
+		escapethehouse: number;
 	};
 }
 
@@ -128,6 +129,7 @@ export const initialUser: User = {
 		tictactoe: 1000,
 		trivia: 1000,
 		guessthecolour: 1000,
+		escapethehouse: 1000,
 	},
 };
 

@@ -45,7 +45,7 @@ const guessthecolour = {
 			embed.addFields([
 				{
 					name: "Rating Change:",
-					value: `${valueChange}`,
+					value: `${valueChange > 0 ? "+" : ""}${valueChange}`,
 				},
 			]);
 			let newComponents = new MessageActionRow();
