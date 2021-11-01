@@ -21,5 +21,4 @@
  * Description: Currently unknown
  */
 
-
 declare module "top.gg-core";
