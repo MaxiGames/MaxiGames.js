@@ -16,21 +16,49 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client } from "discord.js";
+import { Client, ThreadChannel } from "discord.js";
 import * as admin from "firebase-admin";
 import moan from "../lib/moan";
 import MGS from "../lib/statuses";
 import { MGEmbed } from "../lib/flavoured";
 import MGStatus from "../lib/statuses";
-import { initialGuild, initialUser } from "../types/firebase";
+import { Guild, initialGuild, initialUser } from "../types/firebase";
 
 export class FirebaseManager {
 	db: admin.database.Database | undefined = undefined;
+	calls = 0;
 
 	public async init(client: Client) {
 		this.db = admin.database();
 		await this.initData();
 		await this.announcement(client);
+		client.guilds.cache.forEach(async (guild) => {
+			let id = guild.id;
+			let data = (await this.getData(`guild/${id}/countingChannels`)) as
+				| { [id: string]: { count: number; id: number } }
+				| number;
+			if (typeof data !== "number") {
+				let newData = data as {
+					[id: string]: { count: number; id: number };
+				};
+				for (let i in newData) {
+					let channel = client.channels.cache.get(i);
+					let foundChannel =
+						(await channel?.fetch()) as ThreadChannel;
+					await foundChannel.send({
+						embeds: [
+							MGEmbed(MGS.Success)
+								.setTitle(
+									`Counting Channel affected by Change of MaxiGames Database (NEW COUNT: ${newData[i].count})`
+								)
+								.setDescription(
+									"We have reset to the previous server and have detected that this channel was previously set as a counting channel. Check our announcement in the official server or in the default channel for this server for more info"
+								),
+						],
+					});
+				}
+			}
+		});
 	}
 
 	public async setData(ref: string, data: any): Promise<void> {
@@ -47,33 +75,9 @@ export class FirebaseManager {
 			await this.db?.ref(`guild/${ref.split("/")[1]}`).set(initialGuild);
 			return initialGuild;
 		}
+		this.calls++;
 
-		{
-			const stack = new Error().stack;
-			if (stack !== undefined) {
-				const caller = stack
-					.split("\n")
-					.map((x) => x.trim())
-					.map((x) => [
-						/\(.+\)/.exec(x),
-						/at (.+) \(/.exec(x),
-						/\(.+:(?:.+:)?([0-9]+):[0-9]+\)/.exec(x),
-					])
-					.filter(
-						(x) => x[0] !== null && x[1] !== null && x[2] !== null
-					)
-					.map((x) => [
-						x[0]![0].slice(1).split(":")[0],
-						x[1]![1],
-						x[2]![1],
-					])[0];
-
-				moan(
-					MGS.Info,
-					`getData was called in ${caller[1]}, in file ${caller[0]}`
-				);
-			}
-		}
+		moan(MGS.Info, `getData was called ${this.calls} times!`);
 
 		return data?.val();
 	}
@@ -101,7 +105,7 @@ export class FirebaseManager {
 					initialUser.minigames.escapethehouse;
 		}
 		await this.db?.ref(`/user`).set(data);
-		moan(MGS.Success, "initialised data for nothing");
+		moan(MGS.Success, "initialised data for old database");
 	}
 
 	private async announcement(client: Client) {
