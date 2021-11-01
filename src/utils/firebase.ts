@@ -85,22 +85,30 @@ export class FirebaseManager {
 		if (this.db === null || client === null) {
 			return;
 		}
-		this.db?.ref("/announcement").on("value", (snapshot) => {
+		this.db?.ref("/announcement").on("value", async (snapshot) => {
 			if (snapshot.exists()) {
 				const data = snapshot.val() as string;
 				if (data === "") {
 					return;
 				}
-				client.guilds.cache.forEach((guild) => {
-					guild.systemChannel?.send({
-						embeds: [
-							MGEmbed(MGStatus.Success)
-								.setTitle(
-									"Important announcement by MaxiGames developers to all severs"
-								)
-								.setDescription(data),
-						],
-					});
+				client.guilds.cache.forEach(async (guild) => {
+					try {
+						await guild.systemChannel?.send({
+							embeds: [
+								MGEmbed(MGStatus.Success)
+									.setTitle(
+										"Important announcement by MaxiGames developers to all severs"
+									)
+									.setDescription(data),
+							],
+						});
+					} catch {
+						moan(
+							MGS.Error,
+							"While announcing, an error ocurred for " +
+								guild.name
+						);
+					}
 				});
 				this.db?.ref("/announcement").set("");
 			}
