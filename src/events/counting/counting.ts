@@ -1,5 +1,4 @@
 import { Client } from "discord.js";
-import math from "mathjs";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../utils/firebase";
@@ -21,7 +20,7 @@ const countingListener = {
 			if (arr[0] === "") {
 				return;
 			}
-			number = parseInt(math.evaluate(arr[0]));
+			number = parseInt(arr[0]);
 			if (isNaN(number)) {
 				return;
 			}
