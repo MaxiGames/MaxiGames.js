@@ -32,33 +32,6 @@ export class FirebaseManager {
 		this.db = admin.database();
 		await this.initData();
 		await this.announcement(client);
-		client.guilds.cache.forEach(async (guild) => {
-			let id = guild.id;
-			let data = (await this.getData(`guild/${id}/countingChannels`)) as
-				| { [id: string]: { count: number; id: number } }
-				| number;
-			if (typeof data !== "number") {
-				let newData = data as {
-					[id: string]: { count: number; id: number };
-				};
-				for (let i in newData) {
-					let channel = client.channels.cache.get(i);
-					let foundChannel =
-						(await channel?.fetch()) as ThreadChannel;
-					await foundChannel.send({
-						embeds: [
-							MGEmbed(MGS.Success)
-								.setTitle(
-									`Counting Channel affected by Change of MaxiGames Database (NEW COUNT: ${newData[i].count})`
-								)
-								.setDescription(
-									"We have reset to the previous server and have detected that this channel was previously set as a counting channel. Check our announcement in the official server or in the default channel for this server for more info"
-								),
-						],
-					});
-				}
-			}
-		});
 	}
 
 	public async setData(ref: string, data: any): Promise<void> {
