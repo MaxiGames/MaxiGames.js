@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MGFirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../lib/firebase";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MessageReaction, TextChannel, User } from "discord.js";

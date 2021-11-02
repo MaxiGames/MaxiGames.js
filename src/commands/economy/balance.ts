@@ -25,7 +25,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../lib/firebase";
 
 const balance: MGCommand = {
 	data: new SlashCommandBuilder()

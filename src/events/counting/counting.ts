@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../lib/firebase";
 import { Message } from "discord.js";
 
 const countingListener = {

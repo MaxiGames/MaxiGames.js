@@ -30,7 +30,7 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import withChecks from "../../lib/withs";
 import MGCommand from "../../types/command";
-import { MGFirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../lib/firebase";
 
 function shuffle(array: any[]) {
 	let currentIndex = array.length,

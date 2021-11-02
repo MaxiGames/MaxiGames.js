@@ -19,7 +19,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../lib/firebase";
 import MGCommand from "../../types/command";
 import moan from "../../lib/moan";
 

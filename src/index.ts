@@ -26,7 +26,7 @@ import { config, firebaseConfig, apiConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
-import { MGFirebase } from "./utils/firebase";
+import { MGFirebase } from "./lib/firebase";
 import { initialGuild } from "./types/firebase";
 import moan from "./lib/moan";
 import MGS from "./lib/statuses";

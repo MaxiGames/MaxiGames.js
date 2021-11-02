@@ -20,7 +20,7 @@ import { Client } from "discord.js";
 import math from "mathjs";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import { MGFirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../lib/firebase";
 import { Interaction, ButtonInteraction } from "discord.js";
 
 const ticketListener = {

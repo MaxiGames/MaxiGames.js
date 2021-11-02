@@ -28,7 +28,7 @@ import _ from "lodash";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
-import { MGFirebase } from "../../utils/firebase";
+import { MGFirebase } from "../../lib/firebase";
 
 export async function generateTTT(
 	board: string[][],

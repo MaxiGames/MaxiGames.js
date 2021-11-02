@@ -17,7 +17,7 @@
  */
 
 import { CommandInteraction } from "discord.js";
-import { MGFirebase } from "../utils/firebase";
+import { MGFirebase } from "../lib/firebase";
 import { MGEmbed } from "./flavoured";
 import type MGCmdTest from "../types/checks";
 import MGStatus from "./statuses";
