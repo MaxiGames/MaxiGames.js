@@ -21,8 +21,8 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MyCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
-import cooldownTest, { convertSecondsToDay } from "../../lib/cooldown";
-import withChecks from "../../lib/withs";
+import cooldownTest, { convertSecondsToDay } from "../../lib/checks/cooldown";
+import withChecks from "../../lib/checks";
 
 const timely: MyCommand = withChecks([cooldownTest(5)], {
 	data: new SlashCommandBuilder()

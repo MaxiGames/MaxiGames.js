@@ -22,9 +22,9 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
 import { Permissions, CommandInteraction, Guild } from "discord.js";
-import withChecks from "../../lib/withs";
-import cooldownTest from "../../lib/cooldown";
-import { userPermsTest } from "../../lib/permscheck";
+import withChecks from "../../lib/checks";
+import cooldownTest from "../../lib/checks/cooldown";
+import { userPermsTest } from "../../lib/checks/permissions";
 
 const starboard: MGCommand = withChecks(
 	[cooldownTest(5), userPermsTest(Permissions.FLAGS.ADMINISTRATOR)],

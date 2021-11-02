@@ -27,9 +27,9 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
 import { Permissions, CommandInteraction, Guild } from "discord.js";
-import withChecks from "../../lib/withs";
-import { userPermsTest } from "../../lib/permscheck";
-import cooldownTest from "../../lib/cooldown";
+import withChecks from "../../lib/checks";
+import { userPermsTest } from "../../lib/checks/permissions";
+import cooldownTest from "../../lib/checks/cooldown";
 
 const counting: MGCommand = withChecks(
 	[cooldownTest(10), userPermsTest(Permissions.FLAGS.ADMINISTRATOR)],

@@ -17,13 +17,13 @@
  */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import withcooldown from "../../lib/cooldown";
+import withcooldown from "../../lib/checks/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
-import cooldownTest from "../../lib/cooldown";
-import withChecks from "../../lib/withs";
+import cooldownTest from "../../lib/checks/cooldown";
+import withChecks from "../../lib/checks";
 
 const gamble: MGCommand = withChecks([cooldownTest(20)], {
 	data: new SlashCommandBuilder()

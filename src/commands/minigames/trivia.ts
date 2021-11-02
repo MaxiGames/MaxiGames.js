@@ -25,10 +25,10 @@ import {
 	MessageEmbed,
 	MessageInteraction,
 } from "discord.js";
-import cooldownTest from "../../lib/cooldown";
+import cooldownTest from "../../lib/checks/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import withChecks from "../../lib/withs";
+import withChecks from "../../lib/checks";
 import MGCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
 

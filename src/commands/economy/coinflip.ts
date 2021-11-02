@@ -25,8 +25,8 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
-import cooldownTest from "../../lib/cooldown";
-import withChecks from "../../lib/withs";
+import cooldownTest from "../../lib/checks/cooldown";
+import withChecks from "../../lib/checks";
 
 function otherOption(name: string) {
 	if (name === "heads") {

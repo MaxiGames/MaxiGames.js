@@ -17,10 +17,10 @@
  */
 
 import { CommandInteraction } from "discord.js";
-import { MGFirebase } from "../lib/firebase";
-import { MGEmbed } from "./flavoured";
-import type MGCmdTest from "../types/checks";
-import MGStatus from "./statuses";
+import { MGFirebase } from "../firebase";
+import { MGEmbed } from "../flavoured";
+import type MGCmdTest from "../../types/checks";
+import MGStatus from "../statuses";
 
 export default function cooldownTest(
 	cooldown: number,

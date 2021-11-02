@@ -23,8 +23,8 @@ import { MGFirebase } from "../../lib/firebase";
 import MGCommand from "../../types/command";
 import { ThreadChannel } from "discord.js";
 import { BugReports } from "../../types/firebase";
-import withChecks from "../../lib/withs";
-import cooldownTest from "../../lib/cooldown";
+import withChecks from "../../lib/checks";
+import cooldownTest from "../../lib/checks/cooldown";
 
 const bug: MGCommand = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()

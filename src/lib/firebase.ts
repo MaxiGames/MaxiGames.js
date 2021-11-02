@@ -20,7 +20,7 @@ import { Client, ThreadChannel } from "discord.js";
 import * as admin from "firebase-admin";
 import moan from "../lib/moan";
 import MGS from "../lib/statuses";
-import { MGEmbed } from "../lib/flavoured";
+import { MGEmbed } from "./flavoured";
 import MGStatus from "../lib/statuses";
 import { Guild, initialGuild, initialUser } from "../types/firebase";
 
