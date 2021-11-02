@@ -31,73 +31,67 @@ const starboardwatch = {
 		}
 		reaction = t;
 
-		const guildData = await MGFirebase.getData(
+		/* Prepare all the data */
+		const guilddata = await MGFirebase.getData(
 			`guild/${reaction.message.guildId}`
 		);
-		if (guildData === undefined) {
+		const sbmsg = (await MGFirebase.justGetData(
+			`guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
+		)) || { stars: 0, rxnid: "" };
+
+		if (
+			guilddata === undefined ||
+			reaction.emoji.name !== "⭐" ||
+			guilddata["starboardChannel"] === 0
+		) {
 			return;
 		}
 
-		if (reaction.emoji.name !== "⭐") {
-			return;
-		}
+		sbmsg["stars"] -= 1;
 
-		if (guildData["starboardChannel"] === 0) {
-			return; // no starboard channel set
+		let content = reaction.message.content ?? "";
+		if (content.trim() !== "") {
+			// replace every newline with a newline and a "> "
+			content = "\n\n> " + content.replace(/\n/g, "\n> ");
 		}
-
-		if (!guildData["starboardMsgs"]) {
-			return;
-		}
-		if (guildData["starboardMsgs"][reaction.message.id] === undefined) {
-			return;
-		}
-
-		guildData["starboardMsgs"][reaction.message.id]["stars"] -= 1;
-
-		try {
-			await MGFirebase.setData(
-				`guild/${reaction.message.guild!.id}`,
-				guildData
+		const embed = MGEmbed(MGStatus.Info)
+			.setTitle(`Starred ${reaction.count} times!`)
+			.setDescription(
+				`[Click to jump to message](${reaction.message.url})` + content
+			)
+			.setFooter("React with ⭐ to star this message")
+			.setAuthor(
+				reaction.message.author!.username,
+				reaction.message.author!.avatarURL() ??
+					reaction.message.author!.defaultAvatarURL
 			);
+		reaction.message.attachments.each((a) => embed.setImage(a.url));
 
-			const sbchan = reaction.client.channels.cache.get(
-				guildData["starboardChannel"].id
-			) as TextChannel;
+		const sbchan = (await reaction.client.channels.fetch(
+			guilddata["starboardChannel"].id
+		)) as TextChannel;
 
-			const oldmsg = await sbchan.messages.fetch(
-				guildData["starboardMsgs"][reaction.message.id]["rxnid"]
-			);
-
-			if (reaction.count < guildData["starboardChannel"].thresh) {
-				oldmsg.delete();
+		if (reaction.count < guilddata["starboardChannel"]["thresh"]) {
+			await (await sbchan.messages.fetch(sbmsg["rxnid"])).delete();
+		} else {
+			try {
+				// update message if it has been sent before
+				await (
+					await sbchan.messages.fetch(sbmsg["rxnid"])
+				).edit({ embeds: [embed] });
+			} catch {
+				// if that failed, (re)send
+				const rxnsg = await sbchan.send({ embeds: [embed] });
+				sbmsg["rxnid"] = rxnsg.id;
 			}
-
-			if (reaction.message.content!.trim() !== "") {
-				// if there's no message content don't show just a >; it's ugly
-				// yes I know this code is even uglier, but quite frankly, I don't care.
-				reaction.message.content =
-					"\n\n> " + reaction.message.content!.replace(/\n/g, "\n> ");
-			}
-
-			const embed = MGEmbed(MGStatus.Info)
-				.setTitle(`Starred ${reaction.count} times!`)
-				.setDescription(
-					`[Click to jump to message](${reaction.message.url})` +
-						reaction.message.content
-				)
-				.setFooter("React with ⭐ to star this message")
-				.setAuthor(
-					reaction.message.author!.username,
-					reaction.message.author!.avatarURL() ??
-						reaction.message.author!.defaultAvatarURL
-				);
-			reaction.message.attachments.each((a) => embed.setImage(a.url));
-
-			await oldmsg.edit({ embeds: [embed] });
-		} catch {
-			// oops I guess?
 		}
+
+		await MGFirebase.setData(
+			`guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`,
+			sbmsg
+		);
+
+		return;
 	},
 };
 

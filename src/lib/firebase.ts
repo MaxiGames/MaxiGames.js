@@ -119,6 +119,13 @@ export class FirebaseManager {
 		await this.db?.ref(ref).set(data);
 	}
 
+	public async justGetData(ref: string): Promise<any> {
+		const data = await this.db?.ref(ref).get();
+		this.getDataCalls++;
+
+		return data?.val();
+	}
+
 	public async getData(ref: string): Promise<any> {
 		const data = await this.db?.ref(ref).get();
 		if (ref.split("/")[0] === "user" && data?.exists() === false) {
