@@ -41,7 +41,7 @@ export const client = new Client({
 		Intents.FLAGS.GUILD_PRESENCES,
 		Intents.FLAGS.GUILD_MESSAGES,
 	],
-	partials: ["MESSAGE", "REACTION"],
+	//partials: ["MESSAGE", "REACTION"],
 });
 
 /*
