@@ -58,6 +58,8 @@ async function partial_res<T extends _p>(obj: T): Promise<T | undefined> {
 			);
 			return undefined;
 		}
+	} else {
+		return obj;
 	}
 }
 
