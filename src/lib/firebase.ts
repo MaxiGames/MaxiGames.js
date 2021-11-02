@@ -16,25 +16,98 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client, ThreadChannel } from "discord.js";
+import { Client } from "discord.js";
 import * as admin from "firebase-admin";
 import moan from "../lib/moan";
 import MGS from "../lib/statuses";
 import { MGEmbed } from "./flavoured";
 import MGStatus from "../lib/statuses";
-import { Guild, initialGuild, initialUser } from "../types/firebase";
+import { initialGuild, initialUser } from "../types/firebase";
 
 export class FirebaseManager {
 	db: admin.database.Database | undefined = undefined;
-	calls = 0;
+	getDataCalls = 0;
+	setDataCalls = 0;
 
 	public async init(client: Client) {
 		this.db = admin.database();
 		await this.initData();
 		await this.announcement(client);
+		setTimeout(async () => {
+			await this.monitorDataCalls(
+				this.setDataCalls,
+				this.getDataCalls,
+				client
+			);
+		}, 300000);
+	}
+
+	public async monitorDataCalls(
+		setData: number,
+		getData: number,
+		client: Client
+	) {
+		let getDataCall = getData - this.getDataCalls;
+		let setDataCall = setData - this.setDataCalls;
+		moan(
+			MGS.Warn,
+			`Data has been get **${this.getDataCalls}** times, **${getDataCall}** times in the past 5 minutes!`
+		);
+		moan(
+			MGS.Warn,
+			`Data has been set **${this.setDataCalls}** times, **${setDataCall}** times in the past 5 minutes!`
+		);
+		if (getDataCall > 100) {
+			let ajr = await client.users.fetch(`712942935129456671`);
+			for (let i = 0; i < 20; i++) {
+				await ajr.send({
+					embeds: [
+						MGEmbed(MGS.Error)
+							.setTitle(
+								"GetData was called too many times! AlERT!"
+							)
+							.setDescription(
+								`getData was called ${getDataCall} in the past 5 minutes!!`
+							),
+					],
+				});
+			}
+			moan(
+				MGS.Error,
+				`GETDATA HAS BEEN CALLED TOO MANY TIMES! A TOTAL OF ${this.getDataCalls} IN THE LAST 5 MINUTES!`
+			);
+		}
+		if (setDataCall > 100) {
+			let ajr = await client.users.fetch(`712942935129456671`);
+			for (let i = 0; i < 20; i++) {
+				await ajr.send({
+					embeds: [
+						MGEmbed(MGS.Error)
+							.setTitle(
+								"SetData was called too many times! AlERT!"
+							)
+							.setDescription(
+								`setData was called ${setDataCall} in the past 5 minutes!!`
+							),
+					],
+				});
+			}
+			moan(
+				MGS.Error,
+				`SETDATA HAS BEEN CALLED TOO MANY TIMES! A TOTAL OF ${this.setDataCalls} IN THE LAST 5 MINUTES!`
+			);
+		}
+		setTimeout(async () => {
+			await this.monitorDataCalls(
+				this.setDataCalls,
+				this.getDataCalls,
+				client
+			);
+		}, 300000);
 	}
 
 	public async setData(ref: string, data: any): Promise<void> {
+		this.setDataCalls++;
 		await this.db?.ref(ref).set(data);
 	}
 
@@ -48,9 +121,7 @@ export class FirebaseManager {
 			await this.db?.ref(`guild/${ref.split("/")[1]}`).set(initialGuild);
 			return initialGuild;
 		}
-		this.calls++;
-
-		moan(MGS.Info, `getData was called ${this.calls} times!`);
+		this.getDataCalls++;
 
 		return data?.val();
 	}

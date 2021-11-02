@@ -1,9 +1,12 @@
 import path from "path";
 import MGStatus from "./statuses";
 import process from "process";
+import { TextChannel } from "discord.js";
+import { MGEmbed } from "./flavoured";
 
 const SPC1 = 10; // space for status info
 const SPC2 = 50; // max width for message
+export let toLog: { status: MGStatus; logged: string }[] = [];
 
 // Readjust string to fit n columns + indent size.
 function refmtstr(str: string, threshold: number, indent: number): string {
@@ -36,7 +39,7 @@ function refmtstr(str: string, threshold: number, indent: number): string {
 	);
 }
 
-// Let out a (dying?) moan.
+// Let out a (dying?) await moan.
 export default function moan(status: MGStatus, msg: string | unknown): void {
 	let e = "";
 
@@ -101,4 +104,13 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
 	e += "].\n";
 
 	process.stderr.write(e);
+
+	//log it to discord too
+	let logged = typeof msg === "string" ? msg : JSON.stringify(msg, null, 2);
+	let toAppend = { status: status, logged: logged };
+	toLog.push(toAppend);
+}
+
+export function setMoan() {
+	toLog = [];
 }

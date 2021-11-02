@@ -21,16 +21,18 @@
  * Description: Main file of MaxiGames
  */
 
-import { Client, Intents } from "discord.js";
+import { Client, Intents, TextChannel } from "discord.js";
 import { config, firebaseConfig, apiConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
 import { MGFirebase } from "./lib/firebase";
 import { initialGuild } from "./types/firebase";
-import moan from "./lib/moan";
+import moan, { setMoan, toLog } from "./lib/moan";
 import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
+import MGStatus from "./lib/statuses";
+import { MGEmbed } from "./lib/flavoured";
 
 export const client = new Client({
 	intents: [
@@ -114,8 +116,55 @@ admin.initializeApp({
 	databaseURL: firebaseConfig,
 });
 
+//setup logging
+function logToDiscord() {
+	let arr = toLog;
+	for (let i of arr) {
+		let { status, logged } = i;
+		let maxigamesOfficial = client.guilds.cache.get("837522963389349909")!;
+		maxigamesOfficial.channels.fetch("904995742349922304").then((logs) => {
+			let botlogs = logs as TextChannel;
+			let title: string;
+			let colour: string;
+			let append: string;
+			let toPing = "";
+			if (status === MGS.Error) {
+				title = "❌";
+				colour = "diff";
+				append = "-";
+				toPing = `<@712942935129456671>, <@676748194956181505>, <@782247763542016010>, <@682592012163481616>, <@697747732772814921>`;
+			} else if (status === MGS.Success) {
+				title = "✅";
+				colour = "diff";
+				append = "+";
+			} else if (status === MGS.Info) {
+				title = "ℹ️";
+				colour = "fix";
+				append = ".";
+			} else if (status === MGS.Warn) {
+				title = "⚠️";
+				colour = "fix";
+				append = "";
+			} else {
+				title = "📝";
+				colour = "";
+				append = "";
+			}
+			botlogs.send(
+				`${toPing}\n\`\`\`${colour}\n${append}${title}: ${logged}\`\`\``
+			);
+		});
+	}
+	setMoan();
+	setTimeout(() => {
+		logToDiscord();
+	}, 5000);
+}
+
 // set bot activity upon guild events
 client.login(config.tokenId).then(() => {
+	logToDiscord();
+
 	// delete all slash commands before
 	const user = client.user;
 	let currentGuildCount = client.guilds.cache.size;
