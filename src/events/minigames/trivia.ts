@@ -37,24 +37,29 @@ const tictactoe = {
 			interaction.message.embeds[0].fields![0].value ===
 				interaction.user.id
 		) {
-			let won = interaction.customId.startsWith(`true`);
-			let difficulty =
+			const won = interaction.customId.startsWith("true");
+			const difficulty =
 				interaction.message.embeds[0].description?.split(":");
-			let newRating = await changeRating(
+			const newRating = await changeRating(
 				interaction,
 				won,
 				difficulty![difficulty!.length - 1] as string
 			);
-			let message = interaction.message;
-			let component = (message.components as MessageActionRow[])[0];
-			let buttons = component.components as MessageButton[];
-			let newComponents = new MessageActionRow();
-			let embed = message.embeds[0] as MessageEmbed;
+			const message = interaction.message;
+			const component = (message.components as MessageActionRow[])[0];
+			const buttons = component.components as MessageButton[];
+			const newComponents = new MessageActionRow();
+			const embed = message.embeds[0] as MessageEmbed;
 			let count = 0;
-			for (let i of buttons) {
-				if (i.customId?.startsWith("true")) i.setStyle("SUCCESS");
-				else i.setStyle("DANGER");
-				if (i.customId === interaction.customId) i.setStyle("PRIMARY");
+			for (const i of buttons) {
+				if (i.customId?.startsWith("true")) {
+					i.setStyle("SUCCESS");
+				} else {
+					i.setStyle("DANGER");
+				}
+				if (i.customId === interaction.customId) {
+					i.setStyle("PRIMARY");
+				}
 				i.setCustomId(`DONE ${count}`);
 				i.setDisabled(true);
 				newComponents.addComponents(i);

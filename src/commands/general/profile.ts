@@ -46,11 +46,10 @@ const profile: MGCommand = {
 
 	async execute(interaction) {
 		let user = interaction.options.getUser("user");
-		let userData;
 		if (user === null) {
 			user = interaction.user;
 		}
-		userData = await MGFirebase.getData(`user/${user.id}`);
+		const userData = await MGFirebase.getData(`user/${user.id}`);
 		const embed = MGEmbed(MGStatus.Info)
 			.setTitle(`${user.username} #${user.discriminator}'s profile`)
 			.setDescription("View your statistics on the bot!")

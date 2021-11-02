@@ -22,3 +22,5 @@
  */
 
 declare module "top.gg-core";
+declare module "xhr2";
+declare module "base-64";

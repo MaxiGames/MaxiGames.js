@@ -31,6 +31,8 @@ import MGStatus from "../../lib/statuses";
 import withChecks from "../../lib/checks";
 import MGCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
+import { XMLHttpRequest } from "xhr2";
+import { decode } from "base-64";
 
 function shuffle(array: any[]) {
 	let currentIndex = array.length,
@@ -57,10 +59,10 @@ export async function changeRating(
 	won: boolean,
 	difficulty: string
 ) {
-	let rating = await MGFirebase.getData(`user/${interaction.user.id}`);
+	const rating = await MGFirebase.getData(`user/${interaction.user.id}`);
 	let triviaRating = rating.minigames.trivia;
 	let toChange: number;
-	let difficultyMultiplier =
+	const difficultyMultiplier =
 		difficulty === "easy" ? 0.2 : difficulty === "medium" ? 0.5 : 1;
 	if (won) {
 		toChange = Math.ceil(
@@ -104,8 +106,9 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 				.addChoice("hard", "hard")
 		),
 	async execute(interaction) {
-		let no = interaction.options.getInteger("questions") ?? 1;
-		let difficulty = interaction.options.getString("difficulty") ?? "hard";
+		const no = interaction.options.getInteger("questions") ?? 1;
+		const difficulty =
+			interaction.options.getString("difficulty") ?? "hard";
 		if (no > 5) {
 			await interaction.reply({
 				embeds: [
@@ -118,9 +121,8 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 			});
 			return;
 		}
-		let url = `https://opentdb.com/api.php?amount=${no}&difficulty=${difficulty}&type=multiple&encode=base64`;
-		let XMLHttpRequest = require("xhr2");
-		let xhr = new XMLHttpRequest();
+		const url = `https://opentdb.com/api.php?amount=${no}&difficulty=${difficulty}&type=multiple&encode=base64`;
+		const xhr = new XMLHttpRequest();
 
 		await interaction.reply({
 			embeds: [
@@ -135,33 +137,32 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 
 		xhr.onreadystatechange = async () => {
 			if (xhr.readyState === 4) {
-				let msg: any[] = [];
-				let responseText = xhr.responseText;
-				let results = JSON.parse(responseText).results;
-				let decode = require("base-64").decode;
-				let sentMessages: Message[] = [];
-				let timeGiven =
+				const msg: any[] = [];
+				const responseText = xhr.responseText;
+				const results = JSON.parse(responseText).results;
+				const sentMessages: Message[] = [];
+				const timeGiven =
 					difficulty === "easy"
 						? 5000
 						: difficulty === "medium"
 						? 7500
 						: 10000;
-				for (let i of results) {
-					let category = decode(i.category);
-					let difficulty = decode(i.difficulty);
-					let question = decode(i.question);
-					let correct_answer = decode(i.correct_answer);
-					let incorrect_answers = i.incorrect_answers;
-					let incorrect_answers_arr = [];
-					for (let j of incorrect_answers) {
-						let k = decode(j);
+				for (const i of results) {
+					const category = decode(i.category);
+					const difficulty = decode(i.difficulty);
+					const question = decode(i.question);
+					const correct_answer = decode(i.correct_answer);
+					const incorrect_answers = i.incorrect_answers;
+					const incorrect_answers_arr = [];
+					for (const j of incorrect_answers) {
+						const k = decode(j);
 						incorrect_answers_arr.push(k);
 					}
 					let answers_arr = incorrect_answers_arr;
 					answers_arr.push(correct_answer);
 					answers_arr = shuffle(answers_arr);
 
-					let embed = MGEmbed(MGStatus.Success)
+					const embed = MGEmbed(MGStatus.Success)
 						.setTitle(`TRIVIA! Question: ${question}`)
 						.setDescription(
 							`Category: ${category}, Difficulty: ${difficulty}`
@@ -172,9 +173,9 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 						})
 						.setFooter(`Time Given: ${timeGiven / 1000} seconds`);
 
-					let component = new MessageActionRow();
+					const component = new MessageActionRow();
 					let count = 1;
-					for (let j of answers_arr) {
+					for (const j of answers_arr) {
 						embed.addField(`Option ${count}:`, j);
 						component.addComponents(
 							new MessageButton()
@@ -190,8 +191,8 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 					}
 					msg.push([embed, component]);
 				}
-				for (let i of msg) {
-					let message = (await interaction.channel?.send({
+				for (const i of msg) {
+					const message = (await interaction.channel?.send({
 						embeds: [i[0]],
 						components: [i[1]],
 					})) as Message;
@@ -200,27 +201,28 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 				setTimeout(async () => {
 					//edit messages to disable stuff
 					let count = 0;
-					for (let i of msg) {
-						let oldMessage = sentMessages[count];
-						let newMessage =
+					for (const i of msg) {
+						const oldMessage = sentMessages[count];
+						const newMessage =
 							await oldMessage.channel.messages.fetch(
 								oldMessage.id
 							);
-						let newMessageComponents = newMessage
+						const newMessageComponents = newMessage
 							.components[0] as MessageActionRow;
 						if (
 							newMessageComponents.components[0].customId?.startsWith(
 								"DONE"
 							)
-						)
+						) {
 							continue;
-						let ratingChange = await changeRating(
+						}
+						const ratingChange = await changeRating(
 							interaction,
 							false,
 							difficulty
 						);
-						let embed = i[0] as MessageEmbed;
-						let component = i[1] as MessageActionRow;
+						const embed = i[0] as MessageEmbed;
+						const component = i[1] as MessageActionRow;
 						embed.setFooter("Time's up!");
 						embed.addField(
 							"Rating Change",
@@ -231,14 +233,16 @@ const trivia: MGCommand = withChecks([cooldownTest(10)], {
 							}`
 						);
 						embed.setColor("DARK_NAVY");
-						let components =
+						const components =
 							component.components as MessageButton[];
-						let newComponents = new MessageActionRow();
-						for (let j of components) {
+						const newComponents = new MessageActionRow();
+						for (const j of components) {
 							j.setDisabled(true);
-							if (j.customId?.startsWith("true"))
+							if (j.customId?.startsWith("true")) {
 								j.setStyle("SUCCESS");
-							else j.setStyle("DANGER");
+							} else {
+								j.setStyle("DANGER");
+							}
 							newComponents.addComponents(j);
 						}
 						await sentMessages[count].edit({

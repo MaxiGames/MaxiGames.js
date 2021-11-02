@@ -16,12 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-	Interaction,
-	MessageActionRow,
-	MessageButton,
-	MessageEmbed,
-} from "discord.js";
+import { Interaction } from "discord.js";
 import { changeRating } from "../../commands/minigames/escapethehouse";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
@@ -38,7 +33,7 @@ const escapethehouse = {
 			interaction.message.embeds[0].fields![0].value ===
 				interaction.user.id
 		) {
-			let correct = interaction.customId.startsWith("Correct");
+			const correct = interaction.customId.startsWith("Correct");
 			if (correct) {
 				await interaction.update({
 					embeds: [

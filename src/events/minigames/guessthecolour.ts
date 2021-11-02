@@ -23,7 +23,6 @@ import {
 	MessageEmbed,
 } from "discord.js";
 import { changeRating } from "../../commands/minigames/guessthecolour";
-import MGStatus from "../../lib/statuses";
 
 const guessthecolour = {
 	name: "interactionCreate",
@@ -37,10 +36,10 @@ const guessthecolour = {
 			interaction.message.embeds[0].fields![0].value ===
 				interaction.user.id
 		) {
-			let won = interaction.customId.startsWith("CORRECT");
-			let valueChange = await changeRating(interaction, won);
-			let embed = interaction.message.embeds[0] as MessageEmbed;
-			let components = interaction.message.components![0];
+			const won = interaction.customId.startsWith("CORRECT");
+			const valueChange = await changeRating(interaction, won);
+			const embed = interaction.message.embeds[0] as MessageEmbed;
+			const components = interaction.message.components![0];
 			embed.setDescription(`${won === true ? "Correct!" : "Wrong!"}`);
 			embed.addFields([
 				{
@@ -48,14 +47,16 @@ const guessthecolour = {
 					value: `${valueChange > 0 ? "+" : ""}${valueChange}`,
 				},
 			]);
-			let newComponents = new MessageActionRow();
-			for (let i of components.components) {
-				let button = i as MessageButton;
-				if (button.customId?.startsWith("CORRECT"))
+			const newComponents = new MessageActionRow();
+			for (const i of components.components) {
+				const button = i as MessageButton;
+				if (button.customId?.startsWith("CORRECT")) {
 					button.setStyle("SUCCESS");
-				else if (button.customId === interaction.customId)
+				} else if (button.customId === interaction.customId) {
 					button.setStyle("PRIMARY");
-				else button.setStyle("DANGER");
+				} else {
+					button.setStyle("DANGER");
+				}
 				button.setDisabled(true);
 				newComponents.addComponents([button]);
 			}

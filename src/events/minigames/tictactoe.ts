@@ -16,11 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type MGEvent from "../../types/event";
-import moan from "../../lib/moan";
-import MGS from "../../lib/statuses";
 import {
-	CommandInteraction,
 	EmbedField,
 	Interaction,
 	MessageActionRow,

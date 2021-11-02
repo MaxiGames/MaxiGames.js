@@ -25,10 +25,8 @@ import {
 	MessageEmbed,
 	MessageInteraction,
 } from "discord.js";
-import cooldownTest from "../../lib/checks/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
-import withChecks from "../../lib/checks";
 import MGCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
 
@@ -59,7 +57,7 @@ const escapeTheHouse: MGCommand = {
 		.setName("escapethehouse")
 		.setDescription("Guess which door leads to the right place!"),
 	async execute(interaction) {
-		let doorNumber = Math.ceil(Math.random() * 2);
+		const doorNumber = Math.ceil(Math.random() * 2);
 		await interaction.reply({
 			embeds: [
 				MGEmbed(MGStatus.Default)

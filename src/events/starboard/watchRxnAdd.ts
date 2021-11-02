@@ -20,27 +20,23 @@ import { MGFirebase } from "../../lib/firebase";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MessageReaction, TextChannel, User } from "discord.js";
+import { partial_res } from "../../lib/misc";
 
 const starboardwatch = {
 	name: "messageReactionAdd",
 	async execute(reaction: MessageReaction, user: User) {
+		const t = await partial_res(reaction);
+		if (t === undefined) {
+			return;
+		}
+		reaction = t;
+
 		const guildData = await MGFirebase.getData(
 			`guild/${reaction.message.guildId}`
 		);
 		if (guildData === undefined) {
 			return;
 		}
-
-		/*
-    if (reaction.partial) {
-      try {
-        await reaction.fetch();
-      } catch (error) {
-        console.error("Something went wrong when fetching the message:", error);
-        return;
-      }
-    }
-    */
 
 		if (reaction.emoji.name !== "⭐") {
 			return;

@@ -31,8 +31,6 @@ import { initialGuild } from "./types/firebase";
 import moan, { setMoan, toLog } from "./lib/moan";
 import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
-import MGStatus from "./lib/statuses";
-import { MGEmbed } from "./lib/flavoured";
 
 export const client = new Client({
 	intents: [
@@ -43,7 +41,7 @@ export const client = new Client({
 		Intents.FLAGS.GUILD_PRESENCES,
 		Intents.FLAGS.GUILD_MESSAGES,
 	],
-	//partials: ["MESSAGE", "REACTION"],
+	partials: ["MESSAGE", "REACTION"],
 });
 
 /*
@@ -118,10 +116,10 @@ admin.initializeApp({
 
 //setup logging
 function logToDiscord() {
-	let arr = toLog;
-	for (let i of arr) {
-		let { status, logged } = i;
-		let maxigamesOfficial = client.guilds.cache.get(
+	const arr = toLog;
+	for (const i of arr) {
+		const { status, logged } = i;
+		const maxigamesOfficial = client.guilds.cache.get(
 			`${
 				process.env.NODE_ENV == "production"
 					? "837522963389349909"
@@ -137,7 +135,7 @@ function logToDiscord() {
 				}`
 			)
 			.then((logs) => {
-				let botlogs = logs as TextChannel;
+				const botlogs = logs as TextChannel;
 				let title: string;
 				let colour: string;
 				let append: string;
@@ -146,7 +144,8 @@ function logToDiscord() {
 					title = "❌";
 					colour = "diff";
 					append = "-";
-					toPing = `<@712942935129456671>, <@676748194956181505>, <@782247763542016010>, <@682592012163481616>, <@697747732772814921>`;
+					toPing =
+						"<@712942935129456671>, <@676748194956181505>, <@782247763542016010>, <@682592012163481616>, <@697747732772814921>";
 				} else if (status === MGS.Success) {
 					title = "✅";
 					colour = "diff";

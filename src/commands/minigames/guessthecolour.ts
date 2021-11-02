@@ -19,16 +19,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import {
 	ButtonInteraction,
-	Message,
 	MessageActionRow,
 	MessageButton,
-	MessageEmbed,
 	MessageInteraction,
 } from "discord.js";
-import cooldownTest from "../../lib/checks/cooldown";
 import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
-import withChecks from "../../lib/checks";
 import MGCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
 
@@ -55,9 +50,9 @@ export async function changeRating(
 }
 
 function getRandomColor() {
-	var letters = "0123456789ABCDEF";
-	var color = "#";
-	for (var i = 0; i < 6; i++) {
+	const letters = "0123456789ABCDEF";
+	let color = "#";
+	for (let i = 0; i < 6; i++) {
 		color += letters[Math.floor(Math.random() * 16)];
 	}
 	return color;
@@ -70,29 +65,31 @@ const guessTheColour: MGCommand = {
 			"With a colour in the embed, choose which button has the right hex value!!"
 		),
 	async execute(interaction) {
-		let colour = getRandomColor();
-		let components = new MessageActionRow();
-		let correct = Math.round(Math.random() * 3);
+		const colour = getRandomColor();
+		const components = new MessageActionRow();
+		const correct = Math.round(Math.random() * 3);
 		for (let i = 0; i < 4; i++) {
 			if (i === correct) {
 				components.addComponents([
 					new MessageButton()
-						.setCustomId(`CORRECT-guessthecolour`)
+						.setCustomId("CORRECT-guessthecolour")
 						.setStyle("PRIMARY")
 						.setLabel(colour.toLowerCase()),
 				]);
 			}
-			let button = new MessageButton();
+			const button = new MessageButton();
 			let newColour = parseInt(colour.slice(1, 7), 16);
 			newColour += Math.ceil(Math.random() * 16777215);
-			if (newColour > 16777215) newColour -= 16777215;
-			let convertedColour = newColour.toString(16);
+			if (newColour > 16777215) {
+				newColour -= 16777215;
+			}
+			const convertedColour = newColour.toString(16);
 			button.setStyle("PRIMARY");
 			button.setLabel(`#${convertedColour}`);
 			button.setCustomId(`${convertedColour}-${i}-guessthecolour`);
 			components.addComponents([button]);
 		}
-		let embed = MGEmbed()
+		const embed = MGEmbed()
 			.setTitle("Guess The Colour!")
 			.setFooter("Time given to see colour: 3 seconds")
 			.setDescription("<--- Guess embed's colour!")
@@ -103,12 +100,13 @@ const guessTheColour: MGCommand = {
 			components: [components],
 		});
 		setTimeout(async () => {
-			let newMessage = await interaction.fetchReply();
+			const newMessage = await interaction.fetchReply();
 			if (
 				newMessage.embeds[0].description !==
 				"<--- Guess embed's colour!"
-			)
+			) {
 				return;
+			}
 			embed.setFooter("Time is up! You can no longer see the colour!");
 			embed.setDescription(
 				"The colour has been removed. You still have infinite time to guess it tho..."

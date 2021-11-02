@@ -17,13 +17,7 @@
  */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import {
-	CommandInteraction,
-	Interaction,
-	MessageActionRow,
-	MessageButton,
-	MessageEmbed,
-} from "discord.js";
+import { MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 import _ from "lodash";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";

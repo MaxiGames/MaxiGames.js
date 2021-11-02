@@ -47,20 +47,22 @@ export class FirebaseManager {
 		getData: number,
 		client: Client
 	) {
-		let getDataCall = getData - this.getDataCalls;
-		let setDataCall = setData - this.setDataCalls;
-		if (getDataCall > 0)
+		const getDataCall = getData - this.getDataCalls;
+		const setDataCall = setData - this.setDataCalls;
+		if (getDataCall > 0) {
 			moan(
 				MGS.Warn,
 				`Data has been get ${this.getDataCalls} times, ${getDataCall} times in the past 5 minutes!`
 			);
-		if (setDataCall > 0)
+		}
+		if (setDataCall > 0) {
 			moan(
 				MGS.Warn,
 				`Data has been set ${this.setDataCalls} times, ${setDataCall} times in the past 5 minutes!`
 			);
+		}
 		if (getDataCall > 100) {
-			let ajr = await client.users.fetch(`712942935129456671`);
+			const ajr = await client.users.fetch("712942935129456671");
 			for (let i = 0; i < 20; i++) {
 				await ajr.send({
 					embeds: [
@@ -80,7 +82,7 @@ export class FirebaseManager {
 			);
 		}
 		if (setDataCall > 100) {
-			let ajr = await client.users.fetch(`712942935129456671`);
+			const ajr = await client.users.fetch("712942935129456671");
 			for (let i = 0; i < 20; i++) {
 				await ajr.send({
 					embeds: [
@@ -114,12 +116,12 @@ export class FirebaseManager {
 	}
 
 	public async getData(ref: string): Promise<any> {
-		let data = await this.db?.ref(ref).get();
-		if (ref.split(`/`)[0] === "user" && data?.exists() === false) {
+		const data = await this.db?.ref(ref).get();
+		if (ref.split("/")[0] === "user" && data?.exists() === false) {
 			await this.db?.ref(`user/${ref.split("/")[1]}`).set(initialUser);
 			return initialUser;
 		}
-		if (ref.split(`/`)[0] === "guild" && data?.exists() === false) {
+		if (ref.split("/")[0] === "guild" && data?.exists() === false) {
 			await this.db?.ref(`guild/${ref.split("/")[1]}`).set(initialGuild);
 			return initialGuild;
 		}
@@ -129,28 +131,32 @@ export class FirebaseManager {
 	}
 
 	private async initData() {
-		let usr = await this.db?.ref(`/user`).get();
-		let data = usr?.val();
-		for (let i in data) {
-			if (!data[i]["cooldowns"]["trivia"])
+		const usr = await this.db?.ref("/user").get();
+		const data = usr?.val();
+		for (const i in data) {
+			if (!data[i]["cooldowns"]["trivia"]) {
 				data[i]["cooldowns"]["trivia"] = initialUser.cooldowns.trivia;
+			}
 		}
-		for (let i in data) {
-			if (!data[i]["minigames"]["trivia"])
+		for (const i in data) {
+			if (!data[i]["minigames"]["trivia"]) {
 				data[i]["minigames"]["trivia"] = initialUser.minigames.trivia;
+			}
 		}
-		for (let i in data) {
+		for (const i in data) {
 			if (
 				!data[i]["minigames"]["guessthecolour"] ||
 				typeof data[i]["minigames"]["guessthecolour"] === "string"
-			)
+			) {
 				data[i]["minigames"]["guessthecolour"] =
 					initialUser.minigames.guessthecolour;
-			if (!data[i]["minigames"]["escapethehouse"])
+			}
+			if (!data[i]["minigames"]["escapethehouse"]) {
 				data[i]["minigames"]["escapethehouse"] =
 					initialUser.minigames.escapethehouse;
+			}
 		}
-		await this.db?.ref(`/user`).set(data);
+		await this.db?.ref("/user").set(data);
 		moan(MGS.Success, "initialised data for old database");
 	}
 
