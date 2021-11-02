@@ -49,14 +49,16 @@ export class FirebaseManager {
 	) {
 		let getDataCall = getData - this.getDataCalls;
 		let setDataCall = setData - this.setDataCalls;
-		moan(
-			MGS.Warn,
-			`Data has been get **${this.getDataCalls}** times, **${getDataCall}** times in the past 5 minutes!`
-		);
-		moan(
-			MGS.Warn,
-			`Data has been set **${this.setDataCalls}** times, **${setDataCall}** times in the past 5 minutes!`
-		);
+		if (getDataCall > 0)
+			moan(
+				MGS.Warn,
+				`Data has been get ${this.getDataCalls} times, ${getDataCall} times in the past 5 minutes!`
+			);
+		if (setDataCall > 0)
+			moan(
+				MGS.Warn,
+				`Data has been set ${this.setDataCalls} times, ${setDataCall} times in the past 5 minutes!`
+			);
 		if (getDataCall > 100) {
 			let ajr = await client.users.fetch(`712942935129456671`);
 			for (let i = 0; i < 20; i++) {
