@@ -121,39 +121,53 @@ function logToDiscord() {
 	let arr = toLog;
 	for (let i of arr) {
 		let { status, logged } = i;
-		let maxigamesOfficial = client.guilds.cache.get("837522963389349909")!;
-		maxigamesOfficial.channels.fetch("904995742349922304").then((logs) => {
-			let botlogs = logs as TextChannel;
-			let title: string;
-			let colour: string;
-			let append: string;
-			let toPing = "";
-			if (status === MGS.Error) {
-				title = "❌";
-				colour = "diff";
-				append = "-";
-				toPing = `<@712942935129456671>, <@676748194956181505>, <@782247763542016010>, <@682592012163481616>, <@697747732772814921>`;
-			} else if (status === MGS.Success) {
-				title = "✅";
-				colour = "diff";
-				append = "+";
-			} else if (status === MGS.Info) {
-				title = "ℹ️";
-				colour = "fix";
-				append = ".";
-			} else if (status === MGS.Warn) {
-				title = "⚠️";
-				colour = "fix";
-				append = "";
-			} else {
-				title = "📝";
-				colour = "";
-				append = "";
-			}
-			botlogs.send(
-				`${toPing}\n\`\`\`${colour}\n${append}${title}: ${logged}\`\`\``
-			);
-		});
+		let maxigamesOfficial = client.guilds.cache.get(
+			`${
+				process.env.NODE_ENV == "production"
+					? "837522963389349909"
+					: "866939574419849216"
+			}`
+		)!;
+		maxigamesOfficial.channels
+			.fetch(
+				`${
+					process.env.NODE_ENV == "production"
+						? "904995742349922304"
+						: "905023522278113320"
+				}`
+			)
+			.then((logs) => {
+				let botlogs = logs as TextChannel;
+				let title: string;
+				let colour: string;
+				let append: string;
+				let toPing = "";
+				if (status === MGS.Error) {
+					title = "❌";
+					colour = "diff";
+					append = "-";
+					toPing = `<@712942935129456671>, <@676748194956181505>, <@782247763542016010>, <@682592012163481616>, <@697747732772814921>`;
+				} else if (status === MGS.Success) {
+					title = "✅";
+					colour = "diff";
+					append = "+";
+				} else if (status === MGS.Info) {
+					title = "ℹ️";
+					colour = "fix";
+					append = ".";
+				} else if (status === MGS.Warn) {
+					title = "⚠️";
+					colour = "fix";
+					append = "";
+				} else {
+					title = "📝";
+					colour = "";
+					append = "";
+				}
+				botlogs.send(
+					`${toPing}\n\`\`\`${colour}\n${append}${title}: ${logged}\`\`\``
+				);
+			});
 	}
 	setMoan();
 	setTimeout(() => {
