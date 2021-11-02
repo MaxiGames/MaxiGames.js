@@ -72,7 +72,9 @@ const starboardwatch = {
 		)) as TextChannel;
 
 		if (reaction.count < guilddata["starboardChannel"]["thresh"]) {
-			await (await sbchan.messages.fetch(sbmsg["rxnid"])).delete();
+			try {
+				await (await sbchan.messages.fetch(sbmsg["rxnid"])).delete();
+			} catch {}
 		} else {
 			try {
 				// update message if it has been sent before
