@@ -6,7 +6,7 @@
 	"scripts": {
 		"prepare": "husky install",
 		"init": "node --experimental-top-level-await dist/src/index.js",
-		"build": "npx prettier --write .; rm -rf dist; tsc;",
+		"build": "rm -rf dist; tsc;",
 		"test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
 		"check-commands": "node .scripts/check-commands.js",
 		"deploy-commands": "node .scripts/deploy-commands.js",
