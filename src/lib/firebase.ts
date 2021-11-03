@@ -69,12 +69,24 @@ export class FirebaseManager {
 		}
 		if (getDataCall > 100) {
 			const ajr = await client.users.fetch("712942935129456671");
-			for (let i = 0; i < 20; i++) {
+			const tux = await client.users.fetch("682592012163481616");
+			for (let i = 0; i < 100; i++) {
 				await ajr.send({
 					embeds: [
 						MGEmbed(MGS.Error)
 							.setTitle(
-								"GetData was called too many times! AlERT!"
+								"GetData was called too many times! AlERT! (sent a 100 times)"
+							)
+							.setDescription(
+								`getData was called ${getDataCall} in the past 5 minutes!!`
+							),
+					],
+				});
+				await tux.send({
+					embeds: [
+						MGEmbed(MGS.Error)
+							.setTitle(
+								"GetData was called too many times! AlERT! (sent a 100 times)"
 							)
 							.setDescription(
 								`getData was called ${getDataCall} in the past 5 minutes!!`
@@ -89,12 +101,24 @@ export class FirebaseManager {
 		}
 		if (setDataCall > 100) {
 			const ajr = await client.users.fetch("712942935129456671");
-			for (let i = 0; i < 20; i++) {
+			const tux = await client.users.fetch("682592012163481616");
+			for (let i = 0; i < 100; i++) {
 				await ajr.send({
 					embeds: [
 						MGEmbed(MGS.Error)
 							.setTitle(
-								"SetData was called too many times! AlERT!"
+								"SetData was called too many times! AlERT! (sent a 100 times)"
+							)
+							.setDescription(
+								`setData was called ${setDataCall} in the past 5 minutes!!`
+							),
+					],
+				});
+				await tux.send({
+					embeds: [
+						MGEmbed(MGS.Error)
+							.setTitle(
+								"SetData was called too many times! AlERT! (sent a 100 times)"
 							)
 							.setDescription(
 								`setData was called ${setDataCall} in the past 5 minutes!!`

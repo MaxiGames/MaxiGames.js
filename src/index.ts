@@ -144,7 +144,7 @@ function logToDiscord() {
 					title = "❌";
 					colour = "diff";
 					append = "-";
-					if (process.env.NODE_ENV !== "production")
+					if (process.env.NODE_ENV === "production")
 						toPing =
 							"<@712942935129456671>, <@676748194956181505>, <@782247763542016010>, <@682592012163481616>, <@697747732772814921>";
 				} else if (status === MGS.Success) {
