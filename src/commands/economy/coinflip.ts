@@ -36,9 +36,7 @@ function otherOption(name: string) {
 	}
 }
 
-
-const jackpot = 1000; // jackpot value in MaxiCoins
-
+const jackpot = 3; // jackpot value in MaxiCoins
 
 const gamble = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
@@ -78,7 +76,7 @@ const gamble = withChecks([cooldownTest(10)], {
 		if (amt <= 0) {
 			const deduct = Math.ceil(Math.random() * 5);
 			data["money"] -= deduct;
-			interaction.reply({
+			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
 						.setTitle("Stop trying to trick the system, you fool!")
@@ -91,7 +89,7 @@ const gamble = withChecks([cooldownTest(10)], {
 		}
 
 		if (data["money"] < amt) {
-			interaction.reply({
+			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
 						.setTitle("Oops! Not enough money!!")
@@ -101,6 +99,7 @@ const gamble = withChecks([cooldownTest(10)], {
 						),
 				],
 			});
+			return;
 		}
 
 		const compOption = Math.ceil(Math.random() * 2);
@@ -108,16 +107,14 @@ const gamble = withChecks([cooldownTest(10)], {
 
 		// user's option is correct...
 		if (
-			(
-				(option === "heads" && compOption === 1) || // user's choice matches rng?
-				(option === "tails" && compOption === 2)	// ^
-			) &&
-			!(coinOnSide) // AND the coin is not on its side
+			((option === "heads" && compOption === 1) || // user's choice matches rng?
+				(option === "tails" && compOption === 2)) && // ^
+			!coinOnSide // AND the coin is not on its side
 		) {
 			data["money"] += amt;
 			MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
 
-			interaction.reply({
+			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
 						.setTitle("You won!")
@@ -128,18 +125,16 @@ const gamble = withChecks([cooldownTest(10)], {
 							{ name: "Balance", value: `${data["money"]}` },
 							{ name: "Amount earned:", value: `${amt}` }
 						),
-				]
+				],
 			});
-		} else if (
-			coinOnSide
-		) {
+		} else if (coinOnSide) {
 			// user's choice DOES NOT match rng
 			// BUT coin is  on side
 			// jackpot :D
-			data["money"] += jackpot; // jackpot amt (change line 40)
+			data["money"] *= jackpot; // jackpot amt (change line 40)
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
-			
-			interaction.reply({
+
+			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
 						.setTitle("JACKPOT!")
@@ -149,8 +144,8 @@ const gamble = withChecks([cooldownTest(10)], {
 						.addFields(
 							{ name: "Balance", value: `${data["money"]}` },
 							{ name: "Amount earned:", value: `${jackpot}` }
-						)
-				]
+						),
+				],
 			});
 		} else {
 			// user's choice DOES NOT match rng...
@@ -158,7 +153,7 @@ const gamble = withChecks([cooldownTest(10)], {
 			// you lost the bet :(
 			data["money"] -= amt;
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
-			interaction.reply({
+			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
 						.setTitle("You lost!")
@@ -170,8 +165,8 @@ const gamble = withChecks([cooldownTest(10)], {
 						.addFields(
 							{ name: "Balance", value: `${data["money"]}` },
 							{ name: "Amount lost:", value: `${amt}` }
-						)
-				]
+						),
+				],
 			});
 		}
 	},
