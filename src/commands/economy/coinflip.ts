@@ -18,7 +18,7 @@
 
 /*
  * File: src/commands/economy/coinflip.ts
- * Description:
+ * Description: Code for coinflip command
  */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
@@ -35,6 +35,10 @@ function otherOption(name: string) {
 		return "heads";
 	}
 }
+
+
+const jackpot = 1000; // jackpot value in MaxiCoins
+
 
 const gamble = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
@@ -100,11 +104,15 @@ const gamble = withChecks([cooldownTest(10)], {
 		}
 
 		const compOption = Math.ceil(Math.random() * 2);
+		const coinOnSide = Math.ceil(Math.random() * 1000) > 999 ? true : false; // if coinSide is true, this will override normal coinflip
 
-		// user's option is correct (really, it's unnecessary because you can just choose true/false randomly)
+		// user's option is correct...
 		if (
-			(option === "heads" && compOption === 1) ||
-			(option === "tails" && compOption === 2)
+			(
+				(option === "heads" && compOption === 1) || // user's choice matches rng?
+				(option === "tails" && compOption === 2)	// ^
+			) &&
+			!(coinOnSide) // AND the coin is not on its side
 		) {
 			data["money"] += amt;
 			MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
@@ -120,9 +128,34 @@ const gamble = withChecks([cooldownTest(10)], {
 							{ name: "Balance", value: `${data["money"]}` },
 							{ name: "Amount earned:", value: `${amt}` }
 						),
-				],
+				]
+			});
+		} else if (
+			coinOnSide
+		) {
+			// user's choice DOES NOT match rng
+			// BUT coin is  on side
+			// jackpot :D
+			data["money"] += jackpot; // jackpot amt (change line 40)
+			MGFirebase.setData(`user/${interaction.user.id}`, data);
+			
+			interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Success)
+						.setTitle("JACKPOT!")
+						.setDescription(
+							`The coin landed on its side :O You win ${jackpot}`
+						)
+						.addFields(
+							{ name: "Balance", value: `${data["money"]}` },
+							{ name: "Amount earned:", value: `${jackpot}` }
+						)
+				]
 			});
 		} else {
+			// user's choice DOES NOT match rng...
+			// BUT the coin is not on the side D:
+			// you lost the bet :(
 			data["money"] -= amt;
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 			interaction.reply({
@@ -137,8 +170,8 @@ const gamble = withChecks([cooldownTest(10)], {
 						.addFields(
 							{ name: "Balance", value: `${data["money"]}` },
 							{ name: "Amount lost:", value: `${amt}` }
-						),
-				],
+						)
+				]
 			});
 		}
 	},
