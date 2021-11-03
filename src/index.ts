@@ -31,6 +31,7 @@ import { initialGuild } from "./types/firebase";
 import moan, { setMoan, toLog } from "./lib/moan";
 import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
+import { commandLogArr, setCommandLog } from "./lib/comamndlog";
 
 export const client = new Client({
 	intents: [
@@ -117,24 +118,25 @@ admin.initializeApp({
 //setup logging
 function logToDiscord() {
 	const arr = toLog;
-	for (const i of arr) {
-		const { status, logged } = i;
-		const maxigamesOfficial = client.guilds.cache.get(
+	const maxigamesOfficial = client.guilds.cache.get(
+		`${
+			process.env.NODE_ENV == "production"
+				? "837522963389349909"
+				: "866939574419849216"
+		}`
+	)!;
+	maxigamesOfficial.channels
+		.fetch(
 			`${
 				process.env.NODE_ENV == "production"
-					? "837522963389349909"
-					: "866939574419849216"
+					? "904995742349922304"
+					: "905023522278113320"
 			}`
-		)!;
-		maxigamesOfficial.channels
-			.fetch(
-				`${
-					process.env.NODE_ENV == "production"
-						? "904995742349922304"
-						: "905023522278113320"
-				}`
-			)
-			.then((logs) => {
+		)
+		.then((logs) => {
+			for (const i of arr) {
+				const { status, logged } = i;
+
 				const botlogs = logs as TextChannel;
 				let title: string;
 				let colour: string;
@@ -167,8 +169,33 @@ function logToDiscord() {
 				botlogs.send(
 					`${toPing}\n\`\`\`${colour}\n${append}${title}: ${logged}\`\`\``
 				);
-			});
-	}
+			}
+		});
+	let arr2 = commandLogArr;
+	const maxigamesOfficial2 = client.guilds.cache.get(
+		`${
+			process.env.NODE_ENV == "production"
+				? "837522963389349909"
+				: "866939574419849216"
+		}`
+	)!;
+	maxigamesOfficial2.channels
+		.fetch(
+			`${
+				process.env.NODE_ENV == "production"
+					? "905458096372084777"
+					: "905458135358124073"
+			}`
+		)
+		.then((channel) => {
+			for (let i of arr2) {
+				let textChannel = channel as TextChannel;
+				textChannel.send(
+					`**User/Guild:** \`${i.userGuild}\`\n**Command:** \`${i.commandName}\`\n**Message:**\`\`\`${i.message}\`\`\``
+				);
+			}
+		});
+	setCommandLog();
 	setMoan();
 	setTimeout(() => {
 		logToDiscord();

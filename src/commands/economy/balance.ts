@@ -26,6 +26,7 @@ import type MGCommand from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
+import commandLog from "../../lib/comamndlog";
 
 const balance: MGCommand = {
 	data: new SlashCommandBuilder()
@@ -55,6 +56,12 @@ const balance: MGCommand = {
 			.setTitle(`${user.username} #${user.discriminator}'s balance!`)
 			.setDescription("MaxiCoins!")
 			.addFields({ name: "Balance", value: `${data.money} MaxiCoins` });
+
+		commandLog(
+			"balance",
+			`${interaction.user.id}`,
+			`User checked their balance: ${data.money} MaxiCoins`
+		);
 
 		await interaction.reply({ embeds: [embed] });
 	},

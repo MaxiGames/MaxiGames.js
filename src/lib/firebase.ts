@@ -47,14 +47,6 @@ export class FirebaseManager {
 	) {
 		const getDataCall = Math.abs(getData - this.getDataCalls);
 		const setDataCall = Math.abs(setData - this.setDataCalls);
-		console.log(
-			getDataCall,
-			setDataCall,
-			getData,
-			setData,
-			this.getDataCalls,
-			this.setDataCalls
-		);
 		if (getDataCall > 0) {
 			moan(
 				MGS.Warn,
