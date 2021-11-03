@@ -84,7 +84,7 @@ export class FirebaseManager {
 			}
 			moan(
 				MGS.Error,
-				`GETDATA HAS BEEN CALLED TOO MANY TIMES! A TOTAL OF ${this.getDataCalls} IN THE LAST 5 MINUTES!`
+				`GETDATA HAS BEEN CALLED TOO MANY TIMES! A TOTAL OF ${getDataCall} IN THE LAST 5 MINUTES!`
 			);
 		}
 		if (setDataCall > 100) {
@@ -104,7 +104,7 @@ export class FirebaseManager {
 			}
 			moan(
 				MGS.Error,
-				`SETDATA HAS BEEN CALLED TOO MANY TIMES! A TOTAL OF ${this.setDataCalls} IN THE LAST 5 MINUTES!`
+				`SETDATA HAS BEEN CALLED TOO MANY TIMES! A TOTAL OF ${setDataCall} IN THE LAST 5 MINUTES!`
 			);
 		}
 		let setDataCalls = this.setDataCalls;
