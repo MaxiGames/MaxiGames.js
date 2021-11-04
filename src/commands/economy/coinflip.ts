@@ -36,7 +36,7 @@ function otherOption(name: string) {
 	}
 }
 
-const jackpot = 3; // jackpot value in MaxiCoins
+const jackpot = 3; // jackpot multiplier
 
 const gamble = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
