@@ -199,7 +199,7 @@ function logToDiscord() {
 	setMoan();
 	setTimeout(() => {
 		logToDiscord();
-	}, 5000);
+	}, 2000);
 }
 
 // set bot activity upon guild events

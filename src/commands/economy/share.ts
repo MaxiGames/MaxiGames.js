@@ -24,6 +24,7 @@ import MGCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
 import cooldownTest from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
+import commandLog from "../../lib/comamndlog";
 
 const gamble: MGCommand = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
@@ -54,6 +55,11 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 		}
 
 		if (usr.bot) {
+			commandLog(
+				"share",
+				`${interaction.user.id}`,
+				`Tried to share money to bots`
+			);
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
@@ -81,6 +87,11 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 						.addField("Deducted money:", `${deduct}`),
 				],
 			});
+			commandLog(
+				"share",
+				`${interaction.user.id}`,
+				`Tried to share negative numbers`
+			);
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 			return;
 		}
@@ -96,11 +107,16 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 						),
 				],
 			});
+			commandLog(
+				"share",
+				`${interaction.user.id}`,
+				`Not enough money, wanted: ${amt}, balance: ${data["money"]}`
+			);
 			return;
 		}
 		// entered user is the same as the command user
 		if (usr.id === interaction.user.id) {
-			interaction.reply({
+			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
 						.setTitle("Cannot share to yourself >:(!")
@@ -109,6 +125,11 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 						),
 				],
 			});
+			commandLog(
+				"share",
+				`${interaction.user.id}`,
+				`Tried to share money to themselves`
+			);
 			return;
 		}
 
@@ -122,7 +143,7 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 		MGFirebase.setData(`user/${usr.id}`, otherUserData);
 		MGFirebase.setData(`user/${interaction.user.id}`, data);
 
-		interaction.reply({
+		await interaction.reply({
 			embeds: [
 				MGEmbed(MGStatus.Success)
 					.setTitle("Success!")
@@ -144,6 +165,11 @@ const gamble: MGCommand = withChecks([cooldownTest(10)], {
 					),
 			],
 		});
+		commandLog(
+			"share",
+			`${interaction.user.id}`,
+			`Tried to share money to bots`
+		);
 	},
 });
 

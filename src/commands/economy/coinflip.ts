@@ -27,6 +27,7 @@ import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
 import cooldownTest from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
+import commandLog from "../../lib/comamndlog";
 
 function otherOption(name: string) {
 	if (name === "heads") {
@@ -76,6 +77,11 @@ const gamble = withChecks([cooldownTest(10)], {
 		if (amt <= 0) {
 			const deduct = Math.ceil(Math.random() * 5);
 			data["money"] -= deduct;
+			commandLog(
+				"coinflip",
+				`${interaction.user.id}`,
+				`Tried to trick the system!, Deducted: ${deduct}`
+			);
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
@@ -89,6 +95,11 @@ const gamble = withChecks([cooldownTest(10)], {
 		}
 
 		if (data["money"] < amt) {
+			commandLog(
+				"coinflip",
+				`${interaction.user.id}`,
+				`Not enough money, balance: ${data["money"]}`
+			);
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
@@ -127,6 +138,11 @@ const gamble = withChecks([cooldownTest(10)], {
 						),
 				],
 			});
+			commandLog(
+				"coinflip",
+				`${interaction.user.id}`,
+				`Coinflipped on the right side, earned ${amt}, balance ${data["money"]}`
+			);
 		} else if (coinOnSide) {
 			// user's choice DOES NOT match rng
 			// BUT coin is  on side
@@ -134,6 +150,11 @@ const gamble = withChecks([cooldownTest(10)], {
 			data["money"] *= jackpot; // jackpot amt (change line 40)
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 
+			commandLog(
+				"coinflip",
+				`${interaction.user.id}`,
+				`Coinflipped on the side, earned 3x, balance ${data["money"]}`
+			);
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)
@@ -153,6 +174,11 @@ const gamble = withChecks([cooldownTest(10)], {
 			// you lost the bet :(
 			data["money"] -= amt;
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
+			commandLog(
+				"coinflip",
+				`${interaction.user.id}`,
+				`Coinflipped on the wrong side, lost ${amt}, balance ${data["money"]}`
+			);
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Success)

@@ -23,6 +23,7 @@ import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
 import cooldownTest from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
+import commandLog from "../../lib/comamndlog";
 
 const money: MGCommand = withChecks([cooldownTest(20)], {
 	data: new SlashCommandBuilder()
@@ -48,6 +49,11 @@ const money: MGCommand = withChecks([cooldownTest(20)], {
 				{ name: "Balance:", value: `${data.money}`, inline: true }
 			);
 		await interaction.reply({ embeds: [embed] });
+		commandLog(
+			"money",
+			`${interaction.user.id}`,
+			`Used money and won ${toAdd}, balance: ${data["money"]}`
+		);
 	},
 });
 

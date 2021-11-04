@@ -23,6 +23,8 @@ import MyCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
 import cooldownTest, { convertSecondsToDay } from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
+import commandLog from "../../lib/comamndlog";
+import balance from "./balance";
 
 const timely: MyCommand = withChecks([cooldownTest(5)], {
 	data: new SlashCommandBuilder()
@@ -101,6 +103,11 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
 					{ name: "Current Balance", value: `${data["money"]}` }
 				);
 			await MGFirebase.setData(`user/${interaction.user.id}`, data);
+			commandLog(
+				"timely",
+				`${interaction.user.id}`,
+				`Claimed ${subCommand}! Earned: ${moneyAdd}, bal: ${balance}`
+			);
 		} else {
 			embed = MGEmbed(MGStatus.Error)
 				.setTitle(`You can't claim ${subCommand} yet!`)
@@ -113,6 +120,15 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
 						)
 					)}`,
 				});
+			commandLog(
+				"timely",
+				`${interaction.user.id}`,
+				`Can't claim timely yet! Time left: ${convertSecondsToDay(
+					Math.floor(
+						data["timelyClaims"][subCommand] + interval - date
+					)
+				)}`
+			);
 		}
 
 		await interaction.reply({ embeds: [embed] });

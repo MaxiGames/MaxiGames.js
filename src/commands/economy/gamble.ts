@@ -24,6 +24,7 @@ import MGCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
 import cooldownTest from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
+import commandLog from "../../lib/comamndlog";
 
 const gamble: MGCommand = withChecks([cooldownTest(20)], {
 	data: new SlashCommandBuilder()
@@ -40,14 +41,20 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 	async execute(interaction) {
 		const amt: number = interaction.options.getInteger("amount") || 5;
 		if (amt < 5) {
-			interaction.reply({
+			commandLog(
+				"gamble",
+				`${interaction.user.id}`,
+				`Gambled too little`
+			);
+			await interaction.reply({
 				content: "You need to gamble at least 5 :(",
 				ephemeral: true,
 			});
 			return;
 		}
 		if (amt > 10000) {
-			interaction.reply({
+			commandLog("gamble", `${interaction.user.id}`, `Gambled too much`);
+			await interaction.reply({
 				content: "You can't gamble more than 10000 :(",
 				ephemeral: true,
 			});
@@ -61,7 +68,12 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 		}
 
 		if (data["money"] < amt) {
-			interaction.reply({
+			commandLog(
+				"gamble",
+				`${interaction.user.id}`,
+				`Not enough money to gamble, required: ${amt}, balance: ${data["money"]}`
+			);
+			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error)
 						.setTitle("You do not have enough money to gamble!!")
@@ -95,8 +107,12 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 			await interaction.reply({
 				embeds: [Embed],
 			});
-
-			MGFirebase.setData(`user/${interaction.user.id}`, data);
+			commandLog(
+				"gamble",
+				`${interaction.user.id}`,
+				`Gambled and won ${gain}, balance: ${data["money"]}`
+			);
+			await MGFirebase.setData(`user/${interaction.user.id}`, data);
 		} else if (player_roll < bot_roll) {
 			data["money"] -= amt;
 			const Embed = MGEmbed(MGStatus.Success)
@@ -108,7 +124,11 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 			await interaction.reply({
 				embeds: [Embed],
 			});
-
+			commandLog(
+				"gamble",
+				`${interaction.user.id}`,
+				`Gambled and lost ${amt}, balance: ${data["money"]}`
+			);
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 		} else {
 			const Embed = MGEmbed(MGStatus.Success)
@@ -122,6 +142,11 @@ const gamble: MGCommand = withChecks([cooldownTest(20)], {
 			await interaction.reply({
 				embeds: [Embed],
 			});
+			commandLog(
+				"gamble",
+				`${interaction.user.id}`,
+				`Gambled and drew, no change, balance: ${data["money"]}`
+			);
 		}
 	},
 });
