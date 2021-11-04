@@ -37,9 +37,7 @@ function otherOption(name: string) {
 	}
 }
 
-const jackpot = 3; // jackpot value in MaxiCoins
-
-const gamble = withChecks([cooldownTest(10)], {
+const gamble = withChecks([cooldownTest(30)], {
 	data: new SlashCommandBuilder()
 		.setName("coinflip")
 		.setDescription(
@@ -113,16 +111,9 @@ const gamble = withChecks([cooldownTest(10)], {
 			return;
 		}
 
-		const compOption = Math.ceil(Math.random() * 2);
-		const coinOnSide = Math.ceil(Math.random() * 1000) > 999 ? true : false; // if coinSide is true, this will override normal coinflip
-
-		// user's option is correct...
-		if (
-			((option === "heads" && compOption === 1) || // user's choice matches rng?
-				(option === "tails" && compOption === 2)) && // ^
-			!coinOnSide // AND the coin is not on its side
-		) {
-			data["money"] += amt;
+		const jackpot = Math.ceil(Math.random() * 1000) > 998;
+		if ({ heads: 1, tails: 2 }[option] === Math.ceil(Math.random() * 2)) {
+			data["money"] += amt * (jackpot ? 30 : 1);
 			MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
 
 			await interaction.reply({
@@ -130,11 +121,17 @@ const gamble = withChecks([cooldownTest(10)], {
 					MGEmbed(MGStatus.Success)
 						.setTitle("You won!")
 						.setDescription(
-							`You guessed the coin flip right! :) it flipped on **${option}**`
+							`You guessed the coin flip right! It landed on **${option}**. ` +
+								(jackpot
+									? "Lucky you, you also won the jackpot!!!"
+									: "")
 						)
 						.addFields(
 							{ name: "Balance", value: `${data["money"]}` },
-							{ name: "Amount earned:", value: `${amt}` }
+							{
+								name: "Amount earned:",
+								value: `${amt * (jackpot ? 30 : 1)}`,
+							}
 						),
 				],
 			});
@@ -147,7 +144,6 @@ const gamble = withChecks([cooldownTest(10)], {
 			// user's choice DOES NOT match rng
 			// BUT coin is  on side
 			// jackpot :D
-			data["money"] *= jackpot; // jackpot amt (change line 40)
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 
 			commandLog(
