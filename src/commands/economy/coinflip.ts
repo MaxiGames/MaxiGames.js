@@ -103,7 +103,7 @@ const gamble = withChecks([cooldownTest(10)], {
 		}
 
 		const compOption = Math.ceil(Math.random() * 2);
-		const coinOnSide = Math.ceil(Math.random() * 1000) > 999 ? true : false; // if coinSide is true, this will override normal coinflip
+		const coinOnSide = Math.ceil(Math.random() * 1000) > 980 ? true : false; // if coinSide is true, this will override normal coinflip
 
 		// user's option is correct...
 		if (
@@ -128,10 +128,11 @@ const gamble = withChecks([cooldownTest(10)], {
 				],
 			});
 		} else if (coinOnSide) {
-			// user's choice DOES NOT match rng
-			// BUT coin is  on side
+			// user's choice MAY OR MAY NOT match rng...
+			// BUT coin is on side
 			// jackpot :D
-			data["money"] *= jackpot; // jackpot amt (change line 40)
+			const temp = data["money"] * (jackpot - 1); // amount of ,oney to be added
+			data["money"] += temp; // no difference, just shows how its related ig
 			MGFirebase.setData(`user/${interaction.user.id}`, data);
 
 			await interaction.reply({
@@ -139,11 +140,11 @@ const gamble = withChecks([cooldownTest(10)], {
 					MGEmbed(MGStatus.Success)
 						.setTitle("JACKPOT!")
 						.setDescription(
-							`The coin landed on its side :O You win ${jackpot}`
+							`The coin landed on its **side** :O You win ${temp}`
 						)
 						.addFields(
 							{ name: "Balance", value: `${data["money"]}` },
-							{ name: "Amount earned:", value: `${jackpot}` }
+							{ name: "Amount earned:", value: `${temp}` }
 						),
 				],
 			});
