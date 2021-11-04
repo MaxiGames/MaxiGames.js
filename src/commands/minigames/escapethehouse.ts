@@ -35,7 +35,7 @@ export async function changeRating(
 	won: boolean
 ) {
 	let escapeRating = await MGFirebase.getData(
-		`user/${interaction.user.id}/minigames/guessthecolour`
+		`user/${interaction.user.id}/minigames/escapethehouse`
 	);
 	let toChange: number;
 	if (won) {
