@@ -140,56 +140,6 @@ const gamble = withChecks([cooldownTest(30)], {
 				`${interaction.user.id}`,
 				`Coinflipped on the right side, earned ${amt}, balance ${data["money"]}`
 			);
-		} else if (coinOnSide) {
-			// user's choice DOES NOT match rng
-			// BUT coin is  on side
-			// jackpot :D
-			MGFirebase.setData(`user/${interaction.user.id}`, data);
-
-			commandLog(
-				"coinflip",
-				`${interaction.user.id}`,
-				`Coinflipped on the side, earned 3x, balance ${data["money"]}`
-			);
-			await interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Success)
-						.setTitle("JACKPOT!")
-						.setDescription(
-							`The coin landed on its side :O You win ${jackpot}`
-						)
-						.addFields(
-							{ name: "Balance", value: `${data["money"]}` },
-							{ name: "Amount earned:", value: `${jackpot}` }
-						),
-				],
-			});
-		} else {
-			// user's choice DOES NOT match rng...
-			// BUT the coin is not on the side D:
-			// you lost the bet :(
-			data["money"] -= amt;
-			MGFirebase.setData(`user/${interaction.user.id}`, data);
-			commandLog(
-				"coinflip",
-				`${interaction.user.id}`,
-				`Coinflipped on the wrong side, lost ${amt}, balance ${data["money"]}`
-			);
-			await interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Success)
-						.setTitle("You lost!")
-						.setDescription(
-							`You guessed the coin flip wrong! :( it flipped on **${otherOption(
-								option
-							)}**`
-						)
-						.addFields(
-							{ name: "Balance", value: `${data["money"]}` },
-							{ name: "Amount lost:", value: `${amt}` }
-						),
-				],
-			});
 		}
 	},
 });
