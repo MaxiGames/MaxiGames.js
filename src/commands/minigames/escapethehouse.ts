@@ -39,10 +39,12 @@ export async function changeRating(
 	);
 	let toChange: number;
 	if (won) {
-		toChange = Math.ceil(escapeRating * Math.random() * 100);
+		toChange = Math.ceil(
+			escapeRating < 0 ? 0 : escapeRating * Math.random() * 10
+		);
 		escapeRating += toChange;
 	} else {
-		toChange = -Math.ceil(escapeRating * 0.7 * Math.random() * 100);
+		toChange = -Math.ceil(escapeRating * 0.5 * Math.random() * 10);
 		escapeRating += toChange;
 	}
 	await MGFirebase.setData(
