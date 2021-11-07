@@ -120,5 +120,6 @@ export function convertSecondsToDay(n: number) {
 			}
 		}
 	}
+	if (message === "") return ":)";
 	return message;
 }

@@ -100,7 +100,7 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
 				.setDescription(`Yay! You claimed your ${subCommand}!`)
 				.addFields(
 					{ name: "Added:", value: `${moneyAdd}` },
-					{ name: "Current Balance", value: `${data["money"]}` }
+					{ name: "Current Balance:", value: `${data["money"]}` }
 				);
 			await MGFirebase.setData(`user/${interaction.user.id}`, data);
 			commandLog(
