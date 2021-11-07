@@ -16,6 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
+ * File: src/commands/minigames/escapethehouse.ts
+ * Description: Logic for Escape The House minigame **HAS ISSUES**
+ */
+
 import { SlashCommandBuilder } from "@discordjs/builders";
 import {
 	ButtonInteraction,
@@ -36,21 +41,20 @@ export async function changeRating(
 ) {
 	let escapeRating = await MGFirebase.getData(
 		`user/${interaction.user.id}/minigames/escapethehouse`
-	);
-	let toChange: number;
+	); // get current escapeTheHouse rating
+	let toChange: number; // rating change
 	if (won) {
-		toChange = Math.ceil(
-			escapeRating < 0 ? 0 : escapeRating * Math.random() * 10
-		);
+		toChange = Math.ceil(escapeRating * Math.random());
 		escapeRating += toChange;
 	} else {
-		toChange = -Math.ceil(escapeRating * 0.5 * Math.random() * 10);
+		// lost :(
+		toChange = -Math.ceil(escapeRating * 0.5 * Math.random());
 		escapeRating += toChange;
 	}
 	await MGFirebase.setData(
 		`user/${interaction.user.id}/minigames/escapethehouse`,
 		escapeRating
-	);
+	); // set new rating
 	return toChange;
 }
 
@@ -58,6 +62,7 @@ const escapeTheHouse: MGCommand = {
 	data: new SlashCommandBuilder()
 		.setName("escapethehouse")
 		.setDescription("Guess which door leads to the right place!"),
+
 	async execute(interaction) {
 		const doorNumber = Math.ceil(Math.random() * 2);
 		await interaction.reply({

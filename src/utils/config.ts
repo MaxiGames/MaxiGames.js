@@ -16,9 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
+* File: src/utils/config.ts
+* Description: Firebase Confoguration
+*/
+
+
 import configProd from "../../config-prod.json";
 import configDev from "../../config-dev.json";
 import api from "../../api-token.json";
+
 
 export const config =
 	process.env.NODE_ENV == "production" ? configProd : configDev;
