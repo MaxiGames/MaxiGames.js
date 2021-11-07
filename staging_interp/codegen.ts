@@ -7,12 +7,27 @@ import type { AST, atom } from "./parse";
  * 1. (define <...> <...>)
  * 2. (<and/or> <...> <...>)           (TODO)
  * 3. (if <...> <...> <...>)
- * 4. (let ((<...> <...>)...) <...>)   (TODO)
+ * 4. (lambda (<...>...) <...>)
+ * 5. (let ((<...> <...>)...) <...>)   (TODO)
  */
 
 // form: <atom>
 function gen_js_atom(body: atom): string {
 	return "(" + body.value + ")";
+}
+
+// form: (define <name> <val>)
+function gen_js_define(body: AST[]): string {
+	return `let ${(body[1] as atom).value}=${gen_js_maindispatch(body[2])};`;
+}
+
+// form: (if <cond> <expr-if-true> <expr-if-false>)
+function gen_js_if(body: AST[]) {
+	return (
+		`(function(){if(${gen_js_maindispatch(body[1])})` +
+		`{return ${gen_js_maindispatch(body[2])}}` +
+		`else{return ${gen_js_maindispatch(body[3])}}})()`
+	);
 }
 
 // form: (lambda (<param>...) <code>)
@@ -25,11 +40,6 @@ function gen_js_lambda(body: AST[]): string {
 	ret += `){return ${gen_js_maindispatch(body[2])}})`;
 
 	return ret;
-}
-
-// form: (define <name> <val>)
-function gen_js_define(body: AST[]): string {
-	return `let ${(body[1] as atom).value} = ${gen_js_maindispatch(body[2])};`;
 }
 
 // form: (fn-name <arg>...) OR <name>
@@ -52,15 +62,6 @@ function gen_js_call(body: AST): string {
 	ret += ")";
 
 	return ret;
-}
-
-// form: (if <cond> <if-true> <if-false>)
-function gen_js_if(body: AST[]) {
-	return (
-		`(function(){if(${gen_js_maindispatch(body[1])})` +
-		`{return ${gen_js_maindispatch(body[2])}}` +
-		`else{return ${gen_js_maindispatch(body[3])}}})()`
-	);
 }
 
 function gen_js_maindispatch(body: AST): string {
