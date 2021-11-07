@@ -16,7 +16,7 @@ function gen_js_atom(body: atom): string {
 	return "(" + body.value + ")";
 }
 
-// form: (define <name> <val>)
+// form: (define <name> <expr>)
 function gen_js_define(body: AST[]): string {
 	return `let ${(body[1] as atom).value}=${gen_js(body[2])};`;
 }
@@ -55,7 +55,24 @@ function gen_js_lambda(body: AST[]): string {
 	return ret;
 }
 
-// form: (fn-name <arg>...) OR <name>
+// form: (let ((<name> <expr>)...) (expr))
+function gen_js_let(body: AST[]): string {
+	let ret = "";
+
+	ret += "(function (";
+	for (let pair of body[1] as AST[]) {
+		ret += `${(pair as [atom, AST])[0].value}=${gen_js(
+			(pair as [atom, AST])[1]
+		)},`;
+	}
+	ret += "){return(";
+	ret += gen_js(body[2]);
+	ret += ")})()";
+
+	return ret;
+}
+
+// form: (fn-name <arg-expr>...) OR <name>
 function gen_js_call(body: AST): string {
 	if (!(body instanceof Array)) {
 		// self-evaluating literal
@@ -100,6 +117,8 @@ function gen_js(body: AST): string {
 					case "and":
 					case "or":
 						return gen_js_andor(body);
+					case "let":
+						return gen_js_let(body);
 					default:
 						return gen_js_call(body);
 				}
@@ -109,17 +128,20 @@ function gen_js(body: AST): string {
 	}
 }
 
-const src =
-	"(define factorial" +
-	"  (lambda (n)" +
-	"    (if (lessthan n 2)" +
-	"        1" +
-	"        (mult n (factorial (sub n 1))))))";
 console.log(
 	gen_js(
 		require("./parse").parse(
 			require("./lex").lex(
 				"(define factorial (lambda (n) (if (lessthan n 2) 1 (mult n (factorial (sub n 1))))))"
+			)
+		)
+	)
+);
+console.log(
+	gen_js(
+		require("./parse").parse(
+			require("./lex").lex(
+				"(define ho (lambda () (let ((a 3) (b 4)) (add a b))))"
 			)
 		)
 	)
