@@ -5,7 +5,7 @@ import type { AST, atom } from "./parse";
 /*
  * List of special forms:
  * 1. (define <...> <...>)
- * 2. (<and/or> <...> <...>)           (TODO)
+ * 2. (<and/or> <...> <...>)
  * 3. (if <...> <...> <...>)
  * 4. (lambda (<...>...) <...>)
  * 5. (let ((<...> <...>)...) <...>)   (TODO)
@@ -18,15 +18,28 @@ function gen_js_atom(body: atom): string {
 
 // form: (define <name> <val>)
 function gen_js_define(body: AST[]): string {
-	return `let ${(body[1] as atom).value}=${gen_js_maindispatch(body[2])};`;
+	return `let ${(body[1] as atom).value}=${gen_js(body[2])};`;
+}
+
+// form: (and <expr>...) OR (or <expr>...)
+function gen_js_andor(body: AST[]): string {
+	let ret = "";
+
+	ret += "(";
+	for (let node of body.slice(1)) {
+		ret += gen_js(node) + (body[0] as atom).value === "and" ? "&&" : "||";
+	}
+	ret += (body[0] as atom).value === "and" ? "true" : "false" + ")";
+
+	return ret;
 }
 
 // form: (if <cond> <expr-if-true> <expr-if-false>)
 function gen_js_if(body: AST[]) {
 	return (
-		`(function(){if(${gen_js_maindispatch(body[1])})` +
-		`{return ${gen_js_maindispatch(body[2])}}` +
-		`else{return ${gen_js_maindispatch(body[3])}}})()`
+		`(function(){if(${gen_js(body[1])})` +
+		`{return ${gen_js(body[2])}}` +
+		`else{return ${gen_js(body[3])}}})()`
 	);
 }
 
@@ -37,7 +50,7 @@ function gen_js_lambda(body: AST[]): string {
 	for (let pname of body[1] as atom[]) {
 		ret += " " + pname.value;
 	}
-	ret += `){return ${gen_js_maindispatch(body[2])}})`;
+	ret += `){return ${gen_js(body[2])}})`;
 
 	return ret;
 }
@@ -51,26 +64,26 @@ function gen_js_call(body: AST): string {
 
 	let ret = "";
 	if (body[0] instanceof Array) {
-		ret += gen_js_maindispatch(body[0]);
+		ret += gen_js(body[0]);
 	} else {
 		ret += "(" + (body[0] as atom).value + ")";
 	}
 	ret += "(";
 	for (const node of body.slice(1)) {
-		ret += " " + gen_js_maindispatch(node) + ",";
+		ret += " " + gen_js(node) + ",";
 	}
 	ret += ")";
 
 	return ret;
 }
 
-function gen_js_maindispatch(body: AST): string {
+function gen_js(body: AST): string {
 	if (!(body instanceof Array)) {
 		return gen_js_atom(body);
 	}
 
 	if (body[0] instanceof Array) {
-		return gen_js_maindispatch(body[0]);
+		return gen_js(body[0]);
 	} else {
 		switch (body[0].type) {
 			case TokenType.string:
@@ -84,6 +97,9 @@ function gen_js_maindispatch(body: AST): string {
 						return gen_js_lambda(body);
 					case "if":
 						return gen_js_if(body);
+					case "and":
+					case "or":
+						return gen_js_andor(body);
 					default:
 						return gen_js_call(body);
 				}
@@ -100,7 +116,7 @@ const src =
 	"        1" +
 	"        (mult n (factorial (sub n 1))))))";
 console.log(
-	gen_js_maindispatch(
+	gen_js(
 		require("./parse").parse(
 			require("./lex").lex(
 				"(define factorial (lambda (n) (if (lessthan n 2) 1 (mult n (factorial (sub n 1))))))"
