@@ -9,6 +9,7 @@ import type { AST, atom } from "./parse";
  * 3. (if <...> <...> <...>)
  * 4. (let ((<...> <...>)...) <...>)
  * 5. (<and/or> <...> <...>)
+ * 6. (; <...>)
  */
 
 // form: <atom>
@@ -72,6 +73,11 @@ function gen_js_andor(body: AST[]): string {
 	return ret;
 }
 
+// form: (; <comment>)
+function gen_js_comment(_: AST[]): string {
+	return "";
+}
+
 // form: (fn-name <arg-expr>...) OR <name>
 function gen_js_call(body: AST): string {
 	if (!(body instanceof Array)) {
@@ -119,6 +125,8 @@ function gen_js(body: AST): string {
 					case "and":
 					case "or":
 						return gen_js_andor(body);
+					case ";":
+						return gen_js_comment(body);
 					default:
 						return gen_js_call(body);
 				}
