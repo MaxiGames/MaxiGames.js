@@ -17,10 +17,9 @@
  */
 
 /*
-* File: src/commands/minigames/escapethehouse.ts
-* Description: Logic for Escape The House minigame **HAS ISSUES**
-*/
-
+ * File: src/commands/minigames/escapethehouse.ts
+ * Description: Logic for Escape The House minigame **HAS ISSUES**
+ */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
 import {
@@ -36,7 +35,6 @@ import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
 
-
 export async function changeRating(
 	interaction: MessageInteraction | ButtonInteraction,
 	won: boolean
@@ -46,13 +44,11 @@ export async function changeRating(
 	); // get current escapeTheHouse rating
 	let toChange: number; // rating change
 	if (won) {
-		toChange = Math.ceil(
-			/*escapeRating < 0 ? 0 : */escapeRating * Math.random() * 10
-		); // hang on, this (commented out bit) means that once your rating is negative you will NEVER go back up. >:( @AJR07 CHANGING
+		toChange = Math.ceil(escapeRating * Math.random());
 		escapeRating += toChange;
 	} else {
 		// lost :(
-		toChange = -Math.ceil(escapeRating * 0.5 * Math.random() * 10);
+		toChange = -Math.ceil(escapeRating * 0.5 * Math.random());
 		escapeRating += toChange;
 	}
 	await MGFirebase.setData(
@@ -66,7 +62,7 @@ const escapeTheHouse: MGCommand = {
 	data: new SlashCommandBuilder()
 		.setName("escapethehouse")
 		.setDescription("Guess which door leads to the right place!"),
-	
+
 	async execute(interaction) {
 		const doorNumber = Math.ceil(Math.random() * 2);
 		await interaction.reply({
