@@ -5,10 +5,10 @@ import type { AST, atom } from "./parse";
 /*
  * List of special forms:
  * 1. (define <...> <...>)
- * 2. (<and/or> <...> <...>)
+ * 2. (lambda (<...>...) <...>)
  * 3. (if <...> <...> <...>)
- * 4. (lambda (<...>...) <...>)
- * 5. (let ((<...> <...>)...) <...>)   (TODO)
+ * 4. (let ((<...> <...>)...) <...>)
+ * 5. (<and/or> <...> <...>)
  */
 
 // form: <atom>
@@ -21,15 +21,14 @@ function gen_js_define(body: AST[]): string {
 	return `let ${(body[1] as atom).value}=${gen_js(body[2])};`;
 }
 
-// form: (and <expr>...) OR (or <expr>...)
-function gen_js_andor(body: AST[]): string {
+// form: (lambda (<param>...) <code>)
+function gen_js_lambda(body: AST[]): string {
 	let ret = "";
-
-	ret += "(";
-	for (let node of body.slice(1)) {
-		ret += gen_js(node) + (body[0] as atom).value === "and" ? "&&" : "||";
+	ret += "(function(";
+	for (let pname of body[1] as atom[]) {
+		ret += " " + pname.value;
 	}
-	ret += (body[0] as atom).value === "and" ? "true" : "false" + ")";
+	ret += `){return ${gen_js(body[2])}})`;
 
 	return ret;
 }
@@ -41,18 +40,6 @@ function gen_js_if(body: AST[]) {
 		`{return ${gen_js(body[2])}}` +
 		`else{return ${gen_js(body[3])}}})()`
 	);
-}
-
-// form: (lambda (<param>...) <code>)
-function gen_js_lambda(body: AST[]): string {
-	let ret = "";
-	ret += "(function(";
-	for (let pname of body[1] as atom[]) {
-		ret += " " + pname.value;
-	}
-	ret += `){return ${gen_js(body[2])}})`;
-
-	return ret;
 }
 
 // form: (let ((<name> <expr>)...) (expr))
@@ -68,6 +55,19 @@ function gen_js_let(body: AST[]): string {
 	ret += "){return(";
 	ret += gen_js(body[2]);
 	ret += ")})()";
+
+	return ret;
+}
+
+// form: (and <expr>...) OR (or <expr>...)
+function gen_js_andor(body: AST[]): string {
+	let ret = "";
+
+	ret += "(";
+	for (let node of body.slice(1)) {
+		ret += gen_js(node) + (body[0] as atom).value === "and" ? "&&" : "||";
+	}
+	ret += (body[0] as atom).value === "and" ? "true" : "false" + ")";
 
 	return ret;
 }
@@ -114,11 +114,11 @@ function gen_js(body: AST): string {
 						return gen_js_lambda(body);
 					case "if":
 						return gen_js_if(body);
+					case "let":
+						return gen_js_let(body);
 					case "and":
 					case "or":
 						return gen_js_andor(body);
-					case "let":
-						return gen_js_let(body);
 					default:
 						return gen_js_call(body);
 				}
