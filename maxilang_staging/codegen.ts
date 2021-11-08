@@ -197,7 +197,7 @@ console.log(
 	gen_js(
 		require("./parse").parse(
 			require("./lex").lex(
-				"(define ho (lambda () (let ((a 3) (b 4)) (add a b))))"
+				"(begin (define ho (lambda () (let ((a 3) (b 4)) (add a b)))) (console.log (ho)))"
 			)
 		)
 	)
