@@ -34,7 +34,7 @@ function gen_js_lambda(body: AST[]): string {
 	let ret = "";
 	ret += "((";
 	for (let pname of body[1] as atom[]) {
-		ret += " " + pname.value;
+		ret += pname.value + ",";
 	}
 	ret += `)=>{return ${_gen_js(body[2])}})`;
 
@@ -113,7 +113,7 @@ function gen_js_call(body: AST): string {
 	}
 	ret += "(";
 	for (const node of body.slice(1)) {
-		ret += " " + _gen_js(node) + ",";
+		ret += _gen_js(node) + ",";
 	}
 	ret += ")";
 
