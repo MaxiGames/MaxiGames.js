@@ -42,13 +42,14 @@ export async function changeRating(
 	let escapeRating = await MGFirebase.getData(
 		`user/${interaction.user.id}/minigames/escapethehouse`
 	); // get current escapeTheHouse rating
-	let toChange: number; // rating change
+	let toChange: number = 0; // rating change
+	if (escapeRating == 0) toChange = Math.ceil(Math.random() * 10);
 	if (won) {
-		toChange = Math.ceil(escapeRating * Math.random());
+		toChange += Math.ceil(escapeRating * Math.random());
 		escapeRating += toChange;
 	} else {
 		// lost :(
-		toChange = -Math.ceil(escapeRating * 0.5 * Math.random());
+		toChange += -Math.ceil(escapeRating * 0.5 * Math.random());
 		escapeRating += toChange;
 	}
 	await MGFirebase.setData(
