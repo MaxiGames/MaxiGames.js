@@ -21,7 +21,11 @@ const prelude =
 
 // form: <atom>
 function gen_js_atom(body: atom): string {
-	return "(" + body.value + ")";
+	if (body.value === "nil") {
+		return "(null)";
+	} else {
+		return "(" + body.value + ")";
+	}
 }
 
 // form: (define <name> <expr>)
