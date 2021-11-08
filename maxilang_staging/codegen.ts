@@ -4,8 +4,9 @@ import type { AST, atom } from "./parse";
 // stdlib that must be done in js
 // currently only primitive operations
 const prelude =
-	"const add=(a,b)=>a+b;const sub=(a,b)=>a-b;const mult=(a,b)=>a*b;const div=(a,b)=>a/b;const mod=(a,b)=>a%b;" +
-	"const lt=(a,b)=>a<b;const gt=(a,b)=>a>b;const eq=(a,b)=>a===b;";
+	"const add=(a,b)=>a+b;const sub=(a,b)=>a-b;const mult=(a,b)=>a*b;" +
+	"const div=(a,b)=>a/b;const mod=(a,b)=>a%b; const lt=(a,b)=>a<b;" +
+	"const gt=(a,b)=>a>b;const eq=(a,b)=>a===b;";
 
 // generators -- assume well-formed input
 /*
@@ -180,43 +181,4 @@ function gen_js(body: AST): string {
 	return `(()=>{${prelude}${gen_js_dispatch(body)}})()`;
 }
 
-console.log("\nCODE TO COMPUTE 20!:");
-console.log(
-	gen_js(
-		require("./parse").parse(
-			require("./lex").lex(
-				"(begin (define factorial (lambda (n) (if (lt n 2) 1 (mult n (factorial (sub n 1)))))) (console.log (factorial 20)))"
-			)
-		)
-	)
-);
-
-console.log("\nCODE TO COMPUTE fib(30):");
-console.log(
-	gen_js(
-		require("./parse").parse(
-			require("./lex").lex(
-				"" +
-					"(begin" +
-					"  (define fib (lambda (n) (begin" +
-					"    (define iter (lambda (a b i) (begin" +
-					"      (if (eq i n)" +
-					"        (add a b)" +
-					"        (iter b (add a b) (add i 1))))))" +
-					"    (iter 0 1 2))))" +
-					"  (console.log (fib 30))"
-			)
-		)
-	)
-);
-
-console.log("\nCODE TO COMPUTE 3 + 4 with let:");
-console.log(
-	gen_js(
-		require("./parse").parse(
-			require("./lex").lex(
-				"(begin (define ho (lambda () (let ((a 3) (b 4)) (add a b)))) (console.log (ho)))"
-			)
-		)
-	)
-);
+export { prelude, gen_js };
