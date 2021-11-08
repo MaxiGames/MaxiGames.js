@@ -2,7 +2,7 @@ import { TokenType } from "./lex";
 import type { AST, atom } from "./parse";
 
 // stdlib that must be done in js
-// currently only math
+// currently only primitive operations
 const prelude =
 	"const add=(a,b)=>a+b;const sub=(a,b)=>a-b;const mult=(a,b)=>a*b;const div=(a,b)=>a/b;const mod=(a,b)=>a%b;" +
 	"const lt=(a,b)=>a<b;const gt=(a,b)=>a>b;const eq=(a,b)=>a===b;";

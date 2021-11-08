@@ -72,7 +72,10 @@ function lex(input: string): Token[] {
 			if (isNaN(parseFloat(tok_str))) {
 				// token NOT a number; must be a binding name
 				tok.type = TokenType.binding;
-				tok.value = tok_str;
+				tok.value = tok_str
+					.replaceAll("_", "___")
+					.replaceAll("-", "_____")
+					.replaceAll(";", "_______");
 			} else {
 				tok.type = TokenType.number;
 				tok.value = parseFloat(tok_str);
