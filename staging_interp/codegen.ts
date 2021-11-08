@@ -162,6 +162,7 @@ function gen_js(body: AST): string {
 	return `(()=>{${prelude}${_gen_js(body)}})()`;
 }
 
+console.log("\nCODE TO COMPUTE 20!:");
 console.log(
 	gen_js(
 		require("./parse").parse(
@@ -171,6 +172,27 @@ console.log(
 		)
 	)
 );
+
+console.log("\nCODE TO COMPUTE fib(30):");
+console.log(
+	gen_js(
+		require("./parse").parse(
+			require("./lex").lex(
+				"" +
+					"(begin" +
+					"  (define fib (lambda (n) (begin" +
+					"    (define iter (lambda (a b i) (begin" +
+					"      (if (eq i n)" +
+					"        (add a b)" +
+					"        (iter b (add a b) (add i 1))))))" +
+					"    (iter 0 1 2))))" +
+					"  (console.log (fib 30))"
+			)
+		)
+	)
+);
+
+console.log("\nCODE TO COMPUTE 3 + 4 with let:");
 console.log(
 	gen_js(
 		require("./parse").parse(
