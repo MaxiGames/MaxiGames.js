@@ -15,7 +15,14 @@ interface Token {
 // checks whether a character terminates a token.
 // do not use for string parsing!
 function term_tok_p(input: string /* should be single char */): boolean {
-	if (input === " " || input === "(" || input === ")" || input === '"') {
+	if (
+		input === " " ||
+		input === "\n" ||
+		input === "\t" ||
+		input === "(" ||
+		input === ")" ||
+		input === '"'
+	) {
 		return true;
 	} else {
 		return false;
@@ -28,7 +35,11 @@ function lex(input: string): Token[] {
 		let tok: Token = { type: TokenType.unknown, value: null };
 
 		// skip whitespace
-		while (input[pos] === " ") {
+		while (
+			input[pos] === " " ||
+			input[pos] === "\n" ||
+			input[pos] === "\t"
+		) {
 			pos++;
 		}
 
