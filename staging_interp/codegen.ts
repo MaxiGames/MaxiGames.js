@@ -159,7 +159,7 @@ function _gen_js(body: AST): string {
 }
 
 function gen_js(body: AST): string {
-	return prelude + _gen_js(body);
+	return `(()=>{${prelude}${_gen_js(body)}})()`;
 }
 
 console.log(
