@@ -7,9 +7,10 @@ const prelude =
 	"const _plus=(a,b)=>a+b;const _dash=(a,b)=>a-b;const _star=(a,b)=>a*b;" +
 	"const _slash=(a,b)=>a/b;const _percent=(a,b)=>a%b;const _openab=(a,b)=>a<b;" +
 	"const _closeab=(a,b)=>a>b;const _equals=(a,b)=>a===b;" +
-	"const string_dashreverse=(s)=>s.split('').reverse.join('');" +
+	"const string_dashreverse_exclam=(s)=>s.split('').reverse().join('');" +
 	"const make_dasharray=(...args)=>args;const array_dashconcat=(a,b)=>a.concat(b);" +
-	"const array_dashget=(a,i)=>a[i];";
+	"const array_dashget=(a,i)=>a[i];const array_dashslice=(a,s,e)=>a.slice(a,s,e);";
++"const array_dashlength=(a)=>a.length;";
 
 // generators -- assume well-formed input
 /*
@@ -47,15 +48,24 @@ function gen_js_atom(body: atom): string {
 
 // form: (define <name> <expr>)
 function gen_js_define(body: AST[]): string {
-	return `const ${(body[1] as atom).value}=${gen_js_dispatch(body[2])};`;
+	return `var ${(body[1] as atom).value}=${gen_js_dispatch(body[2])};`;
 }
 
 // form: (lambda (<param>...) <code>)
 function gen_js_lambda(body: AST[]): string {
 	let ret = "";
 	ret += "((";
-	for (let pname of body[1] as atom[]) {
-		ret += pname.value + ",";
+	let spread = false;
+	for (let c of body[1] as atom[]) {
+		if (c.type === TokenType.rbrack) {
+			break;
+		}
+
+		ret +=
+			c.type === TokenType.lbrack
+				? ""
+				: (spread ? "..." : "") + c.value + (!spread ? "," : "");
+		spread = c.type === TokenType.lbrack;
 	}
 	ret += `)=>{return ${gen_js_dispatch(body[2])}})`;
 
