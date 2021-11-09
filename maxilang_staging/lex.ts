@@ -84,9 +84,16 @@ function lex(input: string): Token[] {
 				// token NOT a number; must be a binding name
 				tok.type = TokenType.binding;
 				tok.value = tok_str
-					.replaceAll("_", "___")
-					.replaceAll("-", "_____")
-					.replaceAll(";", "_______");
+					.replaceAll("_", "___") // 3
+					.replaceAll("-", "_____") // 5
+					.replaceAll(";", "_______") // 7
+					.replaceAll("+", "___________") // 11
+					.replaceAll("*", "_____________") // 13
+					.replaceAll("/", "_________________") // 17
+					.replaceAll("<", "___________________") // 19
+					.replaceAll(">", "_______________________") // 23
+					.replaceAll("=", "_____________________________") // 29
+					.replaceAll("%", "_______________________________"); // 31
 			} else {
 				tok.type = TokenType.number;
 				tok.value = parseFloat(tok_str);

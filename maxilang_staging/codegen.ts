@@ -4,9 +4,12 @@ import type { AST, atom } from "./parse";
 // stdlib that must be done in js
 // currently only primitive operations
 const prelude =
-	"const add=(a,b)=>a+b;const sub=(a,b)=>a-b;const mult=(a,b)=>a*b;" +
-	"const div=(a,b)=>a/b;const mod=(a,b)=>a%b; const lt=(a,b)=>a<b;" +
-	"const gt=(a,b)=>a>b;const eq=(a,b)=>a===b;";
+	"const ___________=(a,b)=>a+b;const _____=(a,b)=>a-b;const _____________=(a,b)=>a*b;" +
+	"const _________________=(a,b)=>a/b;const _______________________________=(a,b)=>a%b;" +
+	"const ___________________=(a,b)=>a<b;const _______________________=(a,b)=>a>b;" +
+	"const _____________________________=(a,b)=>a===b;" +
+	'const string_____append=(a,b)=>a+b;const string_____reverse=(s)=>s.split("").reverse.' +
+	'join("");';
 
 // generators -- assume well-formed input
 /*

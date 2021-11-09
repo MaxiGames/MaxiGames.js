@@ -5,9 +5,9 @@ import { gen_js } from "./codegen";
 const fact_src = `
 (begin
   (define factorial (lambda (n) (begin
-	(if (lt n 2)
+	(if (< n 2)
 	  1
-	  (mult n (factorial (sub n 1)))))))
+	  (* n (factorial (- n 1)))))))
   (console.log (factorial 20)))
 `;
 
@@ -15,9 +15,9 @@ const fib_src = `
 (begin
   (define fib (lambda (n) (begin
     (define iter (lambda (a b i) (begin
-      (if (eq i n)
-        (add a b)
-        (iter b (add a b) (add i 1))))))
+      (if (= i n)
+        (+ a b)
+        (iter b (+ a b) (+ i 1))))))
     (iter 0 1 2))))
   (console.log (fib 30))
 `;
