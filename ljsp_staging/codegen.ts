@@ -47,7 +47,7 @@ function gen_js_atom(body: atom): string {
 
 // form: (define <name> <expr>)
 function gen_js_define(body: AST[]): string {
-	return `let ${(body[1] as atom).value}=${gen_js_dispatch(body[2])};`;
+	return `const ${(body[1] as atom).value}=${gen_js_dispatch(body[2])};`;
 }
 
 // form: (lambda (<param>...) <code>)

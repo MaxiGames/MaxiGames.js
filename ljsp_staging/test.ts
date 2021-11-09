@@ -1,7 +1,7 @@
 import { lex } from "./lex";
 import { parse } from "./parse";
 import { gen_js } from "./codegen";
-import { lang_prelude } from "./lang_prelude";
+import { lang_prelude } from "./ljsp_prelude";
 
 const fact_src = `
 (define factorial (lambda (n) (begin
