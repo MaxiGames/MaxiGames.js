@@ -10,6 +10,8 @@ const js_prelude =
 	"var array_dashlength=(a)=>a.length;var array_dashreverse_exclam=(a)=>a.reverse();";
 
 const ljsp_prelude = `
+(define ; (lambda ([whatever]) nil))
+
 (define cons (lambda (a b) (begin
   (define dispatch (lambda (n)
     (if (= n 0) a b)))
