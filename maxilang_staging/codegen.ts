@@ -4,12 +4,12 @@ import type { AST, atom } from "./parse";
 // stdlib that must be done in js
 // currently only primitive operations
 const prelude =
-	"const ___________=(a,b)=>a+b;const _____=(a,b)=>a-b;const _____________=(a,b)=>a*b;" +
-	"const _________________=(a,b)=>a/b;const _______________________________=(a,b)=>a%b;" +
-	"const ___________________=(a,b)=>a<b;const _______________________=(a,b)=>a>b;" +
-	"const _____________________________=(a,b)=>a===b;" +
-	'const string_____append=(a,b)=>a+b;const string_____reverse=(s)=>s.split("").reverse.' +
-	'join("");';
+	"const _plus=(a,b)=>a+b;const _dash=(a,b)=>a-b;const _star=(a,b)=>a*b;" +
+	"const _slash=(a,b)=>a/b;const _percent=(a,b)=>a%b;const _openab=(a,b)=>a<b;" +
+	"const _closeab=(a,b)=>a>b;const _equals=(a,b)=>a===b;" +
+	"const string_dashreverse=(s)=>s.split('').reverse.join('');" +
+	"const make_dasharray=(...args)=>args;const array_dashconcat=(a,b)=>a.concat(b);" +
+	"const array_dashget=(a,i)=>a[i];";
 
 // generators -- assume well-formed input
 /*
@@ -100,7 +100,7 @@ function gen_js_and(body: AST[]): string {
 
 	return ret;
 }
-//
+
 // form: (or <expr>...)
 function gen_js_or(body: AST[]): string {
 	let ret = "";
@@ -130,7 +130,6 @@ function gen_js_begin(body: AST[]): string {
 // form: (fn-name <arg-expr>...) OR <name>
 function gen_js_call(body: AST): string {
 	if (!(body instanceof Array)) {
-		// self-evaluating literal
 		return "(" + body.value + ")";
 	}
 
@@ -150,7 +149,7 @@ function gen_js_call(body: AST): string {
 }
 
 function gen_gen_js_dispatch(
-	specialforms: [string, (body: AST | AST[] | atom) => string][] // [name, rule]
+	specialforms: [string, (body: AST) => string][] // [name, rule]
 ): (body: AST) => string {
 	function dispatch(body: AST): string {
 		if (!(body instanceof Array)) {
