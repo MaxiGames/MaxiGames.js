@@ -7,7 +7,7 @@ const js_prelude =
 	"const string_dashreverse_exclam=(s)=>s.split('').reverse().join('');" +
 	"const make_dasharray=(...args)=>args;const array_dashconcat=(a,b)=>a.concat(b);" +
 	"const array_dashget=(a,i)=>a[i];const array_dashslice=(a,s,e)=>a.slice(a,s,e);" +
-	"const array_dashlength=(a)=>a.length;";
+	"const array_dashlength=(a)=>a.length;const array_dashreverse_exclam=>(a)=>a.reverse()";
 
 const ljsp_prelude = `
 (define cons (lambda (a b) (begin
@@ -22,7 +22,7 @@ const ljsp_prelude = `
   (define inner (lambda (cur [elems]) (begin
     (if (= (array-length elems) 0)
       cur
-      (inner (array-slice cur (array-length cur)) (cons (array-get elems 0) cur))))))
+      (inner (cons (array-get elems 0) cur) (array-slice cur (array-length cur)) )))))
   (inner (array-reverse! elems)))))
 `;
 
