@@ -32,7 +32,13 @@ function gen_js_atom(body: atom): string {
 	if (body.value === "nil") {
 		return "(null)";
 	} else {
-		return "(" + body.value + ")";
+		return (
+			"(" +
+			(body.type === TokenType.string ? '"' : "") +
+			body.value +
+			(body.type === TokenType.string ? '"' : "") +
+			")"
+		);
 	}
 }
 

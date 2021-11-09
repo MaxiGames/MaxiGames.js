@@ -22,7 +22,7 @@ const fib_src = `
 `;
 
 const constest_src = `
-(define p (cons 5 6))
+(define p (cons 5 6)) (; "a comment")
 (console.log (car p))
 (console.log (cdr p))
 (define q (cons 7 (cons 8 9)))
