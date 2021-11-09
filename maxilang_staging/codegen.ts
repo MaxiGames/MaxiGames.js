@@ -122,7 +122,7 @@ function gen_js_begin(body: AST[]): string {
 	for (let node of body.slice(1, body.length - 1)) {
 		ret += gen_js_dispatch(node) + ";";
 	}
-	ret += `return ${gen_js_dispatch(body.slice(-1))};})())`;
+	ret += `return ${gen_js_dispatch(body.slice(-1)[0])};})())`;
 
 	return ret;
 }
