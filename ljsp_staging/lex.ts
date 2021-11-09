@@ -2,6 +2,8 @@ enum TokenType {
 	unknown = 0,
 	lparen,
 	rparen,
+	lbrack,
+	rbrack,
 	number,
 	string,
 	binding,
@@ -21,6 +23,8 @@ function term_tok_p(input: string /* should be single char */): boolean {
 		input === "\t" ||
 		input === "(" ||
 		input === ")" ||
+		input === "[" ||
+		input === "]" ||
 		input === '"'
 	) {
 		return true;
@@ -53,6 +57,10 @@ function lex(input: string): Token[] {
 			tok = { type: TokenType.lparen, value: null };
 		} else if (input[pos] === ")") {
 			tok = { type: TokenType.rparen, value: null };
+		} else if (input[pos] === "[") {
+			tok = { type: TokenType.lbrack, value: null };
+		} else if (input[pos] === "]") {
+			tok = { type: TokenType.rbrack, value: null };
 		} else if (input[pos] === '"') {
 			// handle string lol
 			pos++; // into string
