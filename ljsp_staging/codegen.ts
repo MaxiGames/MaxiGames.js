@@ -1,16 +1,6 @@
 import { TokenType } from "./lex";
 import type { AST, atom } from "./parse";
-
-// stdlib that must be done in js
-// currently only primitive operations
-const prelude =
-	"const _plus=(a,b)=>a+b;const _dash=(a,b)=>a-b;const _star=(a,b)=>a*b;" +
-	"const _slash=(a,b)=>a/b;const _percent=(a,b)=>a%b;const _openab=(a,b)=>a<b;" +
-	"const _closeab=(a,b)=>a>b;const _equals=(a,b)=>a===b;" +
-	"const string_dashreverse_exclam=(s)=>s.split('').reverse().join('');" +
-	"const make_dasharray=(...args)=>args;const array_dashconcat=(a,b)=>a.concat(b);" +
-	"const array_dashget=(a,i)=>a[i];const array_dashslice=(a,s,e)=>a.slice(a,s,e);";
-+"const array_dashlength=(a)=>a.length;";
+import { js_prelude } from "./preludes";
 
 // generators -- assume well-formed input
 /*
@@ -190,7 +180,7 @@ function gen_gen_js_dispatch(
 const gen_js_dispatch = gen_gen_js_dispatch(special_forms);
 
 function gen_js(body: AST): string {
-	return `(()=>{${prelude}${gen_js_dispatch(body)}})()`;
+	return `(()=>{${js_prelude}${gen_js_dispatch(body)}})()`;
 }
 
-export { prelude, gen_js };
+export { js_prelude as prelude, gen_js };

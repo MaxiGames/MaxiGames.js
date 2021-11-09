@@ -1,7 +1,7 @@
 import { lex } from "./lex";
 import { parse } from "./parse";
 import { gen_js } from "./codegen";
-import { lang_prelude } from "./ljsp_prelude";
+import { ljsp_prelude } from "./preludes";
 
 const fact_src = `
 (define factorial (lambda (n) (begin
@@ -36,7 +36,7 @@ function bprint(msg: string) {
 }
 
 function prep_src(src: string) {
-	return "(begin " + lang_prelude + src + ")";
+	return "(begin " + ljsp_prelude + src + ")";
 }
 
 bprint("JS code to compute and print 20!:");
