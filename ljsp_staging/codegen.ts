@@ -6,7 +6,7 @@ import { js_prelude } from "./preludes";
 /*
  * List of special forms:
  * 1. (define <...> <...>)
- * 2. (lambda (<...>...) <...>)
+ * 2. (lambda (<...>... [. <...>]) <...>)
  * 3. (if <...> <...> <...>)
  * 4. (let ((<...> <...>)...) <...>)
  * 5. (and <...> <...>)
@@ -47,7 +47,7 @@ function gen_js_define(body: AST[]): string {
 	return `var ${(body[1] as atom).value}=${gen_js_dispatch(body[2])};`;
 }
 
-// form: (lambda (<param>...) <code>)
+// form: (lambda (<param>... [. <spread-param>]) <code>)
 function gen_js_lambda(body: AST[]): string {
 	let ret = "";
 	ret += "((";
