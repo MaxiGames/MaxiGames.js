@@ -53,15 +53,11 @@ function gen_js_lambda(body: AST[]): string {
 	ret += "((";
 	let spread = false;
 	for (let c of body[1] as atom[]) {
-		if (c.type === TokenType.rbrack) {
-			break;
-		}
-
 		ret +=
-			c.type === TokenType.lbrack
+			c.value === "."
 				? ""
 				: (spread ? "..." : "") + c.value + (!spread ? "," : "");
-		spread = c.type === TokenType.lbrack;
+		spread = c.value === ".";
 	}
 	ret += `)=>{return ${gen_js_dispatch(body[2])}})`;
 

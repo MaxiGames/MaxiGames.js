@@ -10,7 +10,7 @@ const js_prelude =
 	"var array_dashlength=(a)=>a.length;var array_dashreverse_exclam=(a)=>a.reverse();";
 
 const ljsp_prelude = `
-(define ; (lambda ([whatever]) nil))
+(define ; (lambda (. whatever) nil))
 
 (define cons (lambda (a b) (begin
   (define dispatch (lambda (n)
@@ -20,7 +20,7 @@ const ljsp_prelude = `
 (define car (lambda (c) (c 0)))
 (define cdr (lambda (c) (c 1)))
 
-(define list (lambda ([elems]) (begin
+(define list (lambda (. elems) (begin
   (define inner (lambda (cur elems) (begin
     (if (= (array-length elems) 0)
       cur
