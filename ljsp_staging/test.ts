@@ -39,21 +39,23 @@ function prep_src(src: string) {
 	return "(begin " + ljsp_prelude + src + ")";
 }
 
+const jjj = (s: string) => gen_js(parse(lex(prep_src(s))));
+
 bprint("JS code to compute and print 20!:");
-console.log(gen_js(parse(lex(prep_src(fact_src)))));
+console.log(jjj(fact_src));
 bprint("Result:");
-eval(gen_js(parse(lex(prep_src(fact_src)))));
+eval(jjj(fact_src));
 
 console.log();
 
 bprint("JS code to compute and print 30th fibonacci number:");
-console.log(gen_js(parse(lex(prep_src(fib_src)))));
+console.log(jjj(fib_src));
 bprint("Result:");
-eval(gen_js(parse(lex(prep_src(fib_src)))));
+eval(jjj(fib_src));
 
 console.log();
 
 bprint("JS code to test conses:");
-console.log(gen_js(parse(lex(prep_src(constest_src)))));
+console.log(jjj(constest_src));
 bprint("Result:");
-eval(gen_js(parse(lex(prep_src(constest_src)))));
+eval(jjj(constest_src));
