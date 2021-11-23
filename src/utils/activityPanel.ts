@@ -30,7 +30,7 @@ export default class ActivityDetails {
 				name: `/help on ${this.currentGuildCount} servers!`,
 				type: "WATCHING",
 			},
-			{ name: `News: ${this.news}`, type: "STREAMING" },
+			{ name: `News: ${this.news}`, type: "PLAYING" },
 			{ name: `Version: ${this.version}`, type: "PLAYING" },
 		] as ActivityFormat[];
 	}
