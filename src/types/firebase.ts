@@ -28,6 +28,8 @@ export interface DataModel {
 			[id: string]: Suggestions;
 		};
 	};
+	version: string;
+	news: string;
 }
 
 export interface BugReports {
@@ -53,7 +55,7 @@ export interface Guild {
 	autoresponse: { [trigger: string]: string };
 }
 
-export const initialGuild: Guild = {
+export const defaultGuild: Guild = {
 	countingChannels: 0,
 	starboardChannel: 0,
 	starboardMsgs: 0,
@@ -100,7 +102,7 @@ interface User {
 	};
 }
 
-export const initialUser: User = {
+export const defaultUser: User = {
 	money: 0,
 	timelyClaims: {
 		hourly: 0,
@@ -133,34 +135,36 @@ export const initialUser: User = {
 	},
 };
 
-export const initialSuggestion: Suggestions = {
+export const defaultSuggestion: Suggestions = {
 	suggestion: "Example Suggestion",
 	status: "denied",
 	user: 123,
 };
 
-export const initialBugReport: BugReports = {
+export const defaultBugReport: BugReports = {
 	bug: "Example Bug Report",
 	status: "denied",
 	user: 123,
 };
 
-export const initialAdmin = {
+export const defaultAdmin = {
 	bugreports: {
-		123: initialBugReport,
+		123: defaultBugReport,
 	},
 	suggestions: {
-		123: initialSuggestion,
+		123: defaultSuggestion,
 	},
 };
 
-export const initialData: DataModel = {
+export const defaultData: DataModel = {
 	user: {
-		1234: initialUser,
+		1234: defaultUser,
 	},
 	guild: {
-		1234: initialGuild,
+		1234: defaultGuild,
 	},
 	announcement: "",
-	admin: initialAdmin,
+	admin: defaultAdmin,
+	version: "1.0.0",
+	news: ":)",
 };

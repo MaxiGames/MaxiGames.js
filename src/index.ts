@@ -27,11 +27,13 @@ import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
 import { MGFirebase } from "./lib/firebase";
-import { initialGuild } from "./types/firebase";
+import { defaultGuild } from "./types/firebase";
 import moan, { setMoan, toLog } from "./lib/moan";
 import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
 import { commandLogArr, setCommandLog } from "./lib/comamndlog";
+import logToDiscord from "./utils/log";
+import ActivityDetails from "./utils/activityPanel";
 
 export const client = new Client({
 	intents: [
@@ -115,96 +117,11 @@ admin.initializeApp({
 	databaseURL: firebaseConfig,
 });
 
-//setup logging
-function logToDiscord() {
-	const arr = toLog;
-	const maxigamesOfficial = client.guilds.cache.get(
-		`${
-			process.env.NODE_ENV == "production"
-				? "837522963389349909"
-				: "866939574419849216"
-		}`
-	)!;
-	maxigamesOfficial.channels
-		.fetch(
-			`${
-				process.env.NODE_ENV == "production"
-					? "904995742349922304"
-					: "905023522278113320"
-			}`
-		)
-		.then((logs) => {
-			for (const i of arr) {
-				const { status, logged } = i;
-
-				const botlogs = logs as TextChannel;
-				let title: string;
-				let colour: string;
-				let append: string;
-				let toPing = "";
-				if (status === MGS.Error) {
-					title = "❌";
-					colour = "diff";
-					append = "-";
-					if (process.env.NODE_ENV === "production")
-						toPing =
-							"<@712942935129456671>, <@676748194956181505>, <@782247763542016010>, <@682592012163481616>, <@697747732772814921>";
-				} else if (status === MGS.Success) {
-					title = "✅";
-					colour = "diff";
-					append = "+";
-				} else if (status === MGS.Info) {
-					title = "ℹ️";
-					colour = "fix";
-					append = ".";
-				} else if (status === MGS.Warn) {
-					title = "⚠️";
-					colour = "fix";
-					append = "";
-				} else {
-					title = "📝";
-					colour = "";
-					append = "";
-				}
-				botlogs.send(
-					`${toPing}\n\`\`\`${colour}\n${append}${title}: ${logged}\`\`\``
-				);
-			}
-		});
-	let arr2 = commandLogArr;
-	const maxigamesOfficial2 = client.guilds.cache.get(
-		`${
-			process.env.NODE_ENV == "production"
-				? "837522963389349909"
-				: "866939574419849216"
-		}`
-	)!;
-	maxigamesOfficial2.channels
-		.fetch(
-			`${
-				process.env.NODE_ENV == "production"
-					? "905458096372084777"
-					: "905458135358124073"
-			}`
-		)
-		.then((channel) => {
-			for (let i of arr2) {
-				let textChannel = channel as TextChannel;
-				textChannel.send(
-					`**User/Guild:** \`${i.userGuild}\`\n**Command:** \`${i.commandName}\`\n**Message:**\`\`\`${i.message}\`\`\``
-				);
-			}
-		});
-	setCommandLog();
-	setMoan();
-	setTimeout(() => {
-		logToDiscord();
-	}, 2000);
-}
+MGFirebase.init(client);
 
 // set bot activity upon guild events
 client.login(config.tokenId).then(() => {
-	logToDiscord();
+	logToDiscord(client);
 
 	// delete all slash commands before
 	const user = client.user;
@@ -219,50 +136,32 @@ client.login(config.tokenId).then(() => {
 		throw "User is null and this is very bad!!!";
 	}
 
-	user.setActivity(`/help on ${currentGuildCount} servers!`, {
-		type: "WATCHING",
-	}); // initialize activity as "Watching m!help on <number> servers!"
+	//get activity panel rolling!
+	let activityManager = new ActivityDetails(currentGuildCount);
+	activityManager.updateActivity(client);
 
 	// change activity on guild join
 	client.on("guildCreate", (guild) => {
 		moan(MGS.Info, `joined new guild "${guild.name}"`);
 		currentGuildCount++;
+		activityManager.currentGuildCount++;
 		if (process.env.NODE_ENV == "production") {
 			dbl?.post({ servers: currentGuildCount }).then(
 				moan(MGS.Info, "Posted new count to top.gg")
 			);
 		}
-
-		if (user === null) {
-			throw "User is null and this is very bad!!!";
-		}
-
-		MGFirebase.setData(`server/${guild.id}`, initialGuild);
-
-		user.setActivity(`/help on ${currentGuildCount} servers!`, {
-			type: "WATCHING",
-		});
+		MGFirebase.setData(`server/${guild.id}`, defaultGuild);
 	});
 
 	// change activity on guild leave
 	client.on("guildDelete", (guild) => {
 		moan(MGS.Info, `left guild: "${guild.name}"`);
 		currentGuildCount--;
+		activityManager.currentGuildCount--;
 		if (process.env.NODE_ENV == "production") {
 			dbl?.post({ servers: currentGuildCount }).then(
 				moan(MGS.Info, "Posted new count to top.gg")
 			);
 		}
-
-		if (user === null) {
-			throw "User is null and this is very bad!!!";
-		}
-
-		user.setActivity(`/help on ${currentGuildCount} servers!`, {
-			type: "WATCHING",
-		});
 	});
 });
-
-// Firebase init
-MGFirebase.init(client);

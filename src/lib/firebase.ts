@@ -22,7 +22,7 @@ import moan from "../lib/moan";
 import MGS from "../lib/statuses";
 import { MGEmbed } from "./flavoured";
 import MGStatus from "../lib/statuses";
-import { initialGuild, initialUser } from "../types/firebase";
+import { defaultGuild, defaultUser } from "../types/firebase";
 
 export class FirebaseManager {
 	db: admin.database.Database | undefined = undefined;
@@ -145,12 +145,12 @@ export class FirebaseManager {
 	public async getData(ref: string): Promise<any> {
 		const data = await this.db?.ref(ref).get();
 		if (ref.split("/")[0] === "user" && data?.exists() === false) {
-			await this.db?.ref(`user/${ref.split("/")[1]}`).set(initialUser);
-			return initialUser;
+			await this.db?.ref(`user/${ref.split("/")[1]}`).set(defaultUser);
+			return defaultUser;
 		}
 		if (ref.split("/")[0] === "guild" && data?.exists() === false) {
-			await this.db?.ref(`guild/${ref.split("/")[1]}`).set(initialGuild);
-			return initialGuild;
+			await this.db?.ref(`guild/${ref.split("/")[1]}`).set(defaultGuild);
+			return defaultGuild;
 		}
 		this.getDataCalls++;
 
@@ -162,12 +162,12 @@ export class FirebaseManager {
 		const data = usr?.val();
 		for (const i in data) {
 			if (!data[i]["cooldowns"]["trivia"]) {
-				data[i]["cooldowns"]["trivia"] = initialUser.cooldowns.trivia;
+				data[i]["cooldowns"]["trivia"] = defaultUser.cooldowns.trivia;
 			}
 		}
 		for (const i in data) {
 			if (!data[i]["minigames"]["trivia"]) {
-				data[i]["minigames"]["trivia"] = initialUser.minigames.trivia;
+				data[i]["minigames"]["trivia"] = defaultUser.minigames.trivia;
 			}
 		}
 		for (const i in data) {
@@ -176,15 +176,15 @@ export class FirebaseManager {
 				typeof data[i]["minigames"]["guessthecolour"] === "string"
 			) {
 				data[i]["minigames"]["guessthecolour"] =
-					initialUser.minigames.guessthecolour;
+					defaultUser.minigames.guessthecolour;
 			}
 			if (!data[i]["minigames"]["escapethehouse"]) {
 				data[i]["minigames"]["escapethehouse"] =
-					initialUser.minigames.escapethehouse;
+					defaultUser.minigames.escapethehouse;
 			}
 		}
 		await this.db?.ref("/user").set(data);
-		moan(MGS.Success, "initialised data for old database");
+		moan(MGS.Success, "defaultised data for old database");
 	}
 
 	private async announcement(client: Client) {
