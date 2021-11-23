@@ -39,7 +39,7 @@ const xkcd: MGCommand = {
 		if (!interaction.options.getInteger("number")) {
 			embed.title = "Random xkcd";
 		} else {
-			embed.title = "xkcd #${comicno}";
+			embed.title = `xkcd #${comicno}`;
 		}
 
 		let xkcdjson_str = "";
