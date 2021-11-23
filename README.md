@@ -30,7 +30,7 @@ This project is licensed under the GNU AGPLv3 License - see the LICENSE.md file 
 
 ## Made with:
 
-![JavaScript](https://img.shields.io/badge/JavaScript-3670A0?style=for-the-badge&logo=JavaScript&logoColor=ffdd54) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase) ![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-3670A0?style=for-the-badge&logo=Tyopesc&logoColor=ffdd54) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase) ![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
 
 ---
 
@@ -58,4 +58,32 @@ Exact details are listed in LICENSE.md
 
 ### General
 
--   nope im not doing that today
+-  `/bugreport <your bug>`: Report a bug you found! Get MaxiCoins for doing it!
+- `/help <main>`: Don't understand what commands the bot has? Use this to discover the various games and useful commands!
+- `/profile <user>`: Find out different statistics that people have on the bot!
+- `/serverprofile`: Find out the statistics of the current server!
+- `/suggestion <your suggestion>`: Have something you think we can improve? Suggest it to get MaxiCoins!
+
+### MiniGames
+- `escapethehouse`: Which door leads to the rating points you desire?
+- `guessthecolour`: Are you good with guessing the HEX of a colour?
+- `tictactoe`: Play a game or two of tic tac toe with your friends!
+- `trivia`: Do you have very good general knowledge? Try this out!
+
+### Random
+- `choose <list> <separater>`: Let the bot choose an item from a list for you, randomly!
+- `color`: Generate a random colour!
+- `convertcase <camel | list | snake | pascal | upper | lower>`: Convert a piece of text to a different case!
+- `current`: Get the current time!
+- `dice <sides> <dice count>`: Let the bot generate many dice rolls (random numbers) for you!
+- `invite`: Get the link to invite the bot to your server, please!
+- `lmgtfy <text to google>`: Someone refusing to just google the answer? Show them this link!
+- `official`: Get the link to the official server! There are events and possibly free goodies there!
+- `ship`: How well do 2 names go together? Let's find out!
+- `whoami`: Find out some info about yourself! :)
+
+### Utilities
+- `counting <addchannel | removechannel>`: Wana count together and see how high you can reach? Try this!
+- `starboard <addchannel | rmchannel | threshold>`: Set up a starboard to see which messages are the most liked/funniest!
+
+(Other commands might be missing, so do check the main bot using `/help main`)
