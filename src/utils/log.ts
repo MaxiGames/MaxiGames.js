@@ -1,5 +1,5 @@
 import { Client, TextChannel } from "discord.js";
-import { commandLogArr, setCommandLog } from "../lib/comamndlog";
+import commandLog, { commandLogArr, setCommandLog } from "../lib/comamndlog";
 import { setMoan, toLog } from "../lib/moan";
 import MGS from "../lib/statuses";
 
