@@ -36,6 +36,12 @@ const xkcd: MGCommand = {
 		const comicno = interaction.options.getInteger("number") ?? 221;
 		const embed = MGEmbed(MGStatus.Info);
 
+		if (!interaction.options.getInteger("number")) {
+			embed.title = "Random xkcd";
+		} else {
+			embed.title = "xkcd #${comicno}";
+		}
+
 		let xkcdjson_str = "";
 		https
 			.get(`https://xkcd.com/${comicno}/info.0.json`, (response) => {
