@@ -24,10 +24,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import {
 	ButtonInteraction,
-	Message,
 	MessageActionRow,
 	MessageButton,
-	MessageEmbed,
 	MessageInteraction,
 } from "discord.js";
 import { MGEmbed } from "../../lib/flavoured";
