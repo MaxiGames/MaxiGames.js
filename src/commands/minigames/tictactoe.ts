@@ -250,7 +250,7 @@ const tictactoe: MGCommand = {
 			option
 				.setRequired(true)
 				.setName("player2")
-				.setDescription("Who else do you want to play with")
+				.setDescription("the player you want to play with")
 		),
 	async execute(interaction) {
 		const player1 = interaction.user;
