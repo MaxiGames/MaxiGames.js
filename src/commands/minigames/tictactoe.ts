@@ -196,7 +196,7 @@ export enum endResult {
 
 export function checkForResult(board: string[][]): endResult {
 	for (let i = 0; i < board.length; i++) {
-		//horizontal
+		// horizontal
 		if (board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
 			if (board[0][i] === "O") {
 				return endResult.player1Win;
@@ -205,7 +205,7 @@ export function checkForResult(board: string[][]): endResult {
 			}
 		}
 
-		//vertical
+		// vertical
 		if (board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
 			if (board[i][0] === "O") {
 				return endResult.player1Win;
@@ -215,7 +215,7 @@ export function checkForResult(board: string[][]): endResult {
 		}
 	}
 
-	//diagonal
+	// diagonal
 	if (board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
 		if (board[0][0] === "O") {
 			return endResult.player1Win;
@@ -231,7 +231,7 @@ export function checkForResult(board: string[][]): endResult {
 		}
 	}
 
-	//check if the whole board is filled so its a draw
+	// check if the whole board is filled so its a draw
 	for (const i of board) {
 		for (const j of i) {
 			if (j === "_") {
@@ -256,7 +256,7 @@ const tictactoe: MGCommand = {
 		const player1 = interaction.user;
 		const player2 = interaction.options.getUser("player2", true);
 
-		//disallow playing against yourself
+		// disallow playing against yourself
 		if (player1 === player2) {
 			await interaction.reply({
 				embeds: [
@@ -267,7 +267,7 @@ const tictactoe: MGCommand = {
 			});
 			return;
 		} else if (player1.bot || player2.bot) {
-			//no bots!
+			// no bots!
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error).setTitle(
