@@ -67,6 +67,8 @@ function check_win(board: TTTBoard, player1p: boolean): boolean {
 
 function check_draw(board: TTTBoard): boolean {
 	if (
+		!check_win(board, true) ||
+		!check_win(board, false) ||
 		board
 			.map((a) => a.filter((x) => x === 4).length)
 			.reduce((x, y) => x + y) === 0
