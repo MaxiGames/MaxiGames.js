@@ -36,20 +36,6 @@ const lmgtfy: MGCommand = {
 				.setName("whichidiot")
 				.setDescription("which idiot didn't know how to STFW?")
 				.setRequired(false)
-		)
-		.addBooleanOption((option) =>
-			option
-				.setName("bruhmode")
-				.setDescription("very bruh")
-				.setRequired(false)
-		)
-		.addBooleanOption((option) =>
-			option
-				.setName("insult")
-				.setDescription(
-					"enable the internet explainer; has no effect if bruh mode was activated"
-				)
-				.setRequired(false)
 		),
 
 	async execute(interaction) {
@@ -79,7 +65,6 @@ const lmgtfy: MGCommand = {
 			return;
 		}
 
-		const iie = interaction.options.getBoolean("insult") ? "&iie=1" : "";
 		const idiot = interaction.options.getUser("whichidiot");
 		const prefixstr = idiot ? `<@${idiot.id}>, [f` : "[F";
 
@@ -88,9 +73,8 @@ const lmgtfy: MGCommand = {
 				MGEmbed(MGStatus.Info)
 					.setTitle(`${searchstr}?`)
 					.setDescription(
-						`${prefixstr}ind ye answer](https://lmgtfy.app/?q=${encodeURI(
-							searchstr
-						)}${iie}).`
+						`${prefixstr}ind ye answer](https://google.com/search?q=` +
+							`${encodeURI(searchstr)}).`
 					),
 			],
 		});
