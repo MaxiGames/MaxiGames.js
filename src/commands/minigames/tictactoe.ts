@@ -113,11 +113,15 @@ function gen_disc_embed(
 	} else if (check_win(board, true)) {
 		return MGEmbed(MGStatus.Success)
 			.setTitle(`Game over!`)
-			.setDescription(`Congratulations, ${p1ping}, you won!`);
+			.setDescription(
+				`Congratulations, ${p1ping}, you won! Rating +100.`
+			);
 	} else if (check_win(board, false)) {
 		return MGEmbed(MGStatus.Success)
 			.setTitle(`Game over!`)
-			.setDescription(`Congratulations, ${p2ping}, you won!`);
+			.setDescription(
+				`Congratulations, ${p2ping}, you won! Rating +100.`
+			);
 	}
 
 	return MGEmbed(MGStatus.Info)
@@ -133,11 +137,15 @@ function gen_disc_msg(
 	board: TTTBoard,
 	p1id: string,
 	p2id: string,
-	p1turnp: boolean
+	p1turnp: boolean,
+	lockedp: boolean
 ): InteractionReplyOptions {
 	return {
 		embeds: [gen_disc_embed(board, p1id, p2id, p1turnp)],
-		components: board2components(board, `${p1id}-${p2id}-${p1turnp}`),
+		components: board2components(
+			board,
+			`${p1id}-${p2id}-${p1turnp}-${lockedp}`
+		),
 	};
 }
 
@@ -184,7 +192,7 @@ const tictactoe: MGCommand = {
 		] as TTTBoard;
 
 		await interaction.reply(
-			gen_disc_msg(board, player1.id, player2.id, true)
+			gen_disc_msg(board, player1.id, player2.id, true, false)
 		);
 	},
 };

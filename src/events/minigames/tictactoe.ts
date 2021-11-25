@@ -29,6 +29,7 @@ import {
 	check_draw,
 } from "../../commands/minigames/tictactoe";
 import { MGEmbed } from "../../lib/flavoured";
+import { MGFirebase } from "../../lib/firebase";
 import MGStatus from "../../lib/statuses";
 
 const tictactoe = {
@@ -47,6 +48,25 @@ const tictactoe = {
 		const p1id = info_split[4];
 		const p2id = info_split[5];
 		const p1turnp = info_split[6] === "true";
+		const lockedp = info_split[7] === "true";
+
+		const board = interaction.message.components!.map((r) =>
+			r.components.map((x) =>
+				parseInt((x as MARC).customId!.split("-")[3])
+			)
+		) as TTTBoard;
+
+		if (lockedp) {
+			await interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Error).setTitle(
+						"Go away, this game is over."
+					),
+				],
+				ephemeral: true,
+			});
+			return;
+		}
 
 		if (p2id !== interaction.user.id && p1id !== interaction.user.id) {
 			await interaction.reply({
@@ -72,17 +92,35 @@ const tictactoe = {
 			return;
 		}
 
-		const board = interaction.message.components!.map((r) =>
-			r.components.map((x) =>
-				parseInt((x as MARC).customId!.split("-")[3])
-			)
-		) as TTTBoard;
+		if (check_win(board, true)) {
+			await MGFirebase.setData(
+				`user/${p1id}/minigames/tictactoe`,
+				(await MGFirebase.getData(`user/${p1id}/minigames/tictactoe`)) +
+					100
+			);
+		} else if (check_win(board, false)) {
+			await MGFirebase.setData(
+				`user/${p1id}/minigames/tictactoe`,
+				(await MGFirebase.getData(`user/${p2id}/minigames/tictactoe`)) +
+					100
+			);
+		}
 
 		if (
 			check_win(board, true) ||
 			check_win(board, false) ||
 			check_draw(board)
 		) {
+			// (this is before the board update)
+			interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Error).setTitle(
+						"Go away, this game is over."
+					),
+				],
+				ephemeral: true,
+			});
+			interaction.update(gen_disc_msg(board, p1id, p2id, p1turnp, true));
 			return;
 		}
 
@@ -91,7 +129,8 @@ const tictactoe = {
 				put_token(board, row, col, p1turnp),
 				p1id,
 				p2id,
-				!p1turnp
+				!p1turnp,
+				false
 			)
 		);
 	},
