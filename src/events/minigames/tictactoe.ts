@@ -75,7 +75,7 @@ const tictactoe = {
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Info).setTitle(
-						"Go away, you're not even part of this game"
+						"Go away, you're not even part of this game."
 					),
 				],
 				ephemeral: true,
