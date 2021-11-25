@@ -28,12 +28,13 @@ rest.get(Routes.applicationCommands(config.clientId)).then((data) => {
 		const deleteUrl = `${Routes.applicationCommands(config.clientId)}/${
 			command.id
 		}`;
-		promises.push(() => {
-			console.log(`Deleting ${command.id}`);
-			rest.delete(deleteUrl);
-		});
+		promises.push(
+			(async () => {
+				console.log(`Deleting ${command.name}.`);
+				return rest.delete(deleteUrl);
+			})()
+		);
 	}
-	Promise.all(promises);
-	console.log("Successfully deleted all commands.");
-	return;
+	return Promise.all(promises);
 });
+console.log("Successfully deleted all commands.");
