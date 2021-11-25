@@ -48,11 +48,11 @@ const tictactoe = {
 		const p2id = info_split[5];
 		const p1turnp = info_split[6] === "true";
 
-		if (!(sel_val === 4 && (p1id === interaction.user.id) === p1turnp)) {
+		if (p2id !== interaction.user.id && p1id !== interaction.user.id) {
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Info).setTitle(
-						"It's not your turn yet..."
+						"Go away, you're not even part of this game"
 					),
 				],
 				ephemeral: true,
@@ -60,11 +60,11 @@ const tictactoe = {
 			return;
 		}
 
-		if (p2id !== interaction.user.id && p1id !== interaction.user.id) {
+		if (!(sel_val === 4 && (p1id === interaction.user.id) === p1turnp)) {
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Info).setTitle(
-						"Go away, you're not even part of this game"
+						"It's not your turn yet..."
 					),
 				],
 				ephemeral: true,
