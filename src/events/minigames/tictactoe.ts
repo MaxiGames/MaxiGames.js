@@ -29,7 +29,7 @@ import {
 	check_draw,
 } from "../../commands/minigames/tictactoe";
 import { MGEmbed } from "../../lib/flavoured";
-import { MGFirebase } from "../../lib/firebase";
+import { MGFirebase as MGFB } from "../../lib/firebase";
 import MGStatus from "../../lib/statuses";
 
 const tictactoe = {
@@ -92,20 +92,6 @@ const tictactoe = {
 			return;
 		}
 
-		if (check_win(board, true)) {
-			await MGFirebase.setData(
-				`user/${p1id}/minigames/tictactoe`,
-				(await MGFirebase.getData(`user/${p1id}/minigames/tictactoe`)) +
-					100
-			);
-		} else if (check_win(board, false)) {
-			await MGFirebase.setData(
-				`user/${p1id}/minigames/tictactoe`,
-				(await MGFirebase.getData(`user/${p2id}/minigames/tictactoe`)) +
-					100
-			);
-		}
-
 		if (
 			check_win(board, true) ||
 			check_win(board, false) ||
@@ -124,14 +110,16 @@ const tictactoe = {
 			return;
 		}
 
+		const newboard = put_token(board, row, col, p1turnp);
+		if (!check_draw(newboard)) {
+			const p = check_win(newboard, true) ? p1id : p2id;
+			await MGFB.setData(
+				`user/${p}/minigames/tictactoe`,
+				(await MGFB.getData(`user/${p}/minigames/tictactoe`)) + 100
+			);
+		}
 		await interaction.update(
-			gen_disc_msg(
-				put_token(board, row, col, p1turnp),
-				p1id,
-				p2id,
-				!p1turnp,
-				false
-			)
+			gen_disc_msg(newboard, p1id, p2id, !p1turnp, false)
 		);
 	},
 };
