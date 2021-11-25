@@ -79,17 +79,24 @@ function check_draw(board: TTTBoard): boolean {
 	}
 }
 
+function check_gameover(board: TTTBoard): boolean {
+	return (
+		check_win(board, true) || check_win(board, false) || check_draw(board)
+	);
+}
+
 // extdata is appended to the id
 function board2components(
 	board: TTTBoard,
-	extdata: string
+	extdata: string,
+	lockedp: boolean
 ): MessageActionRow[] {
 	return board.map((a, row) =>
 		new MessageActionRow().setComponents(
 			...a.map((x, col) =>
 				new MessageButton()
 					.setLabel(x === 0 ? "X" : x === 1 ? "O" : " ")
-					.setDisabled(x === 4 ? false : true)
+					.setDisabled(x === 4 && !lockedp ? false : true)
 					.setStyle(
 						x === 0 ? "DANGER" : x === 1 ? "SUCCESS" : "PRIMARY"
 					)
@@ -146,7 +153,8 @@ function gen_disc_msg(
 		embeds: [gen_disc_embed(board, p1id, p2id, p1turnp)],
 		components: board2components(
 			board,
-			`${p1id}-${p2id}-${p1turnp}-${lockedp}`
+			`${p1id}-${p2id}-${p1turnp}-${lockedp}`,
+			lockedp
 		),
 	};
 }
@@ -199,5 +207,13 @@ const tictactoe: MGCommand = {
 	},
 };
 
-export { TTTBoard, TTTToken, gen_disc_msg, put_token, check_win, check_draw };
+export {
+	TTTBoard,
+	TTTToken,
+	gen_disc_msg,
+	put_token,
+	check_win,
+	check_draw,
+	check_gameover,
+};
 export default tictactoe;

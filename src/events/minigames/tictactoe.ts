@@ -27,6 +27,7 @@ import {
 	put_token,
 	check_win,
 	check_draw,
+	check_gameover,
 } from "../../commands/minigames/tictactoe";
 import { MGEmbed } from "../../lib/flavoured";
 import { MGFirebase as MGFB } from "../../lib/firebase";
@@ -59,9 +60,11 @@ const tictactoe = {
 		if (lockedp) {
 			await interaction.reply({
 				embeds: [
-					MGEmbed(MGStatus.Error).setTitle(
-						"Go away, this game is over."
-					),
+					MGEmbed(MGStatus.Error)
+						.setTitle("Go away, this game is over.")
+						.setDescription(
+							"...wait, how did you even trigger this?"
+						),
 				],
 				ephemeral: true,
 			});
@@ -92,32 +95,31 @@ const tictactoe = {
 			return;
 		}
 
-		if (
-			check_win(board, true) ||
-			check_win(board, false) ||
-			check_draw(board)
-		) {
+		if (check_gameover(board)) {
 			// (this is before the board update)
-			interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Error).setTitle(
-						"Go away, this game is over."
-					),
-				],
-				ephemeral: true,
-			});
-			interaction.update(gen_disc_msg(board, p1id, p2id, p1turnp, true));
+			await interaction.editReply(
+				gen_disc_msg(board, p1id, p2id, p1turnp, true)
+			);
 			return;
 		}
 
 		const newboard = put_token(board, row, col, p1turnp);
-		if (!check_draw(newboard)) {
-			const p = check_win(newboard, true) ? p1id : p2id;
-			await MGFB.setData(
-				`user/${p}/minigames/tictactoe`,
-				(await MGFB.getData(`user/${p}/minigames/tictactoe`)) + 100
+		if (check_gameover(newboard)) {
+			// (this is before the board update)
+			if (!check_draw(newboard)) {
+				const p = check_win(newboard, true) ? p1id : p2id;
+				await MGFB.setData(
+					`user/${p}/minigames/tictactoe`,
+					(await MGFB.getData(`user/${p}/minigames/tictactoe`)) + 100
+				);
+			}
+
+			await interaction.update(
+				gen_disc_msg(newboard, p1id, p2id, p1turnp, true)
 			);
+			return;
 		}
+
 		await interaction.update(
 			gen_disc_msg(newboard, p1id, p2id, !p1turnp, false)
 		);
