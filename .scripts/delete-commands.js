@@ -30,6 +30,7 @@ rest.get(Routes.applicationCommands(config.clientId)).then((data) => {
 		}`;
 		promises.push(rest.delete(deleteUrl));
 	}
+	Promise.all(promises);
 	console.log("Successfully deleted all commands.");
-	return Promise.all(promises);
+	return;
 });
