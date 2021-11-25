@@ -21,14 +21,17 @@ const commandFiles = fs
 
 const rest = new REST({ version: "9" }).setToken(config.tokenId);
 
-//delete slash commands
+// delete slash commands
 rest.get(Routes.applicationCommands(config.clientId)).then((data) => {
 	const promises = [];
 	for (const command of data) {
 		const deleteUrl = `${Routes.applicationCommands(config.clientId)}/${
 			command.id
 		}`;
-		promises.push(rest.delete(deleteUrl));
+		promises.push(() => {
+			console.log(`Deleting ${command.id}`);
+			rest.delete(deleteUrl);
+		});
 	}
 	Promise.all(promises);
 	console.log("Successfully deleted all commands.");
