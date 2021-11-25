@@ -60,6 +60,18 @@ const tictactoe = {
 			return;
 		}
 
+		if (p2id !== interaction.user.id && p1id !== interaction.user.id) {
+			await interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Info).setTitle(
+						"Go away, you're not even part of this game"
+					),
+				],
+				ephemeral: true,
+			});
+			return;
+		}
+
 		const board = interaction.message.components!.map((r) =>
 			r.components.map((x) =>
 				parseInt((x as MARC).customId!.split("-")[3])
