@@ -17,229 +17,128 @@
  */
 
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import _ from "lodash";
+import {
+	InteractionReplyOptions,
+	MessageActionRow,
+	MessageButton,
+	MessageEmbed,
+} from "discord.js";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
-import { MGFirebase } from "../../lib/firebase";
 
-export async function generateTTT(
-	board: string[][],
-	player1: string,
-	player1ID: string,
-	player2: string,
-	player2ID: string,
-	player1Turn: boolean
-) {
-	const embed = MGEmbed(MGStatus.Success)
-		.setTitle("Tic Tac Toe")
-		.setDescription(
-			`**Player 1** (${player1ID}): ${player1}, **Player 2** (${player2ID}): ${player2}`
-		)
-		.addFields([
-			{
-				name: "Player's Turn:",
-				value: `${player1Turn ? player1 : player2}`,
-			},
-			{ name: `${player1} Symbol:`, value: "O" },
-			{ name: `${player2} Symbol:`, value: "X" },
-		]);
+type TTTToken = 0 | 1 | 4;
+type TTTBoard = [
+	[TTTToken, TTTToken, TTTToken],
+	[TTTToken, TTTToken, TTTToken],
+	[TTTToken, TTTToken, TTTToken]
+];
 
-	const components = [];
-	let count1 = 0;
-	for (const i of board) {
-		const row = new MessageActionRow();
-		count1++;
-		let count2 = 0;
-		for (const j of i) {
-			count2++;
-			row.addComponents(
-				new MessageButton()
-					.setLabel(j)
-					.setDisabled(j === "_" ? false : true)
-					.setStyle(
-						j === "X" ? "DANGER" : j === "O" ? "SUCCESS" : "PRIMARY"
-					)
-					.setCustomId(`tictactoe-${count1}-${count2}-${j}`)
-			);
-		}
-		components.push(row);
-	}
-	return { embeds: [embed], components: components };
+// 0 is X, 1 is O, 4 is blank
+function put_token(
+	board: TTTBoard,
+	row: number,
+	col: number,
+	player1p: boolean
+): TTTBoard {
+	const ret = board.map((a) => a.map((x) => x)) as TTTBoard;
+	ret[row][col] = player1p ? 0 : 1;
+	return ret;
 }
 
-export async function generateEndResult(
-	board: string[][],
-	player1: string,
-	player1ID: string,
-	player2: string,
-	player2ID: string,
-	result: endResult
-) {
-	const components = [];
-	let count1 = 0;
-	for (const i of board) {
-		const row = new MessageActionRow();
-		count1++;
-		let count2 = 0;
-		for (const j of i) {
-			count2++;
-			row.addComponents(
-				new MessageButton()
-					.setLabel(j)
-					.setDisabled(true)
-					.setStyle(
-						j === "X" ? "DANGER" : j === "O" ? "SUCCESS" : "PRIMARY"
-					)
-					.setCustomId(`tictactoe-${count1}-${count2}-${j}`)
-			);
-		}
-		components.push(row);
-	}
-
-	let embed: MessageEmbed;
-
-	const userData1 = await MGFirebase.getData(`user/${player1ID}`);
-	const userData2 = await MGFirebase.getData(`user/${player2ID}`);
-
-	const diff =
-		Math.abs(
-			userData1["minigames"]["tictactoe"] -
-				userData2["minigames"]["tictactoe"]
-		) + Math.ceil(Math.random() * 50);
-
-	if (result === endResult.draw) {
-		const multFactor = Math.ceil(Math.random() * 25 - Math.random() * 50);
-		const change = Math.ceil(diff * multFactor * 0.1);
-		userData1["minigames"]["tictactoe"] += change;
-		userData2["minigames"]["tictactoe"] += change;
-		embed = MGEmbed(MGStatus.Success)
-			.setTitle(`${player1} and ${player2} drew!`)
-			.setDescription("Draw by stalemate :O")
-			.addFields([
-				{ name: `${player1} Rating Change:`, value: `${change}` },
-				{
-					name: `${player2} Rating Change:`,
-					value: `${Math.ceil(change * 1.5)}`,
-				},
-				{
-					name: `${player1} Rating:`,
-					value: `${userData1["minigames"]["tictactoe"]}`,
-				},
-				{
-					name: `${player2} Rating:`,
-					value: `${userData2["minigames"]["tictactoe"]}`,
-				},
-			]);
-	} else if (result === endResult.player1Win) {
-		const multFactor = Math.ceil(Math.random() * 50);
-		const change = Math.ceil(diff * multFactor * 0.1);
-		userData1["minigames"]["tictactoe"] += change;
-		userData2["minigames"]["tictactoe"] -= Math.ceil(change * 1.5);
-		embed = MGEmbed(MGStatus.Success)
-			.setTitle(`${player2} Won!`)
-			.setDescription("Yay!")
-			.addFields([
-				{ name: `${player1} Rating Change:`, value: `${change}` },
-				{
-					name: `${player2} Rating Change:`,
-					value: `-${Math.ceil(change * 1.5)}`,
-				},
-				{
-					name: `${player1} Rating:`,
-					value: `${userData1["minigames"]["tictactoe"]}`,
-				},
-				{
-					name: `${player2} Rating:`,
-					value: `${userData2["minigames"]["tictactoe"]}`,
-				},
-			]);
-	} else if (result === endResult.player2Win) {
-		const multFactor = Math.ceil(Math.random() * 50);
-		const change = Math.ceil(diff * multFactor * 0.1);
-		userData1["minigames"]["tictactoe"] -= Math.ceil(change * 1.5);
-		userData2["minigames"]["tictactoe"] += change;
-		embed = MGEmbed(MGStatus.Success)
-			.setTitle(`${player2} Won!`)
-			.setDescription("Yay!")
-			.addFields([
-				{
-					name: `${player1} Rating Change:`,
-					value: `-${Math.ceil(change * 1.5)}`,
-				},
-				{ name: `${player2} Rating Change:`, value: `${change}` },
-				{
-					name: `${player1} Rating:`,
-					value: `${userData1["minigames"]["tictactoe"]}`,
-				},
-				{
-					name: `${player2} Rating:`,
-					value: `${userData2["minigames"]["tictactoe"]}`,
-				},
-			]);
+function check_win(board: TTTBoard, player1p: boolean): boolean {
+	const chkval = player1p ? 0 : 3;
+	if (
+		board[0][0] + board[0][1] + board[0][2] === chkval || // row 0
+		board[1][0] + board[1][1] + board[1][2] === chkval || // row 1
+		board[2][0] + board[2][1] + board[2][2] === chkval || // row 2
+		board[0][0] + board[1][0] + board[2][0] === chkval || // col 0
+		board[0][1] + board[1][1] + board[2][1] === chkval || // col 1
+		board[0][2] + board[1][2] + board[2][2] === chkval || // col 2
+		board[0][0] + board[1][1] + board[2][2] === chkval || // dia 0
+		board[0][2] + board[1][1] + board[2][0] === chkval || // dia 1
+		false
+	) {
+		return true;
 	} else {
-		return;
+		return false;
 	}
-
-	await MGFirebase.setData(`user/${player1ID}`, userData1);
-	await MGFirebase.setData(`user/${player2ID}`, userData2);
-	return { embeds: [embed], components: components };
 }
 
-export enum endResult {
-	draw = 1,
-	player1Win = 2,
-	player2Win = 3,
-	continue = 4,
+function check_draw(board: TTTBoard): boolean {
+	if (
+		board
+			.map((a) => a.filter((x) => x === 4).length)
+			.reduce((x, y) => x + y) === 0
+	) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
-export function checkForResult(board: string[][]): endResult {
-	for (let i = 0; i < board.length; i++) {
-		// horizontal
-		if (board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
-			if (board[0][i] === "O") {
-				return endResult.player1Win;
-			} else if (board[0][i] === "X") {
-				return endResult.player2Win;
-			}
-		}
+// extdata is appended to the id
+function board2components(
+	board: TTTBoard,
+	extdata: string
+): MessageActionRow[] {
+	return board.map((a, row) =>
+		new MessageActionRow().setComponents(
+			...a.map((x, col) =>
+				new MessageButton()
+					.setLabel(x === 0 ? "X" : x === 1 ? "O" : " ")
+					.setDisabled(x === 4 ? false : true)
+					.setStyle(
+						x === 0 ? "DANGER" : x === 1 ? "SUCCESS" : "PRIMARY"
+					)
+					.setCustomId(`ttt-${row}-${col}-${x}-${extdata}`)
+			)
+		)
+	);
+}
 
-		// vertical
-		if (board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
-			if (board[i][0] === "O") {
-				return endResult.player1Win;
-			} else if (board[i][0] === "X") {
-				return endResult.player2Win;
-			}
-		}
+function gen_disc_embed(
+	board: TTTBoard,
+	p1id: string,
+	p2id: string,
+	p1turnp: boolean
+): MessageEmbed {
+	const p1ping = `<@${p1id}>`;
+	const p2ping = `<@${p2id}>`;
+
+	if (check_draw(board)) {
+		return MGEmbed(MGStatus.Success)
+			.setTitle("It's a draw!")
+			.setDescription(`Well played, ${p1ping} and ${p2ping}!`);
+	} else if (check_win(board, true)) {
+		return MGEmbed(MGStatus.Success)
+			.setTitle(`Game over!`)
+			.setDescription(`Congratulations, ${p1ping}, you won!`);
+	} else if (check_win(board, false)) {
+		return MGEmbed(MGStatus.Success)
+			.setTitle(`Game over!`)
+			.setDescription(`Congratulations, ${p2ping}, you won!`);
 	}
 
-	// diagonal
-	if (board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
-		if (board[0][0] === "O") {
-			return endResult.player1Win;
-		} else if (board[0][0] === "X") {
-			return endResult.player2Win;
-		}
-	}
-	if (board[2][0] === board[1][1] && board[1][1] === board[0][2]) {
-		if (board[0][2] === "O") {
-			return endResult.player1Win;
-		} else if (board[0][2] === "X") {
-			return endResult.player2Win;
-		}
-	}
+	return MGEmbed(MGStatus.Info)
+		.setTitle("Tic-tac-toe")
+		.setDescription(
+			`${p1ping} vs ${p2ping}... glhf! ${
+				p1turnp ? p1ping : p2ping
+			}'s turn.`
+		);
+}
 
-	// check if the whole board is filled so its a draw
-	for (const i of board) {
-		for (const j of i) {
-			if (j === "_") {
-				return endResult.continue;
-			}
-		}
-	}
-	return endResult.draw;
+function gen_disc_msg(
+	board: TTTBoard,
+	p1id: string,
+	p2id: string,
+	p1turnp: boolean
+): InteractionReplyOptions {
+	return {
+		embeds: [gen_disc_embed(board, p1id, p2id, p1turnp)],
+		components: board2components(board, `${p1id}-${p2id}-${p1turnp}`),
+	};
 }
 
 const tictactoe: MGCommand = {
@@ -261,7 +160,7 @@ const tictactoe: MGCommand = {
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error).setTitle(
-						"Hey you can't play against yourself!"
+						"Hey, you can't play against yourself!"
 					),
 				],
 			});
@@ -271,7 +170,7 @@ const tictactoe: MGCommand = {
 			await interaction.reply({
 				embeds: [
 					MGEmbed(MGStatus.Error).setTitle(
-						"Hey you can't play against bots!"
+						"Hey, you can't play against a bot!"
 					),
 				],
 			});
@@ -279,21 +178,16 @@ const tictactoe: MGCommand = {
 		}
 
 		const board = [
-			["_", "_", "_"],
-			["_", "_", "_"],
-			["_", "_", "_"],
-		];
+			[4, 4, 4],
+			[4, 4, 4],
+			[4, 4, 4],
+		] as TTTBoard;
 
-		const ttt = await generateTTT(
-			board,
-			player1.username,
-			player1.id,
-			player2.username,
-			player2.id,
-			true
+		await interaction.reply(
+			gen_disc_msg(board, player1.id, player2.id, true)
 		);
-		await interaction.reply(ttt);
 	},
 };
 
+export { TTTBoard, TTTToken, gen_disc_msg, put_token, check_win, check_draw };
 export default tictactoe;

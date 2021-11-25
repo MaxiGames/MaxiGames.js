@@ -17,92 +17,71 @@
  */
 
 import {
-	EmbedField,
+	ButtonInteraction,
 	Interaction,
-	MessageActionRow,
-	MessageEmbed,
+	MessageActionRowComponent as MARC,
 } from "discord.js";
 import {
-	checkForResult,
-	endResult,
-	generateEndResult,
-	generateTTT,
+	TTTBoard,
+	gen_disc_msg,
+	put_token,
+	check_win,
+	check_draw,
 } from "../../commands/minigames/tictactoe";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
 
 const tictactoe = {
 	name: "interactionCreate",
 	async execute(interaction: Interaction) {
-		if (!interaction.isButton()) {
+		const info_str = (interaction as ButtonInteraction).customId ?? "";
+		if (!(interaction.isButton() && info_str.startsWith("ttt"))) {
 			return;
 		}
 
-		if (interaction.customId.startsWith("tictactoe")) {
-			const row = interaction.message.components as MessageActionRow[];
-			const board: string[][] = [];
-			let count1 = 0;
-			const content = interaction.message.embeds[0].description as string;
-			const players = content.split(",");
-			const player1 = players[0].split(": ")[1];
-			const player2 = players[1].split(": ")[1];
-			const player1ID = players[0]
-				.split(")")[0]
-				.replace("**Player 1** (", "");
-			const player2ID = players[1]
-				.split(")")[0]
-				.replace("**Player 2** (", "")
-				.replace(" ", "");
-			const fields = interaction.message.embeds[0].fields as EmbedField[];
-			const player1Playing = fields[0].value === player1 ? false : true;
-			if (fields[0].value === interaction.user.username) {
-				//if its the right user pressing button
-				const buttonInformation = interaction.customId.split("-");
-				for (const i of row) {
-					count1++;
-					let count2 = 0;
-					const components = i.components;
-					const row = [];
-					for (const j of components) {
-						count2++;
-						const customID = j.customId!;
-						const information = customID.split("-");
-						if (
-							count1 === parseInt(buttonInformation[1]) &&
-							count2 === parseInt(buttonInformation[2])
-						) {
-							information[3] = player1Playing ? "X" : "O";
-						}
-						row.push(information[3]);
-					}
-					board.push(row);
-				}
+		// parse the info string
+		const info_split = info_str.split("-");
+		const row = parseInt(info_split[1]);
+		const col = parseInt(info_split[2]);
+		const sel_val = parseInt(info_split[3]);
+		const p1id = info_split[4];
+		const p2id = info_split[5];
+		const p1turnp = info_split[6] === "true";
 
-				const result = checkForResult(board);
-				if (result === endResult.continue) {
-					const msg = await generateTTT(
-						board,
-						player1,
-						player1ID,
-						player2,
-						player2ID,
-						player1Playing
-					);
-					await interaction.update(msg);
-				} else {
-					const msg = (await generateEndResult(
-						board,
-						player1,
-						player1ID,
-						player2,
-						player2ID,
-						result
-					)) as {
-						embeds: MessageEmbed[];
-						components: MessageActionRow[];
-					};
-					await interaction.update(msg);
-				}
-			}
+		if (!(sel_val === 4 && (p1id === interaction.user.id) === p1turnp)) {
+			await interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Info).setTitle(
+						"It's not your turn yet..."
+					),
+				],
+				ephemeral: true,
+			});
+			return;
 		}
+
+		const board = interaction.message.components!.map((r) =>
+			r.components.map((x) =>
+				parseInt((x as MARC).customId!.split("-")[3])
+			)
+		) as TTTBoard;
+
+		if (
+			check_win(board, true) ||
+			check_win(board, false) ||
+			check_draw(board)
+		) {
+			return;
+		}
+
+		await interaction.update(
+			gen_disc_msg(
+				put_token(board, row, col, p1turnp),
+				p1id,
+				p2id,
+				!p1turnp
+			)
+		);
 	},
 };
 
