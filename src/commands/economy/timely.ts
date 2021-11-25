@@ -24,7 +24,6 @@ import { MGFirebase } from "../../lib/firebase";
 import cooldownTest, { convertSecondsToDay } from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
 import commandLog from "../../lib/comamndlog";
-import balance from "./balance";
 
 const timely: MyCommand = withChecks([cooldownTest(5)], {
 	data: new SlashCommandBuilder()
@@ -106,7 +105,7 @@ const timely: MyCommand = withChecks([cooldownTest(5)], {
 			commandLog(
 				"timely",
 				`${interaction.user.id}`,
-				`Claimed ${subCommand}! Earned: ${moneyAdd}, bal: ${balance}`
+				`Claimed ${subCommand}! Earned: ${moneyAdd}`
 			);
 		} else {
 			embed = MGEmbed(MGStatus.Error)
