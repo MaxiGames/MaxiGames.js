@@ -29,6 +29,32 @@ import MGStatus from "../../lib/statuses";
 import MGCommand from "../../types/command";
 import fs from "fs";
 import { lowerCase, startCase } from "lodash";
+import { MGFirebase } from "../../lib/firebase";
+
+//load in all the descriptions beforehand
+const commandFiles = getDirectories("./dist/src/commands");
+
+const options: { label: string; description: string; value: string }[] = [];
+
+// forming the select menus
+for (let dir of commandFiles) {
+	let description: String | null = null;
+	fs.readFile(
+		`./src/commands/${dir}/description.txt`,
+		function (error, data) {
+			if ((error === undefined || error === null) && data !== undefined) {
+				description = data.toString();
+			}
+			options.push({
+				label: dir,
+				description: `${
+					description === null ? "No description" : description
+				}`,
+				value: dir,
+			});
+		}
+	);
+}
 
 function getDirectories(path: string) {
 	return fs.readdirSync(path).filter(function (file) {
@@ -68,20 +94,6 @@ export async function mainHelp(
 	interaction: SelectMenuInteraction | CommandInteraction,
 	page: string
 ) {
-	const commandFiles = getDirectories("./dist/src/commands");
-
-	const options: { label: string; description: string; value: string }[] = [];
-
-	// forming the select menus
-	for (let dir of commandFiles) {
-		dir = startCase(dir);
-		options.push({
-			label: dir,
-			description: `Find out what commands there is for the category: ${dir}`,
-			value: dir,
-		});
-	}
-
 	const row = new MessageActionRow().addComponents(
 		new MessageSelectMenu()
 			.setCustomId("help-main")
@@ -102,10 +114,13 @@ export async function mainHelp(
 	if (page === "main") {
 		return {
 			embeds: [
-				MGEmbed(MGStatus.Info)
+				MGEmbed(MGStatus.Success)
 					.setTitle("Help!")
 					.setDescription(
-						"Hallo! Thank you for using Maxigames, a fun, random, cheerful bot to fill everyones' lives with bad puns, minigames and happiness!!!"
+						"Hallo! Thank you for using MaxiGames, featuring tons of fun and great MiniGames! This bot is built by <@712942935129456671>, <@682592012163481616>, <@676748194956181505>, <@697747732772814921> and <@782247763542016010>."
+					)
+					.setThumbnail(
+						"https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
 					),
 			],
 			components: [row, row2],
@@ -118,20 +133,31 @@ export async function mainHelp(
 
 	let counter = 1;
 	for (const i of cmds) {
+		let curDescription = require(`../${lowerCase(page)}/${i}`);
 		fields.push({
-			name: `${counter}`,
-			value: startCase(i.replace(".js", "")),
-			inline: true,
+			name: `${counter}. ${startCase(i.replace(".js", ""))}`,
+			value: `${
+				curDescription.default.data.description === undefined
+					? "No description."
+					: curDescription.default.data.description
+			}`,
+			inline: false,
 		});
 		counter++;
 	}
 
+	let version = await MGFirebase.getData("version");
+
 	return {
 		embeds: [
-			MGEmbed(MGStatus.Info)
-				.setTitle("Help!")
-				.setDescription(`Category: ${page}`)
-				.addFields(fields),
+			MGEmbed(MGStatus.Success)
+				.setTitle("MaxiGames Help!")
+				.setDescription(`Category: **${startCase(page)}**`)
+				.addFields(fields)
+				.setFooter(`Version: ${version}. Built with discord.js :)`)
+				.setThumbnail(
+					"https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
+				),
 		],
 		components: [row, row2],
 	};
@@ -140,19 +166,10 @@ export async function mainHelp(
 const help: MGCommand = {
 	data: new SlashCommandBuilder()
 		.setName("help")
-		.setDescription("Find out the details of certain commands")
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("main")
-				.setDescription("Provides a list for all commands of the bot")
-		),
+		.setDescription("Find out the details of certain commands"),
 
 	async execute(interaction) {
-		const subcommand = interaction.options.getSubcommand();
-		switch (subcommand) {
-			case "main":
-				await interaction.reply(await mainHelp(interaction, "main"));
-		}
+		await interaction.reply(await mainHelp(interaction, "main"));
 	},
 };
 
