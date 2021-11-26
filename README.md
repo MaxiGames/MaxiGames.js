@@ -12,7 +12,7 @@ This project is licensed under the GNU AGPLv3 License - see the LICENSE.md file 
 
 **Vote for our bot <a href="https://top.gg/bot/863419048041381920/vote"> here!</a>**
 
-**Join our support server <a href="https://discord.gg/BNm87Cvdx3">here!</a>**
+**Join our support server <a href="https://discord.gg/nGWhxNG2sf">here!</a>**
 
 ---
 
