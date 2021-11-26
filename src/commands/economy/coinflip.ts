@@ -163,7 +163,7 @@ const gamble = withChecks([cooldownTest(10)], {
 			commandLog(
 				"coinflip",
 				`${interaction.user.id}`,
-				`Coinflipped on the right side, earned ${amt}, balance ${data["money"]}`
+				`Coinflipped on the wrong side, lost ${amt}, balance ${data["money"]}`
 			);
 		}
 	},
