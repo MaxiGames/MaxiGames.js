@@ -31,7 +31,7 @@ for (const filecol of commandFiles) {
 
 const rest = new REST({ version: "9" }).setToken(config.tokenId);
 
-//register slash commands
+// register slash commands
 (async () => {
 	try {
 		if (env.NODE_ENV === "production") {
