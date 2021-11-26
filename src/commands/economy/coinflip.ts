@@ -37,7 +37,7 @@ function otherOption(name: string) {
 	}
 }
 
-const gamble = withChecks([cooldownTest(30)], {
+const gamble = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
 		.setName("coinflip")
 		.setDescription(

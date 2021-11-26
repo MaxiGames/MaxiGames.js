@@ -26,7 +26,7 @@ import cooldownTest from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
 import commandLog from "../../lib/comamndlog";
 
-const gamble: MGCommand = withChecks([cooldownTest(20)], {
+const gamble: MGCommand = withChecks([cooldownTest(10)], {
 	data: new SlashCommandBuilder()
 		.setName("gamble")
 		.setDescription("gamble some money :O")
