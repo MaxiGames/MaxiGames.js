@@ -140,6 +140,31 @@ const gamble = withChecks([cooldownTest(30)], {
 				`${interaction.user.id}`,
 				`Coinflipped on the right side, earned ${amt}, balance ${data["money"]}`
 			);
+		} else {
+			data["money"] -= amt;
+			MGFirebase.setData(`user/${interaction.user.id}`, data); // update user balance
+
+			await interaction.reply({
+				embeds: [
+					MGEmbed(MGStatus.Success)
+						.setTitle("You lost!")
+						.setDescription(
+							`You're just bad! It landed on **${option}**.`
+						)
+						.addFields(
+							{ name: "Balance", value: `${data["money"]}` },
+							{
+								name: "Amount lost:",
+								value: `${amt}`,
+							}
+						),
+				],
+			});
+			commandLog(
+				"coinflip",
+				`${interaction.user.id}`,
+				`Coinflipped on the right side, earned ${amt}, balance ${data["money"]}`
+			);
 		}
 	},
 });

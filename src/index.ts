@@ -21,17 +21,16 @@
  * Description: Main file of MaxiGames
  */
 
-import { Client, Intents, TextChannel } from "discord.js";
+import { Client, Intents } from "discord.js";
 import { config, firebaseConfig, apiConfig } from "./utils/config";
 import commands from "./commands";
 import events from "./events";
 import * as admin from "firebase-admin";
 import { MGFirebase } from "./lib/firebase";
 import { defaultGuild } from "./types/firebase";
-import moan, { setMoan, toLog } from "./lib/moan";
+import moan from "./lib/moan";
 import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
-import { commandLogArr, setCommandLog } from "./lib/comamndlog";
 import logToDiscord from "./utils/log";
 import ActivityDetails from "./utils/activityPanel";
 
