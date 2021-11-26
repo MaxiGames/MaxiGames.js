@@ -30,11 +30,13 @@ rest.get(Routes.applicationCommands(config.clientId)).then((data) => {
 		}`;
 		promises.push(
 			(async () => {
-				console.log(`Deleting ${command.name}.`);
-				return rest.delete(deleteUrl);
+				return rest
+					.delete(deleteUrl)
+					.then(() => console.log(`Deleting ${command.name}.`));
 			})()
 		);
 	}
 	return Promise.all(promises);
-});
-console.log("Successfully deleted all commands.");
+}).then(
+	() => console.log("Successfully deleted all commands.")
+);
