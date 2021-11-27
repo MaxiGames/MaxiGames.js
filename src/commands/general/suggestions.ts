@@ -21,7 +21,12 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
 import MGCommand from "../../types/command";
-import { ThreadChannel } from "discord.js";
+import {
+	Message,
+	MessageActionRow,
+	MessageButton,
+	ThreadChannel,
+} from "discord.js";
 import { Suggestions } from "../../types/firebase";
 import withChecks from "../../lib/checks";
 import cooldownTest from "../../lib/checks/cooldown";
@@ -59,13 +64,21 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
 
 		// send it to the MG server
 		const channel = interaction.client.guilds.cache
-			.get("837522963389349909")
-			?.channels.cache.get("897738840054317078") as ThreadChannel;
+			.get(
+				process.env.NODE_ENV === "production"
+					? "837522963389349909"
+					: "866939574419849216"
+			)
+			?.channels.cache.get(
+				process.env.NODE_ENV === "production"
+					? "897738840054317078"
+					: "873835031880163330"
+			) as ThreadChannel;
 		const message = await channel.send({
 			embeds: [
 				MGEmbed(MGStatus.Success)
 					.setTitle(
-						`Suggestion from ${interaction.user.username}#${interaction.user.discriminator}`
+						`**Suggestion** from ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id})`
 					)
 					.setThumbnail(
 						`${
@@ -74,6 +87,18 @@ const suggestions: MGCommand = withChecks([cooldownTest(10)], {
 						}`
 					)
 					.setDescription(suggestion),
+			],
+			components: [
+				new MessageActionRow().addComponents([
+					new MessageButton()
+						.setCustomId("Accept-suggestions")
+						.setLabel("Accept")
+						.setStyle("SUCCESS"),
+					new MessageButton()
+						.setCustomId("Reject-suggestions")
+						.setLabel("Reject")
+						.setStyle("DANGER"),
+				]),
 			],
 		});
 		const suggestion1: Suggestions = {
