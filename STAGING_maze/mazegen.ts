@@ -1,5 +1,28 @@
 type Cell = number; // bitfield: NESW openings
 
+const N = 0b1000;
+const E = 0b0100;
+const S = 0b0010;
+const W = 0b0001;
+const dr = new Map([
+	[N, -1],
+	[E, 0],
+	[S, 1],
+	[W, 0],
+]);
+const dc = new Map([
+	[N, 0],
+	[E, 1],
+	[S, 0],
+	[W, -1],
+]);
+const opp = new Map([
+	[N, S],
+	[E, W],
+	[S, N],
+	[W, E],
+]);
+
 function randint(l: number, u: number) {
 	return Math.floor(Math.random() * (u - l + 1)) + l;
 }
@@ -19,29 +42,6 @@ function Dshuffle(input: any[]): any[] {
 }
 
 function gen_maze(w: number, h: number) {
-	const N = 0b1000;
-	const E = 0b0100;
-	const S = 0b0010;
-	const W = 0b0001;
-	const dr = new Map([
-		[N, -1],
-		[E, 0],
-		[S, 1],
-		[W, 0],
-	]);
-	const dc = new Map([
-		[N, 0],
-		[E, 1],
-		[S, 0],
-		[W, -1],
-	]);
-	const opp = new Map([
-		[N, S],
-		[E, W],
-		[S, N],
-		[W, E],
-	]);
-
 	function setchoose(s: Set<Cell>): Cell {
 		return Array.from(s).at(-1) ?? -1;
 	}
@@ -92,6 +92,17 @@ function gen_maze(w: number, h: number) {
 	return grid;
 }
 
-function maze2str(_: any) {}
+function maze2str(grid: Cell[][]) {
+	for (const r of grid) {
+		let s = "";
+		for (const c of r) {
+			switch (c) {
+				case N:
+					break;
+			}
+		}
+		console.log(s);
+	}
+}
 
-maze2str(gen_maze(5, 5));
+maze2str(gen_maze(50, 50));
