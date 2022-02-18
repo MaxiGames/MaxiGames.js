@@ -6,9 +6,11 @@ const { Routes } = require("discord-api-types/v9");
 const { config } = require("../dist/src/utils/config.js");
 const { commands } = require("../dist/src/modules")
 
-for (const cmd of commands) {
-	commands.push(cmd.default.data.toJSON());
-	console.log(`Registered ${cmd.default.data.name}.`);
+const commandsjson = [];
+
+for (const [name, cmd] of commands.entries()) {
+	commandsjson.push(cmd.data.toJSON());
+	console.log(`Registered ${name}.`);
 }
 
 const rest = new REST({ version: "9" }).setToken(config.tokenId);
