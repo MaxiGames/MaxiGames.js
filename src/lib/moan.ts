@@ -1,8 +1,6 @@
 import path from "path";
 import MGStatus from "./statuses";
 import process from "process";
-import { TextChannel } from "discord.js";
-import { MGEmbed } from "./flavoured";
 
 const SPC1 = 10; // space for status info
 const SPC2 = 50; // max width for message
