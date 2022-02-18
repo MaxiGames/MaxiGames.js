@@ -65,7 +65,6 @@
 		"xhr2": "^0.2.1"
 	},
 	"lint-staged": {
-		"*.ts": "eslint --fix",
 		"*.ts": "prettier -w"
 	}
 }

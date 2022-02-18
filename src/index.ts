@@ -23,8 +23,7 @@
 
 import { Client, Intents } from "discord.js";
 import { config, firebaseConfig, apiConfig } from "./utils/config";
-import commands from "./commands";
-import events from "./events";
+import { commands, events } from "./modules";
 import * as admin from "firebase-admin";
 import { MGFirebase } from "./lib/firebase";
 import { defaultGuild } from "./types/firebase";
@@ -83,7 +82,7 @@ for (const event of events) {
 	moan(MGS.Info, `Registered event handler for "${event.name}."`);
 }
 
-// Wait for interaction & handle commands
+// Wait for interactions & handle commands
 client.on("interactionCreate", async (interaction) => {
 	if (!interaction.isCommand()) {
 		return;
@@ -135,8 +134,8 @@ client.login(config.tokenId).then(() => {
 		throw "User is null and this is very bad!!!";
 	}
 
-	//get activity panel rolling!
-	let activityManager = new ActivityDetails(currentGuildCount);
+	// get activity panel rolling!
+	const activityManager = new ActivityDetails(currentGuildCount);
 	activityManager.updateActivity(client);
 
 	// change activity on guild join

@@ -16,25 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { CommandInteraction, Interaction } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
+import { MGEmbed } from "../../lib/flavoured";
+import MGStatus from "../../lib/statuses";
+import { MGCommand } from "../../types/command";
 
-import type {
-	SlashCommandBuilder,
-	SlashCommandSubcommandsOnlyBuilder,
-} from "@discordjs/builders";
+const official: MGCommand = {
+	data: new SlashCommandBuilder()
+		.setName("official")
+		.setDescription("Official Server Invite Link"),
+	async execute(interaction) {
+		const embed = MGEmbed(MGStatus.Info)
+			.setTitle("Official Server Invite Link :D")
+			.setDescription(
+				"[Clicke ye here to join!](https://discord.gg/nGWhxNG2sf)"
+			);
 
-interface MGCommand {
-	data: Partial<SlashCommandBuilder> | SlashCommandSubcommandsOnlyBuilder;
-	execute(interaction: CommandInteraction): Promise<void>;
-}
+		await interaction.reply({ embeds: [embed] });
+	},
+};
 
-// A container for holding together (ostensibly) related events and commands.
-interface MGModule {
-	command: MGCommand;
-	events: {
-		name: string;
-		execute(interaction: Interaction): Promise<void>;
-	}[];
-}
-
-export { MGCommand, MGModule };
+export default official;

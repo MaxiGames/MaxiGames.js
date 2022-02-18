@@ -16,25 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { CommandInteraction, Interaction } from "discord.js";
+import moan from "../../lib/moan";
+import MGS from "../../lib/statuses";
 
-import type {
-	SlashCommandBuilder,
-	SlashCommandSubcommandsOnlyBuilder,
-} from "@discordjs/builders";
+const ready = [
+	{
+		name: "ready",
+		once: true,
+		async execute(client: any) {
+			if (client.user === null) {
+				return;
+			}
+			moan(MGS.Success, "Ready.");
+			moan(MGS.Info, `Logged in as ${client.user.tag}.`);
+		},
+	},
+];
 
-interface MGCommand {
-	data: Partial<SlashCommandBuilder> | SlashCommandSubcommandsOnlyBuilder;
-	execute(interaction: CommandInteraction): Promise<void>;
-}
-
-// A container for holding together (ostensibly) related events and commands.
-interface MGModule {
-	command: MGCommand;
-	events: {
-		name: string;
-		execute(interaction: Interaction): Promise<void>;
-	}[];
-}
-
-export { MGCommand, MGModule };
+export default ready;

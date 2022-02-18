@@ -9,7 +9,6 @@ if [ -z "${DIRTY+1}" ]; then
     npm run build || exit
     rm -f DIRTY.md
     git rm --cached DIRTY.md >/dev/null 2>&1 || true
-    npm run --silent check-commands
     # Lint and format files
 else
     # indentation matters until after EOF

@@ -1,32 +1,14 @@
 "use strict";
 
-const fs = require("fs");
-const path = require("path");
 const env = require("process").env;
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const { config } = require("../dist/src/utils/config.js");
+const { commands } = require("../dist/src/modules")
 
-const commands = [];
-
-// NOTE: The directory "commands" should contain subdirectories to organise commands.
-const commandFiles = fs
-	.readdirSync("./dist/src/commands")
-	.map((file) => path.join("./dist/src/commands", file))
-	.filter((file) => fs.lstatSync(file).isDirectory())
-	.map((dir) =>
-		fs
-			.readdirSync(dir)
-			.filter((file) => file.endsWith(".js"))
-			.map((file) => path.join(dir, file))
-	);
-
-for (const filecol of commandFiles) {
-	for (const name of filecol) {
-		const command = require(`../${name}`); // funny path-fu
-		commands.push(command.default.data.toJSON());
-		console.log(`Registered ${name}.`);
-	}
+for (const cmd of commands) {
+	commands.push(cmd.default.data.toJSON());
+	console.log(`Registered ${cmd.default.data.name}.`);
 }
 
 const rest = new REST({ version: "9" }).setToken(config.tokenId);
@@ -37,7 +19,7 @@ const rest = new REST({ version: "9" }).setToken(config.tokenId);
 		if (env.NODE_ENV === "production") {
 			console.log("Deploying commands globally.");
 			await rest.put(Routes.applicationCommands(config.clientId), {
-				body: commands,
+				body: commandsjson,
 			});
 		} else {
 			console.log("Deploying commands locally onto Beta.");
@@ -47,7 +29,7 @@ const rest = new REST({ version: "9" }).setToken(config.tokenId);
 					config.guildId
 				),
 				{
-					body: commands,
+					body: commandsjson,
 				}
 			);
 		}

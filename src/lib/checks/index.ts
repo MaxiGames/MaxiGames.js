@@ -17,7 +17,7 @@
  */
 
 import { CommandInteraction } from "discord.js";
-import type MGCommand from "../../types/command";
+import type { MGCommand } from "../../types/command";
 import type MGCmdTest from "../../types/checks";
 
 function tail<a>(l: a[]) {
