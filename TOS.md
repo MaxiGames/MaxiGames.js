@@ -1,10 +1,11 @@
 # Terms of service
 
-0. Use of bot means that you consent to and will abide by the following
-rules in this list. When there is conflict between rules, the earlier one
-applies. This list, as well as all others marked with a "(++)" are not
-exhaustive and the developers have the right to act against any action
-as they see fit.
+0.  **About the TOS**
+    Use of bot means that you consent to and will abide by the following
+    rules in this list. When there is conflict between rules, the earlier one
+    applies. This list, as well as all others marked with a "(++)" are not
+    exhaustive and the developers have the right to act against any action
+    as they see fit.
 
 1.  **Use of bot to violate Discord's Terms of Service.**
 
