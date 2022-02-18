@@ -120,6 +120,8 @@ export function convertSecondsToDay(n: number) {
 			}
 		}
 	}
-	if (message === "") return ":)";
+	if (message === "") {
+		return ":)";
+	}
 	return message;
 }
