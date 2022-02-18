@@ -1,6 +1,7 @@
 # Terms of service
 
 0.  **About the TOS**
+
     Use of bot means that you consent to and will abide by the following
     rules in this list. When there is conflict between rules, the earlier one
     applies. This list, as well as all others marked with a "(++)" are not
