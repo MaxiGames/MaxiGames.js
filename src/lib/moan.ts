@@ -103,7 +103,7 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
 
 	process.stderr.write(e);
 
-	//log it to discord too
+	// log it to discord too
 	const logged = typeof msg === "string" ? msg : JSON.stringify(msg, null, 2);
 	const toAppend = { status: status, logged: logged };
 	toLog.push(toAppend);
