@@ -16,304 +16,208 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SlashCommandBuilder } from "@discordjs/builders";
-import {
-	ButtonInteraction,
-	Interaction,
-	Message,
-	MessageActionRow,
-	MessageButton,
-	MessageEmbed,
-	MessageInteraction,
-} from "discord.js";
 import cooldownTest from "../../lib/checks/cooldown";
+import got from "got-cjs";
 import { MGEmbed } from "../../lib/flavoured";
-import MGStatus from "../../lib/statuses";
+import { MGModule } from "../../types/command";
+import MGS from "../../lib/statuses";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import withChecks from "../../lib/checks";
-import type { MGModule } from "../../types/command";
+import {
+  ButtonInteraction,
+  InteractionReplyOptions,
+  MessageActionRow,
+  MessageButton,
+  MessageInteraction,
+} from "discord.js";
 import { MGFirebase } from "../../lib/firebase";
-import { XMLHttpRequest } from "xhr2";
-import { decode } from "base-64";
+import { APIButtonComponent } from "discord.js/node_modules/discord-api-types";
+
+type DifficultyT = "easy" | "medium" | "hard";
+
+interface TriviaMultiQn {
+  difficulty: DifficultyT;
+  question: string;
+  choices: string[];
+  correct: string;
+}
 
 const trivia: MGModule = {
-	command: withChecks([cooldownTest(10)], {
-		data: new SlashCommandBuilder()
-			.setName("trivia")
-			.setDescription("Want to play a game of trivia?")
-			.addIntegerOption((option) =>
-				option
-					.setName("questions")
-					.setDescription("How many questions do you want? (< 5)")
-					.setRequired(true)
-			)
-			.addStringOption((option) =>
-				option
-					.setName("difficulty")
-					.setDescription(
-						"What is the difficulty level you want? (harder = more points)"
-					)
-					.setRequired(true)
-					.addChoice("easy", "easy")
-					.addChoice("medium", "medium")
-					.addChoice("hard", "hard")
-			),
-		async execute(interaction) {
-			const no = interaction.options.getInteger("questions") ?? 1;
-			const difficulty =
-				interaction.options.getString("difficulty") ?? "hard";
-			if (no > 5) {
-				await interaction.reply({
-					embeds: [
-						MGEmbed(MGStatus.Error)
-							.setTitle("Too many questions!")
-							.setDescription(
-								"Maximum number of questions to request at one go is 10."
-							),
-					],
-				});
-				return;
-			}
-			const url = `https://opentdb.com/api.php?amount=${no}&difficulty=${difficulty}&type=multiple&encode=base64`;
-			const xhr = new XMLHttpRequest();
+  command: withChecks([cooldownTest(10)], {
+    data: new SlashCommandBuilder()
+      .setName("trivia2")
+      .setDescription("Answer some simple questions correctly for points!")
+      .addStringOption((option) =>
+        option
+          .setName("difficulty")
+          .setDescription("difficulty level")
+          .setRequired(true)
+          .addChoice("easy", "easy")
+          .addChoice("medium", "medium")
+          .addChoice("hard", "hard")
+      ),
+    async execute(interaction) {
+      const difficulty = interaction.options.getString(
+        "difficulty"
+      ) as DifficultyT;
 
-			await interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Success)
-						.setTitle("Retrieving questions!")
-						.setDescription("Sending..."),
-				],
-			});
-			xhr.open("GET", url);
+      const triv = await getTrivia(difficulty);
+      if (triv) {
+        triv.choices = triv.choices
+          .map((value) => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value);
+      }
 
-			xhr.setRequestHeader("Accept", "application/json");
+      await interaction.reply(mkTriviaMsg(triv, difficulty, 3));
+      setTimeout(async () => {
+        // prettier-ignore
+        const rfoot = (await interaction.fetchReply()).embeds[0].footer?.text;
+        if (rfoot == "waiting...") {
+          await interaction.editReply(mkTriviaMsg(triv, difficulty, 2));
+        }
+      }, 8000);
+    },
+  }),
 
-			xhr.onreadystatechange = async () => {
-				if (xhr.readyState === 4) {
-					const msg: any[] = [];
-					const responseText = xhr.responseText;
-					const results = JSON.parse(responseText).results;
-					const sentMessages: Message[] = [];
-					// prettier-ignore
-					const timeGiven = difficulty === "easy" ? 5000 : difficulty === "medium" ? 7500 : 10000;
+  events: [
+    {
+      name: "interactionCreate",
+      async execute(interaction) {
+        if (!interaction.isButton()) {
+          return;
+        }
 
-					for (const i of results) {
-						const category = decode(i.category);
-						const difficulty = decode(i.difficulty);
-						const question = decode(i.question);
-						const correct_answer = decode(i.correct_answer);
-						const incorrect_answers = i.incorrect_answers;
-						const incorrect_answers_arr = [];
-						for (const j of incorrect_answers) {
-							const k = decode(j);
-							incorrect_answers_arr.push(k);
-						}
-						let answers_arr = incorrect_answers_arr;
-						answers_arr.push(correct_answer);
-						answers_arr = shuffle(answers_arr);
+        const idstr = interaction.customId.split("-");
+        const msg = interaction.message;
+        if (idstr[0] == "trivia") {
+          const triv = {
+            difficulty: idstr[1] as DifficultyT,
+            question: msg.embeds[0].description!,
+            choices: msg.components![0].components.map(
+              (b) => (b as APIButtonComponent).label!
+            ),
+            correct: b64d(idstr[2]),
+          };
 
-						const embed = MGEmbed(MGStatus.Success)
-							.setTitle(`TRIVIA! Question: ${question}`)
-							.setDescription(
-								`Category: ${category}, Difficulty: ${difficulty}`
-							)
-							.addFields({
-								name: "User ID:",
-								value: `${interaction.user.id}`,
-							})
-							.setFooter(
-								`Time Given: ${timeGiven / 1000} seconds`
-							);
-
-						const component = new MessageActionRow();
-						let count = 1;
-						for (const j of answers_arr) {
-							embed.addField(`Option ${count}:`, j);
-							component.addComponents(
-								new MessageButton()
-									.setLabel(`${count}`)
-									.setStyle("SUCCESS")
-									.setCustomId(
-										j === correct_answer
-											? `true${count}trivia`
-											: `false${count}trivia`
-									)
-							);
-							count++;
-						}
-						msg.push([embed, component]);
-					}
-					for (const i of msg) {
-						const message = (await interaction.channel?.send({
-							embeds: [i[0]],
-							components: [i[1]],
-						})) as Message;
-						sentMessages.push(message);
-					}
-					setTimeout(async () => {
-						// edit messages to disable stuff
-						let count = 0;
-						for (const i of msg) {
-							const oldMessage = sentMessages[count];
-							const newMessage =
-								await oldMessage.channel.messages.fetch(
-									oldMessage.id
-								);
-							const newMessageComponents = newMessage
-								.components[0] as MessageActionRow;
-							if (
-								newMessageComponents.components[0].customId?.startsWith(
-									"DONE"
-								)
-							) {
-								continue;
-							}
-							const ratingChange = await changeRating(
-								interaction,
-								false,
-								difficulty
-							);
-							const embed = i[0] as MessageEmbed;
-							const component = i[1] as MessageActionRow;
-							embed.setFooter("Time's up!");
-							embed.addField(
-								"Rating Change",
-								`${
-									ratingChange > 0
-										? "+" + ratingChange
-										: ratingChange
-								}`
-							);
-							embed.setColor("DARK_NAVY");
-							const components =
-								component.components as MessageButton[];
-							const newComponents = new MessageActionRow();
-							for (const j of components) {
-								j.setDisabled(true);
-								if (j.customId?.startsWith("true")) {
-									j.setStyle("SUCCESS");
-								} else {
-									j.setStyle("DANGER");
-								}
-								newComponents.addComponents(j);
-							}
-							await sentMessages[count].edit({
-								embeds: [embed],
-								components: [newComponents],
-							});
-							count++;
-						}
-					}, timeGiven);
-				}
-			};
-			xhr.send();
-		},
-	}),
-
-	events: [
-		{
-			name: "interactionCreate",
-			async execute(interaction: Interaction) {
-				if (!interaction.isButton()) {
-					return;
-				}
-
-				if (
-					interaction.customId.endsWith("trivia") &&
-					interaction.message.embeds[0].fields![0].value ===
-						interaction.user.id
-				) {
-					const won = interaction.customId.startsWith("true");
-					const difficulty =
-						interaction.message.embeds[0].description?.split(":");
-					const newRating = await changeRating(
-						interaction,
-						won,
-						difficulty![difficulty!.length - 1] as string
-					);
-					const message = interaction.message;
-					const component = (
-						message.components as MessageActionRow[]
-					)[0];
-					const buttons = component.components as MessageButton[];
-					const newComponents = new MessageActionRow();
-					const embed = message.embeds[0] as MessageEmbed;
-					let count = 0;
-					for (const i of buttons) {
-						if (i.customId?.startsWith("true")) {
-							i.setStyle("SUCCESS");
-						} else {
-							i.setStyle("DANGER");
-						}
-						if (i.customId === interaction.customId) {
-							i.setStyle("PRIMARY");
-						}
-						i.setCustomId(`DONE ${count}`);
-						i.setDisabled(true);
-						newComponents.addComponents(i);
-						count++;
-					}
-					embed.setFooter(`You are ${won ? "CORRECT" : "WRONG"}!`);
-					embed.setColor(won ? "GREEN" : "RED");
-					embed.addField(
-						"Rating Change",
-						`${newRating > 0 ? "+" + newRating : newRating}`
-					);
-					interaction.update({
-						embeds: [embed],
-						components: [newComponents],
-					});
-				}
-			},
-		},
-	],
+          if (idstr[2] == idstr[3]) {
+            await interaction.update(mkTriviaMsg(triv, triv.difficulty, 0));
+            await changeRating(interaction, true, triv.difficulty);
+          } else {
+            await interaction.update(mkTriviaMsg(triv, triv.difficulty, 1));
+            await changeRating(interaction, false, triv.difficulty);
+          }
+        }
+      },
+    },
+  ],
 };
 
-function shuffle(array: any[]) {
-	let currentIndex = array.length,
-		randomIndex;
+const catmax = 32;
+const b64d = (s: string) => Buffer.from(s, "base64").toString();
+const b64e = (s: string) => Buffer.from(s, "utf8").toString("base64");
 
-	// While there remain elements to shuffle...
-	while (currentIndex != 0) {
-		// Pick a remaining element...
-		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex--;
+async function getTrivia(
+  difficulty: DifficultyT
+): Promise<TriviaMultiQn | null> {
+  const triviajson: any = await got(
+    "https://opentdb.com/api.php?" +
+      `amount=1&difficulty=${difficulty}&type=multiple&encode=base64`
+  ).json();
 
-		// And swap it with the current element.
-		[array[currentIndex], array[randomIndex]] = [
-			array[randomIndex],
-			array[currentIndex],
-		];
-	}
+  if (triviajson.response_code !== 0) {
+    return null;
+  }
 
-	return array;
+  return {
+    difficulty: b64d(triviajson.results[0].difficulty) as DifficultyT,
+    question: b64d(triviajson.results[0].question),
+    choices: [b64d(triviajson.results[0].correct_answer)].concat(
+      triviajson.results[0].incorrect_answers.map(b64d)
+    ),
+    correct: b64d(triviajson.results[0].correct_answer),
+  };
+}
+
+function mkTriviaMsg(
+  triv: TriviaMultiQn | null,
+  difficulty: DifficultyT,
+  status: 0 | 1 | 2 | 3 // 0 = correct, 1 = wrong, 2 = timeout, 3 = initial creation
+): InteractionReplyOptions {
+  if (triv == null) {
+    return {
+      embeds: [
+        MGEmbed(MGS.Error)
+          .setTitle("Trivia time!")
+          .setDescription(
+            "There was an error while trying to fetch a question."
+          )
+          .setFooter("error :("),
+      ],
+    };
+  }
+
+  let row = new MessageActionRow();
+  for (let i = 0; i < 4; i++) {
+    row = row.addComponents(
+      new MessageButton()
+        .setCustomId(
+          `trivia-${difficulty}-${b64e(triv.correct)}-${b64e(triv.choices[i])}`
+        )
+        .setStyle(
+          status == 3
+            ? "PRIMARY"
+            : triv.choices[i] == triv.correct
+              ? "SUCCESS"
+              : "DANGER" // prettier-ignore
+        )
+        .setLabel(triv.choices[i])
+        .setDisabled(status == 3 ? false : true)
+    );
+  }
+
+  return {
+    embeds: [
+      MGEmbed(status == 3 ? MGS.Info : status == 0 ? MGS.Success : MGS.Error)
+        .setTitle(`Trivia time! (difficulty: ${difficulty})`)
+        .setDescription(triv.question)
+        .setFooter(
+          status == 0 ? "correct!" :
+          status == 1 ? "wrong :(" :
+          status == 2 ? "timeout :(" :
+                        "waiting..." // prettier-ignore
+        ),
+    ],
+    components: [row],
+  };
 }
 
 export async function changeRating(
-	interaction: MessageInteraction | ButtonInteraction,
-	won: boolean,
-	difficulty: string
+  interaction: MessageInteraction | ButtonInteraction,
+  won: boolean,
+  difficulty: DifficultyT
 ) {
-	const rating = await MGFirebase.getData(`user/${interaction.user.id}`);
-	let triviaRating = rating.minigames.trivia;
-	let toChange: number;
-	const difficultyMultiplier =
-		difficulty === "easy" ? 0.2 : difficulty === "medium" ? 0.5 : 1;
-	if (won) {
-		toChange = Math.ceil(
-			triviaRating * 0.05 * Math.random() * 3 * difficultyMultiplier
-		);
-		triviaRating += toChange;
-	} else {
-		toChange = -Math.ceil(
-			triviaRating * 0.02 * Math.random() * 3 * difficultyMultiplier
-		);
-		triviaRating += toChange;
-	}
-	await MGFirebase.setData(
-		`user/${interaction.user.id}/minigames/trivia`,
-		triviaRating
-	);
-	return toChange;
+  const rating = await MGFirebase.getData(`user/${interaction.user.id}`);
+  let triviaRating = rating.minigames.trivia;
+  let toChange: number;
+  const difficultyMultiplier =
+    difficulty === "easy" ? 0.2 : difficulty === "medium" ? 0.5 : 1;
+  if (won) {
+    toChange = Math.ceil(
+      triviaRating * 0.05 * Math.random() * 3 * difficultyMultiplier
+    );
+    triviaRating += toChange;
+  } else {
+    toChange = -Math.ceil(
+      triviaRating * 0.02 * Math.random() * 3 * difficultyMultiplier
+    );
+    triviaRating += toChange;
+  }
+  await MGFirebase.setData(
+    `user/${interaction.user.id}/minigames/trivia`,
+    triviaRating
+  );
+  return toChange;
 }
 
 export default trivia;

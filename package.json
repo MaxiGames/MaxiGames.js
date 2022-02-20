@@ -56,6 +56,7 @@
 		"dotenv": "^10.0.0",
 		"firebase": "^9.0.2",
 		"firebase-admin": "^10.0.2",
+		"got-cjs": "^12.0.1",
 		"inversify": "^5.1.1",
 		"lodash": "^4.17.21",
 		"mathjs": "^9.5.0",
