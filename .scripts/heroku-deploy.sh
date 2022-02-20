@@ -1,8 +1,6 @@
 #! /bin/sh
 
-hps=$(heroku ps --remote heroku 2>&1)
-(echo $hps | grep "No dynos" >/dev/null 2>&1) || { remote="heroku"; not="heroku1"; }
-(echo $hps | grep "No dynos" >/dev/null 2>&1) && { remote="heroku1"; not="heroku"; }  # out of hours on main
+remote="heroku"
 
 echo "Deploying from branch $(git branch --show-current) to remote $remote."
 
@@ -50,7 +48,6 @@ if [ $s1 -eq 0 ]; then
     heroku restart --remote $remote >/dev/null 2>&1
     heroku builds:clear --remote $remote >/dev/null 2>&1 
     git push -fq $remote master 2>&1 | sed 's/^remote: //g; s/^-----//g; s/^     //g; /^[ \t]*$/d'
-    echo "Killing dyno on remote $not."
     heroku ps:kill worker.1 --remote $not
     cleanup
     exit 0
