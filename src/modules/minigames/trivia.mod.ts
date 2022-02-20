@@ -45,7 +45,7 @@ interface TriviaMultiQn {
 const trivia: MGModule = {
   command: withChecks([cooldownTest(10)], {
     data: new SlashCommandBuilder()
-      .setName("trivia2")
+      .setName("trivia")
       .setDescription("Answer some simple questions correctly for points!")
       .addStringOption((option) =>
         option
