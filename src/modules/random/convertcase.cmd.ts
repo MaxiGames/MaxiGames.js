@@ -26,75 +26,75 @@ import type { MGCommand } from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import {
-	camelCase,
-	kebabCase as lispCase,
-	snakeCase,
-	upperCase,
-	lowerCase,
+  camelCase,
+  kebabCase as lispCase,
+  snakeCase,
+  upperCase,
+  lowerCase,
 } from "lodash";
 
 const pascalCase = (param: string) =>
-	camelCase(param).replace(/\w/, (c) => c.toUpperCase());
+  camelCase(param).replace(/\w/, (c) => c.toUpperCase());
 
 const convertCase: MGCommand = {
-	// exports (self explanatory)
-	data: new SlashCommandBuilder()
-		.setName("convertcase")
-		.setDescription("Convert some text another case")
-		.addStringOption((option) =>
-			option
-				.setName("conversion")
-				.setDescription("Type of conversion you want")
-				.setRequired(true)
-				.addChoice("camel", "camel")
-				.addChoice("lisp", "lisp")
-				.addChoice("snake", "snake")
-				.addChoice("pascal", "pascal")
-				.addChoice("upper", "upper")
-				.addChoice("lower", "lower")
-		)
-		.addStringOption((option) =>
-			option
-				.setName("text")
-				.setDescription("Text that you want to convert")
-				.setRequired(true)
-		),
+  // exports (self explanatory)
+  data: new SlashCommandBuilder()
+    .setName("convertcase")
+    .setDescription("Convert some text another case")
+    .addStringOption((option) =>
+      option
+        .setName("conversion")
+        .setDescription("Type of conversion you want")
+        .setRequired(true)
+        .addChoice("camel", "camel")
+        .addChoice("lisp", "lisp")
+        .addChoice("snake", "snake")
+        .addChoice("pascal", "pascal")
+        .addChoice("upper", "upper")
+        .addChoice("lower", "lower")
+    )
+    .addStringOption((option) =>
+      option
+        .setName("text")
+        .setDescription("Text that you want to convert")
+        .setRequired(true)
+    ),
 
-	// execute command
-	async execute(interaction) {
-		const toConvert = interaction.options.getString("text") ?? "";
-		const conversion = interaction.options.getString("conversion") ?? "";
+  // execute command
+  async execute(interaction) {
+    const toConvert = interaction.options.getString("text") ?? "";
+    const conversion = interaction.options.getString("conversion") ?? "";
 
-		let f = (a: string) => a;
-		switch (conversion) {
-			case "camel":
-				f = camelCase;
-				break;
-			case "lisp":
-				f = lispCase;
-				break;
-			case "pascal":
-				f = pascalCase;
-				break;
-			case "snake":
-				f = snakeCase;
-				break;
-			case "upper":
-				f = upperCase;
-				break;
-			case "lower":
-				f = lowerCase;
-				break;
-			default:
-				break;
-		}
+    let f = (a: string) => a;
+    switch (conversion) {
+      case "camel":
+        f = camelCase;
+        break;
+      case "lisp":
+        f = lispCase;
+        break;
+      case "pascal":
+        f = pascalCase;
+        break;
+      case "snake":
+        f = snakeCase;
+        break;
+      case "upper":
+        f = upperCase;
+        break;
+      case "lower":
+        f = lowerCase;
+        break;
+      default:
+        break;
+    }
 
-		const embed = MGEmbed(MGStatus.Success)
-			.setTitle(`Converted case to: ${conversion}`)
-			.setDescription(f(toConvert));
+    const embed = MGEmbed(MGStatus.Success)
+      .setTitle(`Converted case to: ${conversion}`)
+      .setDescription(f(toConvert));
 
-		await interaction.reply({ embeds: [embed] });
-	},
+    await interaction.reply({ embeds: [embed] });
+  },
 };
 
 export default convertCase;

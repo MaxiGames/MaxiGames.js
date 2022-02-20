@@ -22,63 +22,62 @@ import MGStatus from "../../lib/statuses";
 import { MGCommand } from "../../types/command";
 
 const lmgtfy: MGCommand = {
-	data: new SlashCommandBuilder()
-		.setName("lmgtfy")
-		.setDescription("For people who don't know how to STFW")
-		.addStringOption((option) =>
-			option
-				.setName("searchstring")
-				.setDescription("what to search for")
-				.setRequired(true)
-		)
-		.addUserOption((option) =>
-			option
-				.setName("whichidiot")
-				.setDescription("which idiot didn't know how to STFW?")
-				.setRequired(false)
-		),
+  data: new SlashCommandBuilder()
+    .setName("lmgtfy")
+    .setDescription("For people who don't know how to STFW")
+    .addStringOption((option) =>
+      option
+        .setName("searchstring")
+        .setDescription("what to search for")
+        .setRequired(true)
+    )
+    .addUserOption((option) =>
+      option
+        .setName("whichidiot")
+        .setDescription("which idiot didn't know how to STFW?")
+        .setRequired(false)
+    ),
 
-	async execute(interaction) {
-		const searchstr: string =
-			interaction.options.getString("searchstring")!;
+  async execute(interaction) {
+    const searchstr: string = interaction.options.getString("searchstring")!;
 
-		// the bruh mode
-		if (interaction.options.getBoolean("bruhmode")) {
-			const embed = MGEmbed()
-				.setTitle(`${searchstr}?`)
-				.setDescription("[Find ye answer](https://www.google.com)");
+    // the bruh mode
+    if (interaction.options.getBoolean("bruhmode")) {
+      const embed = MGEmbed()
+        .setTitle(`${searchstr}?`)
+        .setDescription("[Find ye answer](https://www.google.com)");
 
-			await interaction.reply({ embeds: [embed] });
-		}
+      await interaction.reply({ embeds: [embed] });
+    }
 
-		if (searchstr.length > 128) {
-			await interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Error)
-						.setTitle("Search string too long...")
-						.setDescription(
-							"search string should be less than or equal to 128 chars"
-						),
-				],
-				ephemeral: true,
-			});
-			return;
-		}
+    if (searchstr.length > 128) {
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle("Search string too long...")
+            .setDescription(
+              "search string should be less than or equal to 128 chars"
+            ),
+        ],
+        ephemeral: true,
+      });
+      return;
+    }
 
-		const idiot = interaction.options.getUser("whichidiot");
-		const prefixstr = idiot ? `<@${idiot.id}>, [f` : "[F";
+    const idiot = interaction.options.getUser("whichidiot");
+    const prefixstr = idiot ? `<@${idiot.id}>, [f` : "[F";
 
-		await interaction.reply({
-			embeds: [
-				MGEmbed(MGStatus.Info)
-					.setTitle(`${searchstr}?`)
-					.setDescription(
-						`${prefixstr}ind ye answer](https://google.com/search?q=` +
-							`${encodeURI(searchstr)}).`
-					),
-			],
-		});
-	},
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Info)
+          .setTitle(`${searchstr}?`)
+          .setDescription(
+            `${prefixstr}ind ye answer](https://google.com/search?q=` +
+              `${encodeURI(searchstr)}).`
+          ),
+      ],
+    });
+  },
 };
 
 export default lmgtfy;

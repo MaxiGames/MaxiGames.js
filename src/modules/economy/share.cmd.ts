@@ -27,150 +27,148 @@ import withChecks from "../../lib/checks";
 import commandLog from "../../lib/comamndlog";
 
 const gamble: MGCommand = withChecks([cooldownTest(10)], {
-	data: new SlashCommandBuilder()
-		.setName("share")
-		.setDescription(
-			"Be kind! Share your money with another member of the server. " +
-				"Remember, sharing is caring :D"
-		)
-		.addUserOption((option) =>
-			option
-				.setName("user")
-				.setDescription("Who do you want to share your money to?")
-				.setRequired(true)
-		)
-		.addIntegerOption((option) =>
-			option
-				.setName("amount")
-				.setDescription("How much money are you going to share?")
-				.setRequired(true)
-		),
+  data: new SlashCommandBuilder()
+    .setName("share")
+    .setDescription(
+      "Be kind! Share your money with another member of the server. " +
+        "Remember, sharing is caring :D"
+    )
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("Who do you want to share your money to?")
+        .setRequired(true)
+    )
+    .addIntegerOption((option) =>
+      option
+        .setName("amount")
+        .setDescription("How much money are you going to share?")
+        .setRequired(true)
+    ),
 
-	async execute(interaction) {
-		const amt = interaction.options.getInteger("amount");
-		const usr = interaction.options.getUser("user");
+  async execute(interaction) {
+    const amt = interaction.options.getInteger("amount");
+    const usr = interaction.options.getUser("user");
 
-		if (amt === null || usr === null) {
-			return;
-		}
+    if (amt === null || usr === null) {
+      return;
+    }
 
-		if (usr.bot) {
-			commandLog(
-				"share",
-				`${interaction.user.id}`,
-				`Tried to share money to bots`
-			);
-			await interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Error)
-						.setTitle("You can't share money to bots!")
-						.setDescription(
-							"What are you, a bot? Only a bot shares money to bots smh..."
-						),
-				],
-			});
-		}
+    if (usr.bot) {
+      commandLog(
+        "share",
+        `${interaction.user.id}`,
+        `Tried to share money to bots`
+      );
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle("You can't share money to bots!")
+            .setDescription(
+              "What are you, a bot? Only a bot shares money to bots smh..."
+            ),
+        ],
+      });
+    }
 
-		const data = await MGFirebase.getData(`user/${interaction.user.id}`);
-		if (data === undefined) {
-			return;
-		}
+    const data = await MGFirebase.getData(`user/${interaction.user.id}`);
+    if (data === undefined) {
+      return;
+    }
 
-		if (amt <= 0) {
-			const deduct = Math.ceil(Math.random() * 5);
-			data["money"] -= deduct;
-			await interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Error)
-						.setTitle("Stop trying to trick the system, you fool!")
-						.setDescription("No negative numbers.")
-						.addField("Deducted money:", `${deduct}`),
-				],
-			});
-			commandLog(
-				"share",
-				`${interaction.user.id}`,
-				`Tried to share negative numbers`
-			);
-			MGFirebase.setData(`user/${interaction.user.id}`, data);
-			return;
-		}
+    if (amt <= 0) {
+      const deduct = Math.ceil(Math.random() * 5);
+      data["money"] -= deduct;
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle("Stop trying to trick the system, you fool!")
+            .setDescription("No negative numbers.")
+            .addField("Deducted money:", `${deduct}`),
+        ],
+      });
+      commandLog(
+        "share",
+        `${interaction.user.id}`,
+        `Tried to share negative numbers`
+      );
+      MGFirebase.setData(`user/${interaction.user.id}`, data);
+      return;
+    }
 
-		if (data["money"] < amt) {
-			await interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Error)
-						.setTitle("Not enough money!!")
-						.addFields(
-							{ name: "Balance", value: `${data["money"]}` },
-							{ name: "Amount required:", value: `${amt}` }
-						),
-				],
-			});
-			commandLog(
-				"share",
-				`${interaction.user.id}`,
-				`Not enough money, wanted: ${amt}, balance: ${data["money"]}`
-			);
-			return;
-		}
-		// entered user is the same as the command user
-		if (usr.id === interaction.user.id) {
-			await interaction.reply({
-				embeds: [
-					MGEmbed(MGStatus.Error)
-						.setTitle("Cannot share to yourself >:(!")
-						.setDescription(
-							"Stop trying to exploit the system!!!!"
-						),
-				],
-			});
-			commandLog(
-				"share",
-				`${interaction.user.id}`,
-				`Tried to share money to themselves`
-			);
-			return;
-		}
+    if (data["money"] < amt) {
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle("Not enough money!!")
+            .addFields(
+              { name: "Balance", value: `${data["money"]}` },
+              { name: "Amount required:", value: `${amt}` }
+            ),
+        ],
+      });
+      commandLog(
+        "share",
+        `${interaction.user.id}`,
+        `Not enough money, wanted: ${amt}, balance: ${data["money"]}`
+      );
+      return;
+    }
+    // entered user is the same as the command user
+    if (usr.id === interaction.user.id) {
+      await interaction.reply({
+        embeds: [
+          MGEmbed(MGStatus.Error)
+            .setTitle("Cannot share to yourself >:(!")
+            .setDescription("Stop trying to exploit the system!!!!"),
+        ],
+      });
+      commandLog(
+        "share",
+        `${interaction.user.id}`,
+        `Tried to share money to themselves`
+      );
+      return;
+    }
 
-		const otherUserData = await MGFirebase.getData(`user/${usr.id}`);
-		if (otherUserData === undefined) {
-			return;
-		}
+    const otherUserData = await MGFirebase.getData(`user/${usr.id}`);
+    if (otherUserData === undefined) {
+      return;
+    }
 
-		data["money"] -= amt;
-		otherUserData["money"] += amt;
-		MGFirebase.setData(`user/${usr.id}`, otherUserData);
-		MGFirebase.setData(`user/${interaction.user.id}`, data);
+    data["money"] -= amt;
+    otherUserData["money"] += amt;
+    MGFirebase.setData(`user/${usr.id}`, otherUserData);
+    MGFirebase.setData(`user/${interaction.user.id}`, data);
 
-		await interaction.reply({
-			embeds: [
-				MGEmbed(MGStatus.Success)
-					.setTitle("Success!")
-					.setDescription(
-						`Thanks for the donation, I'm sure ${usr.username} will appreciate it!`
-					)
-					.addFields(
-						{ name: "Shared:", value: `${amt}`, inline: false },
-						{
-							name: "Your balance:",
-							value: `${data["money"]}`,
-							inline: false,
-						},
-						{
-							name: `${usr.username}'s' balance`,
-							value: `${otherUserData["money"]}`,
-							inline: false,
-						}
-					),
-			],
-		});
-		commandLog(
-			"share",
-			`${interaction.user.id}`,
-			`Tried to share money to bots`
-		);
-	},
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Success)
+          .setTitle("Success!")
+          .setDescription(
+            `Thanks for the donation, I'm sure ${usr.username} will appreciate it!`
+          )
+          .addFields(
+            { name: "Shared:", value: `${amt}`, inline: false },
+            {
+              name: "Your balance:",
+              value: `${data["money"]}`,
+              inline: false,
+            },
+            {
+              name: `${usr.username}'s' balance`,
+              value: `${otherUserData["money"]}`,
+              inline: false,
+            }
+          ),
+      ],
+    });
+    commandLog(
+      "share",
+      `${interaction.user.id}`,
+      `Tried to share money to bots`
+    );
+  },
 });
 
 export default gamble;

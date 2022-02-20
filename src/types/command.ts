@@ -19,22 +19,22 @@
 import type { CommandInteraction, Interaction } from "discord.js";
 
 import type {
-	SlashCommandBuilder,
-	SlashCommandSubcommandsOnlyBuilder,
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
 
 interface MGCommand {
-	data: Partial<SlashCommandBuilder> | SlashCommandSubcommandsOnlyBuilder;
-	execute(interaction: CommandInteraction): Promise<void>;
+  data: Partial<SlashCommandBuilder> | SlashCommandSubcommandsOnlyBuilder;
+  execute(interaction: CommandInteraction): Promise<void>;
 }
 
 // A container for holding together (ostensibly) related events and commands.
 interface MGModule {
-	command: MGCommand;
-	events: {
-		name: string;
-		execute(interaction: Interaction): Promise<void>;
-	}[];
+  command: MGCommand;
+  events: {
+    name: string;
+    execute(interaction: Interaction): Promise<void>;
+  }[];
 }
 
 export { MGCommand, MGModule };

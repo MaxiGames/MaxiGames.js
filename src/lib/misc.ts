@@ -22,12 +22,12 @@
  */
 
 import {
-	User,
-	Channel,
-	GuildMember,
-	Message,
-	MessageReaction,
-	Partialize,
+  User,
+  Channel,
+  GuildMember,
+  Message,
+  MessageReaction,
+  Partialize,
 } from "discord.js";
 import moan from "./moan";
 import MGS from "./statuses";
@@ -36,31 +36,31 @@ import MGS from "./statuses";
 
 // Should rewrite this monster once TS _finally_ gets HKTs...
 type _p =
-	| Partialize<User>
-	| Partialize<Channel>
-	| Partialize<GuildMember>
-	| Partialize<Message>
-	| Partialize<MessageReaction>
-	| User
-	| Channel
-	| GuildMember
-	| Message
-	| MessageReaction;
+  | Partialize<User>
+  | Partialize<Channel>
+  | Partialize<GuildMember>
+  | Partialize<Message>
+  | Partialize<MessageReaction>
+  | User
+  | Channel
+  | GuildMember
+  | Message
+  | MessageReaction;
 
 async function partial_res<T extends _p>(obj: T): Promise<T | undefined> {
-	if (obj.partial) {
-		try {
-			return (await obj.fetch()) as T;
-		} catch {
-			moan(
-				MGS.Warn,
-				`Failed to fetch full structure from partial for ${obj.id}.`
-			);
-			return undefined;
-		}
-	} else {
-		return obj;
-	}
+  if (obj.partial) {
+    try {
+      return (await obj.fetch()) as T;
+    } catch {
+      moan(
+        MGS.Warn,
+        `Failed to fetch full structure from partial for ${obj.id}.`
+      );
+      return undefined;
+    }
+  } else {
+    return obj;
+  }
 }
 
 export { partial_res };

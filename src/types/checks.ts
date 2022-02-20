@@ -20,16 +20,10 @@ import type { CommandInteraction } from "discord.js";
 import type { MGCommand } from "./command";
 
 export default interface MGCmdTest {
-	check: (
-		command: MGCommand,
-		interaction: CommandInteraction
-	) => Promise<boolean>;
-	succ: (
-		command: MGCommand,
-		interaction: CommandInteraction
-	) => Promise<void>;
-	fail: (
-		command: MGCommand,
-		interaction: CommandInteraction
-	) => Promise<void>;
+  check: (
+    command: MGCommand,
+    interaction: CommandInteraction
+  ) => Promise<boolean>;
+  succ: (command: MGCommand, interaction: CommandInteraction) => Promise<void>;
+  fail: (command: MGCommand, interaction: CommandInteraction) => Promise<void>;
 }

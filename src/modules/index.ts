@@ -33,17 +33,17 @@ const events: MGEvent[] = [];
  */
 
 const moddir: string[] = fs
-	.readdirSync("./dist/src/modules")
-	.map((file: string) => path.join("./dist/src/modules", file))
-	.filter((file: string) => fs.lstatSync(file).isDirectory());
+  .readdirSync("./dist/src/modules")
+  .map((file: string) => path.join("./dist/src/modules", file))
+  .filter((file: string) => fs.lstatSync(file).isDirectory());
 
 function grabext(listing: string[], ext: string): string[][] {
-	return listing.map((dir: string) =>
-		fs
-			.readdirSync(dir)
-			.filter((file: string) => file.endsWith(ext))
-			.map((file: string) => path.join(dir, file))
-	);
+  return listing.map((dir: string) =>
+    fs
+      .readdirSync(dir)
+      .filter((file: string) => file.endsWith(ext))
+      .map((file: string) => path.join(dir, file))
+  );
 }
 
 const modfiles: string[][] = grabext(moddir, ".mod.js");
@@ -51,29 +51,29 @@ const cmdfiles: string[][] = grabext(moddir, ".cmd.js");
 const evtfiles: string[][] = grabext(moddir, ".evt.js");
 
 for (const filecol of modfiles) {
-	for (const name of filecol) {
-		const mod = require(`../../../${name}`); // eslint-disable-line @typescript-eslint/no-var-requires
-		commands.set(mod.default.command.data.name, mod.default.command);
-		for (const e of mod.default.events) {
-			events.push(e);
-		}
-	}
+  for (const name of filecol) {
+    const mod = require(`../../../${name}`); // eslint-disable-line @typescript-eslint/no-var-requires
+    commands.set(mod.default.command.data.name, mod.default.command);
+    for (const e of mod.default.events) {
+      events.push(e);
+    }
+  }
 }
 
 for (const filecol of cmdfiles) {
-	for (const name of filecol) {
-		const cmd = require(`../../../${name}`); // eslint-disable-line @typescript-eslint/no-var-requires
-		commands.set(cmd.default.data.name, cmd.default);
-	}
+  for (const name of filecol) {
+    const cmd = require(`../../../${name}`); // eslint-disable-line @typescript-eslint/no-var-requires
+    commands.set(cmd.default.data.name, cmd.default);
+  }
 }
 
 for (const filecol of evtfiles) {
-	for (const name of filecol) {
-		const evt = require(`../../../${name}`); // eslint-disable-line @typescript-eslint/no-var-requires
-		for (const e of evt.default) {
-			events.push(e);
-		}
-	}
+  for (const name of filecol) {
+    const evt = require(`../../../${name}`); // eslint-disable-line @typescript-eslint/no-var-requires
+    for (const e of evt.default) {
+      events.push(e);
+    }
+  }
 }
 
 export { commands, events };

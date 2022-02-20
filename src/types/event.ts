@@ -19,7 +19,7 @@
 import type { Client } from "discord.js";
 
 export default interface MGEvent {
-	name: string;
-	once: boolean;
-	execute(...args: any): void;
+  name: string;
+  once: boolean;
+  execute(...args: any): void;
 }

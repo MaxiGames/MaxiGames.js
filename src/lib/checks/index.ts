@@ -21,49 +21,49 @@ import type { MGCommand } from "../../types/command";
 import type MGCmdTest from "../../types/checks";
 
 function tail<a>(l: a[]) {
-	// prettier-disable
-	if (l.length > 1) {
-		return l.slice(1);
-	} else {
-		return [];
-	}
+  // prettier-disable
+  if (l.length > 1) {
+    return l.slice(1);
+  } else {
+    return [];
+  }
 }
 
 export default function withChecks(
-	tests: MGCmdTest[],
-	command: MGCommand
+  tests: MGCmdTest[],
+  command: MGCommand
 ): MGCommand {
-	const ret: MGCommand = {
-		data: command.data,
-		async execute(interaction: CommandInteraction) {
-			await chain(command, interaction, tests, command.execute);
-		},
-	};
+  const ret: MGCommand = {
+    data: command.data,
+    async execute(interaction: CommandInteraction) {
+      await chain(command, interaction, tests, command.execute);
+    },
+  };
 
-	return ret;
+  return ret;
 }
 
 async function chain(
-	command: MGCommand,
-	interaction: CommandInteraction,
-	tests: MGCmdTest[],
-	goal: (interaction: CommandInteraction) => Promise<void>
+  command: MGCommand,
+  interaction: CommandInteraction,
+  tests: MGCmdTest[],
+  goal: (interaction: CommandInteraction) => Promise<void>
 ): Promise<boolean> {
-	async function iter(tests: MGCmdTest[]): Promise<boolean> {
-		if (tests.length === 0) {
-			// Finally passed all tests!
-			await goal(interaction);
-			return true;
-		}
+  async function iter(tests: MGCmdTest[]): Promise<boolean> {
+    if (tests.length === 0) {
+      // Finally passed all tests!
+      await goal(interaction);
+      return true;
+    }
 
-		if (await tests[0].check(command, interaction)) {
-			await tests[0].succ(command, interaction);
-			return await iter(tail(tests));
-		} else {
-			await tests[0].fail(command, interaction);
-			return false;
-		}
-	}
+    if (await tests[0].check(command, interaction)) {
+      await tests[0].succ(command, interaction);
+      return await iter(tail(tests));
+    } else {
+      await tests[0].fail(command, interaction);
+      return false;
+    }
+  }
 
-	return await iter(tests);
+  return await iter(tests);
 }

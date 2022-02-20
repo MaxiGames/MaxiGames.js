@@ -26,11 +26,11 @@ import configDev from "../../config-dev.json";
 import api from "../../api-token.json";
 
 export const config =
-	process.env.NODE_ENV == "production" ? configProd : configDev;
+  process.env.NODE_ENV == "production" ? configProd : configDev;
 
 export const firebaseConfig =
-	process.env.NODE_ENV == "production"
-		? "https://maxgmaes-39d8e-default-rtdb.firebaseio.com/"
-		: "https://maxigamesbeta-default-rtdb.firebaseio.com";
+  process.env.NODE_ENV == "production"
+    ? "https://maxgmaes-39d8e-default-rtdb.firebaseio.com/"
+    : "https://maxigamesbeta-default-rtdb.firebaseio.com";
 
 export const apiConfig = api;

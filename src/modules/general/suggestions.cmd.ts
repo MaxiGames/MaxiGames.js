@@ -27,94 +27,94 @@ import withChecks from "../../lib/checks";
 import cooldownTest from "../../lib/checks/cooldown";
 
 const suggestions: MGCommand = withChecks([cooldownTest(10)], {
-	data: new SlashCommandBuilder()
-		.setName("suggestion")
-		.setDescription("Suggest something for the bot!")
-		.addStringOption((option) =>
-			option
-				.setName("suggestion")
-				.setDescription("What suggestion do you want to give?")
-				.setRequired(true)
-		),
+  data: new SlashCommandBuilder()
+    .setName("suggestion")
+    .setDescription("Suggest something for the bot!")
+    .addStringOption((option) =>
+      option
+        .setName("suggestion")
+        .setDescription("What suggestion do you want to give?")
+        .setRequired(true)
+    ),
 
-	async execute(interaction) {
-		const suggestion = interaction.options.getString("suggestion")!;
-		const data = await MGFirebase.getData("admin/suggestions");
+  async execute(interaction) {
+    const suggestion = interaction.options.getString("suggestion")!;
+    const data = await MGFirebase.getData("admin/suggestions");
 
-		//check if its a repeated suggestion
-		for (const i in data) {
-			if (data[i]["suggestion"] === suggestions) {
-				await interaction.reply({
-					embeds: [
-						MGEmbed(MGStatus.Error)
-							.setTitle("That suggestion already exists!")
-							.setDescription(
-								"Check the open suggestions at https://discord.gg/hkkkTqhGAz!"
-							),
-					],
-				});
-				return;
-			}
-		}
+    //check if its a repeated suggestion
+    for (const i in data) {
+      if (data[i]["suggestion"] === suggestions) {
+        await interaction.reply({
+          embeds: [
+            MGEmbed(MGStatus.Error)
+              .setTitle("That suggestion already exists!")
+              .setDescription(
+                "Check the open suggestions at https://discord.gg/hkkkTqhGAz!"
+              ),
+          ],
+        });
+        return;
+      }
+    }
 
-		// send it to the MG server
-		const channel = interaction.client.guilds.cache
-			.get(
-				process.env.NODE_ENV === "production"
-					? "837522963389349909"
-					: "866939574419849216"
-			)
-			?.channels.cache.get(
-				process.env.NODE_ENV === "production"
-					? "897738840054317078"
-					: "873835031880163330"
-			) as ThreadChannel;
-		const message = await channel.send({
-			embeds: [
-				MGEmbed(MGStatus.Success)
-					.setTitle(
-						`**Suggestion** from ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id})`
-					)
-					.setThumbnail(
-						`${
-							interaction.user.avatarURL() ??
-							"https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
-						}`
-					)
-					.setDescription(suggestion),
-			],
-			components: [
-				new MessageActionRow().addComponents([
-					new MessageButton()
-						.setCustomId("Accept-suggestions")
-						.setLabel("Accept")
-						.setStyle("SUCCESS"),
-					new MessageButton()
-						.setCustomId("Reject-suggestions")
-						.setLabel("Reject")
-						.setStyle("DANGER"),
-				]),
-			],
-		});
-		const suggestion1: Suggestions = {
-			suggestion: suggestion,
-			status: "in-progress",
-			user: parseInt(interaction.user.id),
-		};
-		data[message.id] = suggestion1;
-		await interaction.reply({
-			embeds: [
-				MGEmbed(MGStatus.Success)
-					.setTitle("Submitted suggestion!")
-					.setDescription(
-						"Your suggestion has been submitted in the MaxiGames Official server: https://discord.gg/hkkkTqhGAz. You will be promptly notified once it has been reviewed! Thanks :D"
-					),
-			],
-		});
-		await MGFirebase.setData("admin/suggestions", data);
-		await message.react("⬆️");
-		await message.react("⬇️");
-	},
+    // send it to the MG server
+    const channel = interaction.client.guilds.cache
+      .get(
+        process.env.NODE_ENV === "production"
+          ? "837522963389349909"
+          : "866939574419849216"
+      )
+      ?.channels.cache.get(
+        process.env.NODE_ENV === "production"
+          ? "897738840054317078"
+          : "873835031880163330"
+      ) as ThreadChannel;
+    const message = await channel.send({
+      embeds: [
+        MGEmbed(MGStatus.Success)
+          .setTitle(
+            `**Suggestion** from ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id})`
+          )
+          .setThumbnail(
+            `${
+              interaction.user.avatarURL() ??
+              "https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
+            }`
+          )
+          .setDescription(suggestion),
+      ],
+      components: [
+        new MessageActionRow().addComponents([
+          new MessageButton()
+            .setCustomId("Accept-suggestions")
+            .setLabel("Accept")
+            .setStyle("SUCCESS"),
+          new MessageButton()
+            .setCustomId("Reject-suggestions")
+            .setLabel("Reject")
+            .setStyle("DANGER"),
+        ]),
+      ],
+    });
+    const suggestion1: Suggestions = {
+      suggestion: suggestion,
+      status: "in-progress",
+      user: parseInt(interaction.user.id),
+    };
+    data[message.id] = suggestion1;
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Success)
+          .setTitle("Submitted suggestion!")
+          .setDescription(
+            "Your suggestion has been submitted in the MaxiGames Official server: https://discord.gg/hkkkTqhGAz. You will be promptly notified once it has been reviewed! Thanks :D"
+          ),
+      ],
+    });
+    await MGFirebase.setData("admin/suggestions", data);
+    await message.react("⬆️");
+    await message.react("⬇️");
+  },
 });
 
 export default suggestions;

@@ -23,162 +23,158 @@ import { MessageReaction, TextChannel, User } from "discord.js";
 import { partial_res } from "../../lib/misc";
 
 const starboardwatch = [
-	{
-		name: "messageReactionAdd",
-		async execute(reaction: MessageReaction, user: User) {
-			const t = await partial_res(reaction);
-			if (t === undefined) {
-				return;
-			}
-			reaction = t;
+  {
+    name: "messageReactionAdd",
+    async execute(reaction: MessageReaction, user: User) {
+      const t = await partial_res(reaction);
+      if (t === undefined) {
+        return;
+      }
+      reaction = t;
 
-			/* Prepare all the data */
-			const guilddata = await MGFirebase.getData(
-				`guild/${reaction.message.guildId}`
-			);
-			const sbmsg = (await MGFirebase.justGetData(
-				`guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
-			)) || { stars: 0, rxnid: "" };
+      /* Prepare all the data */
+      const guilddata = await MGFirebase.getData(
+        `guild/${reaction.message.guildId}`
+      );
+      const sbmsg = (await MGFirebase.justGetData(
+        `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
+      )) || { stars: 0, rxnid: "" };
 
-			if (
-				guilddata === undefined ||
-				reaction.emoji.name !== "⭐" ||
-				guilddata["starboardChannel"] === 0
-			) {
-				return;
-			}
+      if (
+        guilddata === undefined ||
+        reaction.emoji.name !== "⭐" ||
+        guilddata["starboardChannel"] === 0
+      ) {
+        return;
+      }
 
-			sbmsg["stars"] += 1;
+      sbmsg["stars"] += 1;
 
-			if (reaction.count < guilddata["starboardChannel"]["thresh"]) {
-				await MGFirebase.setData(
-					`guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`,
-					sbmsg
-				);
-				return;
-			}
+      if (reaction.count < guilddata["starboardChannel"]["thresh"]) {
+        await MGFirebase.setData(
+          `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`,
+          sbmsg
+        );
+        return;
+      }
 
-			let content = reaction.message.content ?? "";
-			if (content.trim() !== "") {
-				// replace every newline with a newline and a "> "
-				content = "\n\n> " + content.replace(/\n/g, "\n> ");
-			}
+      let content = reaction.message.content ?? "";
+      if (content.trim() !== "") {
+        // replace every newline with a newline and a "> "
+        content = "\n\n> " + content.replace(/\n/g, "\n> ");
+      }
 
-			const embed = MGEmbed(MGStatus.Info)
-				.setTitle(`Starred ${reaction.count} times!`)
-				.setDescription(
-					`[Click to jump to message](${reaction.message.url})` +
-						content
-				)
-				.setFooter("React with ⭐ to star this message")
-				.setAuthor(
-					reaction.message.author!.username,
-					reaction.message.author!.avatarURL() ??
-						reaction.message.author!.defaultAvatarURL
-				);
-			reaction.message.attachments.each((a) => embed.setImage(a.url));
+      const embed = MGEmbed(MGStatus.Info)
+        .setTitle(`Starred ${reaction.count} times!`)
+        .setDescription(
+          `[Click to jump to message](${reaction.message.url})` + content
+        )
+        .setFooter("React with ⭐ to star this message")
+        .setAuthor(
+          reaction.message.author!.username,
+          reaction.message.author!.avatarURL() ??
+            reaction.message.author!.defaultAvatarURL
+        );
+      reaction.message.attachments.each((a) => embed.setImage(a.url));
 
-			const sbchan = (await reaction.client.channels.fetch(
-				guilddata["starboardChannel"].id
-			)) as TextChannel;
+      const sbchan = (await reaction.client.channels.fetch(
+        guilddata["starboardChannel"].id
+      )) as TextChannel;
 
-			try {
-				// update message if it has been sent before
-				await (
-					await sbchan.messages.fetch(sbmsg["rxnid"])
-				).edit({ embeds: [embed] });
-			} catch {
-				// if that failed, (re)send
-				const rxnsg = await sbchan.send({ embeds: [embed] });
-				sbmsg["rxnid"] = rxnsg.id;
-			}
+      try {
+        // update message if it has been sent before
+        await (
+          await sbchan.messages.fetch(sbmsg["rxnid"])
+        ).edit({ embeds: [embed] });
+      } catch {
+        // if that failed, (re)send
+        const rxnsg = await sbchan.send({ embeds: [embed] });
+        sbmsg["rxnid"] = rxnsg.id;
+      }
 
-			await MGFirebase.setData(
-				`guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`,
-				sbmsg
-			);
+      await MGFirebase.setData(
+        `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`,
+        sbmsg
+      );
 
-			return;
-		},
-	},
+      return;
+    },
+  },
 
-	{
-		name: "messageReactionRemove",
-		async execute(reaction: MessageReaction, user: User) {
-			const t = await partial_res(reaction);
-			if (t === undefined) {
-				return;
-			}
-			reaction = t;
+  {
+    name: "messageReactionRemove",
+    async execute(reaction: MessageReaction, user: User) {
+      const t = await partial_res(reaction);
+      if (t === undefined) {
+        return;
+      }
+      reaction = t;
 
-			/* Prepare all the data */
-			const guilddata = await MGFirebase.getData(
-				`guild/${reaction.message.guildId}`
-			);
-			const sbmsg = (await MGFirebase.justGetData(
-				`guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
-			)) || { stars: 0, rxnid: "" };
+      /* Prepare all the data */
+      const guilddata = await MGFirebase.getData(
+        `guild/${reaction.message.guildId}`
+      );
+      const sbmsg = (await MGFirebase.justGetData(
+        `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
+      )) || { stars: 0, rxnid: "" };
 
-			if (
-				guilddata === undefined ||
-				reaction.emoji.name !== "⭐" ||
-				guilddata["starboardChannel"] === 0
-			) {
-				return;
-			}
+      if (
+        guilddata === undefined ||
+        reaction.emoji.name !== "⭐" ||
+        guilddata["starboardChannel"] === 0
+      ) {
+        return;
+      }
 
-			sbmsg["stars"] -= 1;
+      sbmsg["stars"] -= 1;
 
-			let content = reaction.message.content ?? "";
-			if (content.trim() !== "") {
-				// replace every newline with a newline and a "> "
-				content = "\n\n> " + content.replace(/\n/g, "\n> ");
-			}
-			const embed = MGEmbed(MGStatus.Info)
-				.setTitle(`Starred ${reaction.count} times!`)
-				.setDescription(
-					`[Click to jump to message](${reaction.message.url})` +
-						content
-				)
-				.setFooter("React with ⭐ to star this message")
-				.setAuthor(
-					reaction.message.author!.username,
-					reaction.message.author!.avatarURL() ??
-						reaction.message.author!.defaultAvatarURL
-				);
-			reaction.message.attachments.each((a) => embed.setImage(a.url));
+      let content = reaction.message.content ?? "";
+      if (content.trim() !== "") {
+        // replace every newline with a newline and a "> "
+        content = "\n\n> " + content.replace(/\n/g, "\n> ");
+      }
+      const embed = MGEmbed(MGStatus.Info)
+        .setTitle(`Starred ${reaction.count} times!`)
+        .setDescription(
+          `[Click to jump to message](${reaction.message.url})` + content
+        )
+        .setFooter("React with ⭐ to star this message")
+        .setAuthor(
+          reaction.message.author!.username,
+          reaction.message.author!.avatarURL() ??
+            reaction.message.author!.defaultAvatarURL
+        );
+      reaction.message.attachments.each((a) => embed.setImage(a.url));
 
-			const sbchan = (await reaction.client.channels.fetch(
-				guilddata["starboardChannel"].id
-			)) as TextChannel;
+      const sbchan = (await reaction.client.channels.fetch(
+        guilddata["starboardChannel"].id
+      )) as TextChannel;
 
-			if (reaction.count < guilddata["starboardChannel"]["thresh"]) {
-				try {
-					await (
-						await sbchan.messages.fetch(sbmsg["rxnid"])
-					).delete();
-				} catch {}
-			} else {
-				try {
-					// update message if it has been sent before
-					await (
-						await sbchan.messages.fetch(sbmsg["rxnid"])
-					).edit({ embeds: [embed] });
-				} catch {
-					// if that failed, (re)send
-					const rxnsg = await sbchan.send({ embeds: [embed] });
-					sbmsg["rxnid"] = rxnsg.id;
-				}
-			}
+      if (reaction.count < guilddata["starboardChannel"]["thresh"]) {
+        try {
+          await (await sbchan.messages.fetch(sbmsg["rxnid"])).delete();
+        } catch {}
+      } else {
+        try {
+          // update message if it has been sent before
+          await (
+            await sbchan.messages.fetch(sbmsg["rxnid"])
+          ).edit({ embeds: [embed] });
+        } catch {
+          // if that failed, (re)send
+          const rxnsg = await sbchan.send({ embeds: [embed] });
+          sbmsg["rxnid"] = rxnsg.id;
+        }
+      }
 
-			await MGFirebase.setData(
-				`guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`,
-				sbmsg
-			);
+      await MGFirebase.setData(
+        `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`,
+        sbmsg
+      );
 
-			return;
-		},
-	},
+      return;
+    },
+  },
 ];
 
 export default starboardwatch;

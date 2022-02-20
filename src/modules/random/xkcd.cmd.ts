@@ -23,65 +23,60 @@ import MGStatus from "../../lib/statuses";
 import https from "https";
 
 const xkcd: MGCommand = {
-	data: new SlashCommandBuilder()
-		.setName("xkcd")
-		.setDescription("Fetch a random xkcd comic or a specific number")
-		.addIntegerOption((option) =>
-			option
-				.setName("number")
-				.setDescription("comic #")
-				.setRequired(false)
-		),
-	async execute(interaction) {
-		const comicno = interaction.options.getInteger("number") ?? 221;
-		const embed = MGEmbed(MGStatus.Info);
+  data: new SlashCommandBuilder()
+    .setName("xkcd")
+    .setDescription("Fetch a random xkcd comic or a specific number")
+    .addIntegerOption((option) =>
+      option.setName("number").setDescription("comic #").setRequired(false)
+    ),
+  async execute(interaction) {
+    const comicno = interaction.options.getInteger("number") ?? 221;
+    const embed = MGEmbed(MGStatus.Info);
 
-		if (!interaction.options.getInteger("number")) {
-			embed.title = "Random xkcd";
-		} else {
-			embed.title = `xkcd #${comicno}`;
-		}
+    if (!interaction.options.getInteger("number")) {
+      embed.title = "Random xkcd";
+    } else {
+      embed.title = `xkcd #${comicno}`;
+    }
 
-		let xkcdjson_str = "";
-		https
-			.get(`https://xkcd.com/${comicno}/info.0.json`, (response) => {
-				response.on("data", (chunk) => (xkcdjson_str += chunk));
-				response.on("end", async () => {
-					try {
-						const xkcdjson = JSON.parse(xkcdjson_str);
-						embed.title += `: ${xkcdjson.safe_title}`;
-						embed.description = xkcdjson.alt;
-						embed.image = { url: xkcdjson.img };
-						embed.footer = {
-							text: `Comic released on ${xkcdjson.month}/${xkcdjson.day}/${xkcdjson.year}.`,
-						};
+    let xkcdjson_str = "";
+    https
+      .get(`https://xkcd.com/${comicno}/info.0.json`, (response) => {
+        response.on("data", (chunk) => (xkcdjson_str += chunk));
+        response.on("end", async () => {
+          try {
+            const xkcdjson = JSON.parse(xkcdjson_str);
+            embed.title += `: ${xkcdjson.safe_title}`;
+            embed.description = xkcdjson.alt;
+            embed.image = { url: xkcdjson.img };
+            embed.footer = {
+              text: `Comic released on ${xkcdjson.month}/${xkcdjson.day}/${xkcdjson.year}.`,
+            };
 
-						await interaction.reply({ embeds: [embed] });
-					} catch {
-						await interaction.reply(
-							"Oops, something went wrong..."
-						);
-					}
-				});
-			})
-			.on(
-				"error",
-				(_) =>
-					(xkcdjson_str = JSON.stringify({
-						month: "3",
-						num: "0",
-						link: "",
-						year: "1984",
-						news: "",
-						safe_title: "Oopsies",
-						transcript: "",
-						alt: "Fetch failed to bad comic number/network error.",
-						img: "",
-						title: "",
-						day: "14",
-					}))
-			);
-	},
+            await interaction.reply({ embeds: [embed] });
+          } catch {
+            await interaction.reply("Oops, something went wrong...");
+          }
+        });
+      })
+      .on(
+        "error",
+        (_) =>
+          (xkcdjson_str = JSON.stringify({
+            month: "3",
+            num: "0",
+            link: "",
+            year: "1984",
+            news: "",
+            safe_title: "Oopsies",
+            transcript: "",
+            alt: "Fetch failed to bad comic number/network error.",
+            img: "",
+            title: "",
+            day: "14",
+          }))
+      );
+  },
 };
 
 export default xkcd;

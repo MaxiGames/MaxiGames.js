@@ -29,42 +29,42 @@ import { MGFirebase } from "../../lib/firebase";
 import commandLog from "../../lib/comamndlog";
 
 const balance: MGCommand = {
-	data: new SlashCommandBuilder()
-		.setName("balance")
-		.setDescription("Check your balance! Do you have money to spare? :D")
-		.addUserOption((option) =>
-			option
-				.setName("user")
-				.setDescription(
-					"You can use this option to check another users' balance."
-				)
-				.setRequired(false)
-		),
+  data: new SlashCommandBuilder()
+    .setName("balance")
+    .setDescription("Check your balance! Do you have money to spare? :D")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription(
+          "You can use this option to check another users' balance."
+        )
+        .setRequired(false)
+    ),
 
-	async execute(interaction) {
-		let user = interaction.options.getUser("user");
-		if (user === null) {
-			user = interaction.user;
-		}
-		const data = await MGFirebase.getData(`user/${user.id}`);
+  async execute(interaction) {
+    let user = interaction.options.getUser("user");
+    if (user === null) {
+      user = interaction.user;
+    }
+    const data = await MGFirebase.getData(`user/${user.id}`);
 
-		if (data === undefined) {
-			return;
-		}
+    if (data === undefined) {
+      return;
+    }
 
-		const embed = MGEmbed(MGStatus.Info)
-			.setTitle(`${user.username} #${user.discriminator}'s balance!`)
-			.setDescription("MaxiCoins!")
-			.addFields({ name: "Balance", value: `${data.money} MaxiCoins` });
+    const embed = MGEmbed(MGStatus.Info)
+      .setTitle(`${user.username} #${user.discriminator}'s balance!`)
+      .setDescription("MaxiCoins!")
+      .addFields({ name: "Balance", value: `${data.money} MaxiCoins` });
 
-		commandLog(
-			"balance",
-			`${interaction.user.id}`,
-			`User checked their balance: ${data.money} MaxiCoins`
-		);
+    commandLog(
+      "balance",
+      `${interaction.user.id}`,
+      `User checked their balance: ${data.money} MaxiCoins`
+    );
 
-		await interaction.reply({ embeds: [embed] });
-	},
+    await interaction.reply({ embeds: [embed] });
+  },
 };
 
 export default balance;

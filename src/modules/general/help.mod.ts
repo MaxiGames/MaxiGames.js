@@ -18,12 +18,12 @@
 
 import { SlashCommandBuilder } from "@discordjs/builders";
 import {
-	CommandInteraction,
-	Interaction,
-	MessageActionRow,
-	MessageButton,
-	MessageSelectMenu,
-	SelectMenuInteraction,
+  CommandInteraction,
+  Interaction,
+  MessageActionRow,
+  MessageButton,
+  MessageSelectMenu,
+  SelectMenuInteraction,
 } from "discord.js";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
@@ -37,159 +37,154 @@ const moddirs = getDirectories("./dist/src/modules");
 const options: { label: string; description: string; value: string }[] = [];
 
 const help: MGModule = {
-	command: {
-		data: new SlashCommandBuilder()
-			.setName("help")
-			.setDescription("Find out the details of certain commands"),
+  command: {
+    data: new SlashCommandBuilder()
+      .setName("help")
+      .setDescription("Find out the details of certain commands"),
 
-		async execute(interaction) {
-			await interaction.reply(await mainHelp(interaction, "main"));
-		},
-	},
+    async execute(interaction) {
+      await interaction.reply(await mainHelp(interaction, "main"));
+    },
+  },
 
-	events: [
-		{
-			name: "interactionCreate",
-			async execute(interaction: Interaction) {
-				if (!interaction.isSelectMenu()) {
-					return;
-				}
+  events: [
+    {
+      name: "interactionCreate",
+      async execute(interaction: Interaction) {
+        if (!interaction.isSelectMenu()) {
+          return;
+        }
 
-				if (interaction.customId === "help-main") {
-					const content = await mainHelp(
-						interaction,
-						interaction.values[0]
-					);
+        if (interaction.customId === "help-main") {
+          const content = await mainHelp(interaction, interaction.values[0]);
 
-					await interaction.update(content);
-				}
-			},
-		},
-	],
+          await interaction.update(content);
+        }
+      },
+    },
+  ],
 };
 
 // forming the select menus
 for (const dir of moddirs) {
-	let description: string | null = null;
-	fs.readFile(`./src/modules/${dir}/description.txt`, function (error, data) {
-		if ((error === undefined || error === null) && data !== undefined) {
-			description = data.toString();
-		}
-		options.push({
-			label: dir,
-			description: `${
-				description === null ? "No description" : description
-			}`,
-			value: dir,
-		});
-	});
+  let description: string | null = null;
+  fs.readFile(`./src/modules/${dir}/description.txt`, function (error, data) {
+    if ((error === undefined || error === null) && data !== undefined) {
+      description = data.toString();
+    }
+    options.push({
+      label: dir,
+      description: `${description === null ? "No description" : description}`,
+      value: dir,
+    });
+  });
 }
 
 function getDirectories(path: string) {
-	return fs.readdirSync(path).filter(function (file) {
-		return fs.statSync(path + "/" + file).isDirectory();
-	});
+  return fs.readdirSync(path).filter(function (file) {
+    return fs.statSync(path + "/" + file).isDirectory();
+  });
 }
 
 function getFiles(path: string) {
-	return fs.readdirSync(path).filter(function (file) {
-		return fs.statSync(path + "/" + file).isFile();
-	});
+  return fs.readdirSync(path).filter(function (file) {
+    return fs.statSync(path + "/" + file).isFile();
+  });
 }
 
 export function getLinks() {
-	const inviteButton = new MessageButton()
-		.setLabel("Invite the bot!")
-		.setStyle("LINK")
-		.setURL(
-			"https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=261188091120&scope=bot%20applications.commands"
-		);
-	const topGGVote = new MessageButton()
-		.setLabel("Vote (Top.gg)")
-		.setStyle("LINK")
-		.setURL("https://tinyurl.com/votemaxigamesTopgg");
-	const discordsVote = new MessageButton()
-		.setLabel("Vote (discords.com)")
-		.setStyle("LINK")
-		.setURL("https://tinyurl.com/votemaxigamesDiscordcom");
-	const supportServer = new MessageButton()
-		.setLabel("Support Server")
-		.setStyle("LINK")
-		.setURL("https://discord.gg/BNm87Cvdx3");
-	return [inviteButton, topGGVote, discordsVote, supportServer];
+  const inviteButton = new MessageButton()
+    .setLabel("Invite the bot!")
+    .setStyle("LINK")
+    .setURL(
+      "https://discord.com/api/oauth2/authorize?client_id=863419048041381920&permissions=261188091120&scope=bot%20applications.commands"
+    );
+  const topGGVote = new MessageButton()
+    .setLabel("Vote (Top.gg)")
+    .setStyle("LINK")
+    .setURL("https://tinyurl.com/votemaxigamesTopgg");
+  const discordsVote = new MessageButton()
+    .setLabel("Vote (discords.com)")
+    .setStyle("LINK")
+    .setURL("https://tinyurl.com/votemaxigamesDiscordcom");
+  const supportServer = new MessageButton()
+    .setLabel("Support Server")
+    .setStyle("LINK")
+    .setURL("https://discord.gg/BNm87Cvdx3");
+  return [inviteButton, topGGVote, discordsVote, supportServer];
 }
 
 export async function mainHelp(
-	interaction: SelectMenuInteraction | CommandInteraction,
-	page: string
+  interaction: SelectMenuInteraction | CommandInteraction,
+  page: string
 ) {
-	const row = new MessageActionRow().addComponents(
-		new MessageSelectMenu()
-			.setCustomId("help-main")
-			.setPlaceholder(page === "main" ? "Initial landing page" : page)
-			.addOptions(options)
-	);
+  const row = new MessageActionRow().addComponents(
+    new MessageSelectMenu()
+      .setCustomId("help-main")
+      .setPlaceholder(page === "main" ? "Initial landing page" : page)
+      .addOptions(options)
+  );
 
-	//making the buttons
-	const [inviteButton, topGGVote, discordsVote, supportServer] = getLinks();
+  //making the buttons
+  const [inviteButton, topGGVote, discordsVote, supportServer] = getLinks();
 
-	const row2 = new MessageActionRow().addComponents(
-		inviteButton,
-		topGGVote,
-		discordsVote,
-		supportServer
-	);
+  const row2 = new MessageActionRow().addComponents(
+    inviteButton,
+    topGGVote,
+    discordsVote,
+    supportServer
+  );
 
-	if (page === "main") {
-		return {
-			embeds: [
-				MGEmbed(MGStatus.Success)
-					.setTitle("Help!")
-					.setDescription(
-						"Hallo! Thank you for using MaxiGames, featuring tons of fun and great MiniGames! This bot is built by <@712942935129456671>, <@682592012163481616>, <@676748194956181505>, <@697747732772814921> and <@782247763542016010>."
-					)
-					.setThumbnail(
-						"https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
-					),
-			],
-			components: [row, row2],
-		};
-	}
+  if (page === "main") {
+    return {
+      embeds: [
+        MGEmbed(MGStatus.Success)
+          .setTitle("Help!")
+          .setDescription(
+            "Hallo! Thank you for using MaxiGames, featuring tons of fun and great MiniGames! This bot is built by <@712942935129456671>, <@682592012163481616>, <@676748194956181505>, <@697747732772814921> and <@782247763542016010>."
+          )
+          .setThumbnail(
+            "https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
+          ),
+      ],
+      components: [row, row2],
+    };
+  }
 
-	// if its a category page, find the commands
-	const cmds = getFiles(`./dist/src/commands/${lowerCase(page)}/`);
-	const fields: { name: string; value: string; inline: boolean }[] = [];
+  // if its a category page, find the commands
+  const cmds = getFiles(`./dist/src/commands/${lowerCase(page)}/`);
+  const fields: { name: string; value: string; inline: boolean }[] = [];
 
-	let counter = 1;
-	for (const i of cmds) {
-		const curDescription = require(`../${lowerCase(page)}/${i}`);
-		fields.push({
-			name: `${counter}. ${startCase(i.replace(".js", ""))}`,
-			value: `${
-				curDescription.default.data.description === undefined
-					? "No description."
-					: curDescription.default.data.description
-			}`,
-			inline: false,
-		});
-		counter++;
-	}
+  let counter = 1;
+  for (const i of cmds) {
+    const curDescription = require(`../${lowerCase(page)}/${i}`);
+    fields.push({
+      name: `${counter}. ${startCase(i.replace(".js", ""))}`,
+      value: `${
+        curDescription.default.data.description === undefined
+          ? "No description."
+          : curDescription.default.data.description
+      }`,
+      inline: false,
+    });
+    counter++;
+  }
 
-	const version = await MGFirebase.getData("version");
+  const version = await MGFirebase.getData("version");
 
-	return {
-		embeds: [
-			MGEmbed(MGStatus.Success)
-				.setTitle("MaxiGames Help!")
-				.setDescription(`Category: **${startCase(page)}**`)
-				.addFields(fields)
-				.setFooter(`Version: ${version}. Built with discord.js :)`)
-				.setThumbnail(
-					"https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
-				),
-		],
-		components: [row, row2],
-	};
+  return {
+    embeds: [
+      MGEmbed(MGStatus.Success)
+        .setTitle("MaxiGames Help!")
+        .setDescription(`Category: **${startCase(page)}**`)
+        .addFields(fields)
+        .setFooter(`Version: ${version}. Built with discord.js :)`)
+        .setThumbnail(
+          "https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
+        ),
+    ],
+    components: [row, row2],
+  };
 }
 
 export default help;

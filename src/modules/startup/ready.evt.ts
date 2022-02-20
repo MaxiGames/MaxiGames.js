@@ -20,17 +20,17 @@ import moan from "../../lib/moan";
 import MGS from "../../lib/statuses";
 
 const ready = [
-	{
-		name: "ready",
-		once: true,
-		async execute(client: any) {
-			if (client.user === null) {
-				return;
-			}
-			moan(MGS.Success, "Ready.");
-			moan(MGS.Info, `Logged in as ${client.user.tag}.`);
-		},
-	},
+  {
+    name: "ready",
+    once: true,
+    async execute(client: any) {
+      if (client.user === null) {
+        return;
+      }
+      moan(MGS.Success, "Ready.");
+      moan(MGS.Info, `Logged in as ${client.user.tag}.`);
+    },
+  },
 ];
 
 export default ready;
