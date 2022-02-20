@@ -1,59 +1,59 @@
 {
-	"name": "maxigames",
-	"version": "1.0.0",
-	"description": "Your one and only discord bot that includes all forms of minigames you will ever want. Have a suggestion for another? Open an issue!",
-	"main": "src/index.js",
-	"scripts": {
-		"prepare": "husky install",
-		"init": "node --experimental-top-level-await dist/src/index.js",
-		"build": "rm -rf dist; tsc;",
-		"test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
-		"check-commands": "node .scripts/check-commands.js",
-		"deploy-commands": "node .scripts/deploy-commands.js",
-		"delete-commands": "node .scripts/delete-commands.js",
-		"deploy": "./.scripts/heroku-deploy.sh",
-		"start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
-		"start-prod": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-prod.json\" npm run init",
-		"buildStart": "npm run build; npm run deploy-commands; npm run start;"
-	},
-	"engines": {
-		"node": ">=17.x"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/MaxiGames/MaxiGames.js.git"
-	},
-	"author": "",
-	"license": "AGPL-3.0-or-later",
-	"bugs": {
-		"url": "https://github.com/MaxiGames/MaxiGames.js/issues"
-	},
-	"homepage": "https://github.com/MaxiGames/MaxiGames.js#readme",
-	"devDependencies": {
-		"@types/mocha": "^9.0.0",
-		"@typescript-eslint/eslint-plugin": "^5.0.0",
-		"@typescript-eslint/parser": "^5.0.0",
-		"eslint": "^8.0.1",
-		"eslint-config-prettier": "^8.3.0",
-		"husky": "^7.0.0",
-		"lint-staged": "^11.2.3",
-		"mocha": "^9.1.1",
-		"ts-node": "^10.2.1"
-	},
-	"dependencies": {
-		"@discordjs/builders": "^0.6.0",
-		"@discordjs/rest": "^0.1.0-canary.0",
-		"@types/lodash": "^4.14.172",
-		"@types/node": "^16.7.13",
-		"discord-api-types": "^0.23.0",
-		"discord.js": "^13.1.0",
-		"firebase-admin": "^10.0.2",
-		"got-cjs": "^12.0.1",
-		"lodash": "^4.17.21",
-		"top.gg-core": "^1.0.0-b",
-		"typescript": "^4.4.2"
-	},
-	"lint-staged": {
-		"*.ts": "npx prettier --write ."
-	}
+  "name": "maxigames",
+  "version": "1.0.0",
+  "description": "Your one and only discord bot that includes all forms of minigames you will ever want. Have a suggestion for another? Open an issue!",
+  "main": "src/index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "init": "node --experimental-top-level-await dist/src/index.js",
+    "build": "rm -rf dist; tsc;",
+    "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
+    "check-commands": "node .scripts/check-commands.js",
+    "deploy-commands": "node .scripts/deploy-commands.js",
+    "delete-commands": "node .scripts/delete-commands.js",
+    "deploy": "./.scripts/heroku-deploy.sh",
+    "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
+    "start-prod": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-prod.json\" npm run init",
+    "buildStart": "npm run build; npm run deploy-commands; npm run start;"
+  },
+  "engines": {
+    "node": ">=17.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxiGames/MaxiGames.js.git"
+  },
+  "author": "",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/MaxiGames/MaxiGames.js/issues"
+  },
+  "homepage": "https://github.com/MaxiGames/MaxiGames.js#readme",
+  "devDependencies": {
+    "@types/mocha": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.2.3",
+    "mocha": "^9.1.1",
+    "ts-node": "^10.2.1"
+  },
+  "dependencies": {
+    "@discordjs/builders": "^0.6.0",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "@types/lodash": "^4.14.172",
+    "@types/node": "^16.7.13",
+    "discord-api-types": "^0.23.0",
+    "discord.js": "^13.1.0",
+    "firebase-admin": "^10.0.2",
+    "got-cjs": "^12.0.1",
+    "lodash": "^4.17.21",
+    "top.gg-core": "^1.0.0-b",
+    "typescript": "^4.4.2"
+  },
+  "lint-staged": {
+    "*.ts": "npx prettier --write ."
+  }
 }
