@@ -11,7 +11,7 @@
 1.  **Use of bot to violate Discord's Terms of Service.**
 
     Using the bot to violate Discord's Terms of Service is strictly forbidden.
-    
+
 2.  **Use of bot for discrimination and slurs**
 
     Using the bot to to incite discriminatory behaviour or to discriminate

@@ -45,32 +45,34 @@ Exact details are listed in LICENSE.md
 
 ### Cases
 
--   `/convertcase <camel | lisp | pascal | snake | lower | upper> <text>`: Converts specified text to specified case.
+- `/convertcase <camel | lisp | pascal | snake | lower | upper> <text>`: Converts specified text to specified case.
 
 ### Economy
 
--   `/balance <user>`: Get the balance of the specified user
--   `/coinflip <side of coin> <amount>`: Try your luck and flip a virtual coin!
--   `/gamble <amount (default=5)>`: Gamble some money :O (Minimum: 5; Maximum: 10000)
--   `/money`: Get more money!!!
--   `/share <user> <amount>`: Share money with another server member!
--   `/timely <hourly | daily | weekly | monthly | yearly>`: Get money!
+- `/balance <user>`: Get the balance of the specified user
+- `/coinflip <side of coin> <amount>`: Try your luck and flip a virtual coin!
+- `/gamble <amount (default=5)>`: Gamble some money :O (Minimum: 5; Maximum: 10000)
+- `/money`: Get more money!!!
+- `/share <user> <amount>`: Share money with another server member!
+- `/timely <hourly | daily | weekly | monthly | yearly>`: Get money!
 
 ### General
 
--  `/bugreport <your bug>`: Report a bug you found! Get MaxiCoins for doing it!
+- `/bugreport <your bug>`: Report a bug you found! Get MaxiCoins for doing it!
 - `/help <main>`: Don't understand what commands the bot has? Use this to discover the various games and useful commands!
 - `/profile <user>`: Find out different statistics that people have on the bot!
 - `/serverprofile`: Find out the statistics of the current server!
 - `/suggestion <your suggestion>`: Have something you think we can improve? Suggest it to get MaxiCoins!
 
 ### MiniGames
+
 - `escapethehouse`: Which door leads to the rating points you desire?
 - `guessthecolour`: Are you good with guessing the HEX of a colour?
 - `tictactoe`: Play a game or two of tic tac toe with your friends!
 - `trivia`: Do you have very good general knowledge? Try this out!
 
 ### Random
+
 - `choose <list> <separater>`: Let the bot choose an item from a list for you, randomly!
 - `color`: Generate a random colour!
 - `convertcase <camel | list | snake | pascal | upper | lower>`: Convert a piece of text to a different case!
@@ -83,6 +85,7 @@ Exact details are listed in LICENSE.md
 - `whoami`: Find out some info about yourself! :)
 
 ### Utilities
+
 - `counting <addchannel | removechannel>`: Wana count together and see how high you can reach? Try this!
 - `starboard <addchannel | rmchannel | threshold>`: Set up a starboard to see which messages are the most liked/funniest!
 

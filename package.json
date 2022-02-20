@@ -54,6 +54,6 @@
 		"typescript": "^4.4.2"
 	},
 	"lint-staged": {
-		"*.ts": "prettier -w"
+		"*.ts": "npx prettier --write ."
 	}
 }
