@@ -15,7 +15,7 @@ s=$?
 bruh=0  # bruh
 oink=0  # oink oink
 
-function cleanup()
+cleanup()
 {
     if [ $bruh -eq 0 ]; then
         bruh=1
@@ -48,7 +48,6 @@ if [ $s1 -eq 0 ]; then
     heroku restart --remote $remote >/dev/null 2>&1
     heroku builds:clear --remote $remote >/dev/null 2>&1 
     git push -fq $remote master 2>&1 | sed 's/^remote: //g; s/^-----//g; s/^     //g; /^[ \t]*$/d'
-    heroku ps:kill worker.1 --remote $not
     cleanup
     exit 0
 else
