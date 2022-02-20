@@ -31,22 +31,22 @@ const starboardwatch = [
         return;
       }
       reaction = t;
+      
+      if (reaction.emoji.name !== "⭐") {
+        return;
+      }
 
-      /* Prepare all the data */
       const guilddata = await MGFirebase.getData(
         `guild/${reaction.message.guildId}`
       );
+
+      if (guilddata === undefined || guilddata["starboardChannel"] === 0) {
+        return;
+      }
+      
       const sbmsg = (await MGFirebase.justGetData(
         `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
       )) || { stars: 0, rxnid: "" };
-
-      if (
-        guilddata === undefined ||
-        reaction.emoji.name !== "⭐" ||
-        guilddata["starboardChannel"] === 0
-      ) {
-        return;
-      }
 
       sbmsg["stars"] += 1;
 
@@ -109,22 +109,22 @@ const starboardwatch = [
         return;
       }
       reaction = t;
+      
+      if (reaction.emoji.name !== "⭐") {
+        return;
+      }
 
-      /* Prepare all the data */
       const guilddata = await MGFirebase.getData(
         `guild/${reaction.message.guildId}`
       );
+
+      if (guilddata === undefined || guilddata["starboardChannel"] === 0) {
+        return;
+      }
+      
       const sbmsg = (await MGFirebase.justGetData(
         `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
       )) || { stars: 0, rxnid: "" };
-
-      if (
-        guilddata === undefined ||
-        reaction.emoji.name !== "⭐" ||
-        guilddata["starboardChannel"] === 0
-      ) {
-        return;
-      }
 
       sbmsg["stars"] -= 1;
 
