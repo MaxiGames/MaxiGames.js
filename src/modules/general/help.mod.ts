@@ -175,8 +175,11 @@ export async function mainHelp(
   return {
     embeds: [
       MGEmbed(MGStatus.Success)
-        .setTitle("MaxiGames Help!")
-        .setDescription(`Category: **${startCase(page)}**`)
+        .setTitle("MaxiGames Help! Category: **${startCase(page)}**")
+        .setDescription(
+          `To get support for specific queries and help, please join the MaxiGames Official Server ` +
+            `at https://discord.gg/hkkkTqhGAz and create a ticket.`
+        )
         .addFields(fields)
         .setFooter(`Version: ${version}. Built with discord.js :)`)
         .setThumbnail(
