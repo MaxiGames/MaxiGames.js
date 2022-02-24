@@ -67,6 +67,7 @@ const help: MGModule = {
 
 // forming the select menus
 for (const dir of moddirs) {
+  if (dir == "startup") continue;
   let description: string | null = null;
   fs.readFile(`./src/modules/${dir}/description.txt`, function (error, data) {
     if ((error === undefined || error === null) && data !== undefined) {
