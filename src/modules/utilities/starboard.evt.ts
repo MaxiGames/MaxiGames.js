@@ -31,7 +31,7 @@ const starboardwatch = [
         return;
       }
       reaction = t;
-      
+
       if (reaction.emoji.name !== "⭐") {
         return;
       }
@@ -43,7 +43,7 @@ const starboardwatch = [
       if (guilddata === undefined || guilddata["starboardChannel"] === 0) {
         return;
       }
-      
+
       const sbmsg = (await MGFirebase.justGetData(
         `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
       )) || { stars: 0, rxnid: "" };
@@ -109,7 +109,7 @@ const starboardwatch = [
         return;
       }
       reaction = t;
-      
+
       if (reaction.emoji.name !== "⭐") {
         return;
       }
@@ -121,7 +121,7 @@ const starboardwatch = [
       if (guilddata === undefined || guilddata["starboardChannel"] === 0) {
         return;
       }
-      
+
       const sbmsg = (await MGFirebase.justGetData(
         `guild/${reaction.message.guildId}/starboardMsgs/${reaction.message.id}`
       )) || { stars: 0, rxnid: "" };
