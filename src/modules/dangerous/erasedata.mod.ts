@@ -68,13 +68,13 @@ const erasedata: MGModule = {
     {
       name: "interactionCreate",
       async execute(interaction) {
-        if (!interaction.isButton()) {
+        if (
+          !interaction.isButton() ||
+          !interaction.customId.startsWith("deleteconfirmationly")
+        ) {
           return;
         }
-        if (
-          interaction.customId.startsWith("deleteconfirmationly") &&
-          !interaction.customId.endsWith("3")
-        ) {
+        if (!interaction.customId.endsWith("3")) {
           if (
             interaction.message.embeds[0].footer!.text.split(": ")[1] !=
             interaction.user.id
