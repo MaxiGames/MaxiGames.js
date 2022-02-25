@@ -31,6 +31,6 @@ export const config =
 export const firebaseConfig =
   process.env.NODE_ENV == "production"
     ? "https://maxgmaes-39d8e-default-rtdb.firebaseio.com/"
-    : "https://maxigamesbeta-default-rtdb.firebaseio.com";
+    : "http://localhost:9000/?ns=maxgmaes-39d8e-default-rtdb";
 
 export const apiConfig = api;

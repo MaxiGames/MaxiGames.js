@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "prepare": "husky install",
+    "setup": "firebase emulators:start",
     "init": "node --experimental-top-level-await dist/src/index.js",
     "build": "rm -rf dist; tsc;",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\"",
