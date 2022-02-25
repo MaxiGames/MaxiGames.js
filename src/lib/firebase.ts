@@ -33,8 +33,8 @@ export class FirebaseManager {
     this.db = admin.database();
     await this.initData();
     await this.announcement(client);
-    let setDataCalls = this.setDataCalls;
-    let getDataCalls = this.getDataCalls;
+    const setDataCalls = this.setDataCalls;
+    const getDataCalls = this.getDataCalls;
     setTimeout(async () => {
       await this.monitorDataCalls(setDataCalls, getDataCalls, client);
     }, 300000);
@@ -123,8 +123,8 @@ export class FirebaseManager {
         `SETDATA HAS BEEN CALLED TOO MANY TIMES! A TOTAL OF ${setDataCall} IN THE LAST 5 MINUTES!`
       );
     }
-    let setDataCalls = this.setDataCalls;
-    let getDataCalls = this.getDataCalls;
+    const setDataCalls = this.setDataCalls;
+    const getDataCalls = this.getDataCalls;
     setTimeout(async () => {
       await this.monitorDataCalls(setDataCalls, getDataCalls, client);
     }, 300000);
