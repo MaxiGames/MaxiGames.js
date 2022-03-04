@@ -31,6 +31,7 @@ import type { MGModule } from "../../types/command";
 import fs from "fs";
 import { lowerCase, startCase } from "lodash";
 import { MGFirebase } from "../../lib/firebase";
+import moan from "../../lib/moan";
 
 const moddirs = getDirectories("./dist/src/modules");
 
@@ -153,21 +154,41 @@ export async function mainHelp(
   }
 
   // if its a category page, find the commands
-  const cmds = getFiles(`./dist/src/commands/${lowerCase(page)}/`);
+  const cmds = getFiles(`./dist/src/modules/${lowerCase(page)}/`);
   const fields: { name: string; value: string; inline: boolean }[] = [];
 
   let counter = 1;
   for (const i of cmds) {
+    if (i.endsWith("evt.js")) continue;
     const curDescription = require(`../${lowerCase(page)}/${i}`);
-    fields.push({
-      name: `${counter}. ${startCase(i.replace(".js", ""))}`,
-      value: `${
-        curDescription.default.data.description === undefined
-          ? "No description."
-          : curDescription.default.data.description
-      }`,
-      inline: false,
-    });
+    if (i.endsWith("cmd.js"))
+      fields.push({
+        name: `${counter}. ${startCase(i.replace(".js", "")).replace(
+          " Cmd",
+          ""
+        )}`,
+        value: `${
+          curDescription.default.data.description === undefined
+            ? "No description."
+            : curDescription.default.data.description
+        }`,
+        inline: false,
+      });
+    else {
+      //ends with mod.ts
+      fields.push({
+        name: `${counter}. ${startCase(i.replace(".js", "")).replace(
+          " Mod",
+          ""
+        )}`,
+        value: `${
+          curDescription.default.command.data.description === undefined
+            ? "No description."
+            : curDescription.default.command.data.description
+        }`,
+        inline: false,
+      });
+    }
     counter++;
   }
 

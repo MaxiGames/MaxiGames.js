@@ -10,3 +10,4 @@ api-token.json
 *.swp
 *.d.ts
 .eslintcache
+*-debug.log
