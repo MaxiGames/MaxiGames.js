@@ -52,18 +52,13 @@ const countingListener = [
 
       // same person?
       if (id === msg.author.id) {
-        guildData["countingChannels"][msg.channel.id] = {
-          count: 0,
-          id: 0,
-        };
-        await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
-        await msg.react("❌");
+        await msg.react(":warning:");
         await msg.reply({
           embeds: [
-            MGEmbed(MGStatus.Error)
-              .setTitle(`${msg.author.username} ruined it!`)
+            MGEmbed(MGStatus.Warn)
+              .setTitle(`You cannot count twice!`)
               .setDescription(
-                `${msg.author.username} counted twice! The counter has been reset to 0.`
+                `${msg.author.username}, you cannot count twice!`
               ),
           ],
         });
