@@ -52,13 +52,13 @@ const countingListener = [
 
       // same person?
       if (id === msg.author.id) {
-        await msg.react(":warning:");
+        await msg.react("⚠️");
         await msg.reply({
           embeds: [
             MGEmbed(MGStatus.Warn)
               .setTitle(`You cannot count twice!`)
               .setDescription(
-                `${msg.author.username}, you cannot count twice!`
+                `${msg.author.username}, you are not allowed to count twice. This is to prevent 1 person from counting to a huge number by themself.`
               ),
           ],
         });
@@ -77,8 +77,11 @@ const countingListener = [
         guildData["statistics"]["totalCount"] += 1;
         if (guildData["statistics"]["highestCount"] < number) {
           guildData["statistics"]["highestCount"] = number;
+          await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
+          await msg.react("⚡");
+        } else {
+          await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
         }
-        await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
 
         // add to personal statistics
         const userData = await MGFirebase.getData(`user/${msg.author.id}`);
