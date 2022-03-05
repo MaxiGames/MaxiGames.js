@@ -1,7 +1,7 @@
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { partial_res } from "../../lib/misc";
 
 const countingListener = [
@@ -72,6 +72,7 @@ const countingListener = [
           count: number,
           id: msg.author.id,
         };
+        await (msg.channel as TextChannel).setTopic(`Current Count: ${number}`);
 
         // show on statistics
         guildData["statistics"]["totalCount"] += 1;
@@ -97,6 +98,7 @@ const countingListener = [
           count: 0,
           id: 0,
         };
+        await (msg.channel as TextChannel).setTopic("Current Count: 0");
         await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
         await msg.reply({
           embeds: [
