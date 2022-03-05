@@ -166,7 +166,10 @@ export class FirebaseManager {
     const data = spc?.val();
     for (const i in data) {
       for (const j in data[i]["countingChannels"]) {
-        if (data[i]["countingChannels"][j]["protect"] === undefined)
+        if (
+          data[i]["countingChannels"][j]["protect"] === undefined &&
+          typeof data[i]["countingChannels"][j] !== "number"
+        )
           data[i]["countingChannels"][j]["protect"] = defaultCountingProtection;
       }
     }
