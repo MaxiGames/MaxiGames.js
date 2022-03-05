@@ -71,9 +71,35 @@ try {
 
 for (const event of events) {
   if (event.once) {
-    client.once(event.name, event.execute);
+    client.once(event.name, async (...args) => {
+      try {
+        await event.execute(...args);
+      } catch (e) {
+        try {
+          args[0].channel.send(
+            "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
+          );
+        } catch {}
+        try {
+          moan(MGS.Error, e);
+        } catch {}
+      }
+    });
   } else {
-    client.on(event.name, event.execute);
+    client.on(event.name, async (...args) => {
+      try {
+        await event.execute(...args);
+      } catch (e) {
+        try {
+          args[0].channel.send(
+            "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
+          );
+        } catch {}
+        try {
+          moan(MGS.Error, e);
+        } catch {}
+      }
+    });
   }
 
   moan(MGS.Info, `Registered event handler for "${event.name}."`);
