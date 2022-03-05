@@ -26,7 +26,13 @@ import type { MGCommand } from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
-import { Permissions, CommandInteraction, Guild } from "discord.js";
+import {
+  Permissions,
+  CommandInteraction,
+  Guild,
+  GuildChannel,
+  TextChannel,
+} from "discord.js";
 import withChecks from "../../lib/checks";
 import { userPermsTest } from "../../lib/checks/permissions";
 import cooldownTest from "../../lib/checks/cooldown";
@@ -109,13 +115,28 @@ async function addChannel(
   guild: Guild,
   guildData: any
 ) {
-  const channel = interaction.options.getChannel("channel")!;
+  const oldChannel = interaction.options.getChannel("channel")!;
+  let channel: TextChannel;
+  try {
+    channel = oldChannel as TextChannel;
+    channel.setTopic(""); // try to call on a function that only textchannels have
+  } catch {
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Error)
+          .setTitle("Error!")
+          .setDescription(`<#${channel!.id}> is not a text channel!`),
+      ],
+    });
+    return;
+  }
 
   if (guildData["countingChannels"] === 0) {
     guildData["countingChannels"] = {};
   }
   if (guildData["countingChannels"][channel.id] === undefined) {
     guildData["countingChannels"][channel.id] = { count: 0, id: 0 };
+    channel.setTopic("Current Count: 0");
     await MGFirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
       await interaction.reply({
         embeds: [
@@ -141,7 +162,21 @@ async function removeChannel(
   guild: Guild,
   serverData: any
 ) {
-  const channel = interaction.options.getChannel("channel")!;
+  const oldChannel = interaction.options.getChannel("channel")!;
+  let channel: TextChannel;
+  try {
+    channel = oldChannel as TextChannel;
+    channel.setTopic(""); // try to call on a function that only textchannels have
+  } catch {
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Error)
+          .setTitle("Error!")
+          .setDescription(`<#${channel!.id}> is not a text channel!`),
+      ],
+    });
+    return;
+  }
 
   if (
     serverData["countingChannels"] === 0 ||
