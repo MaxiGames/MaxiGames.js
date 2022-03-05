@@ -58,6 +58,24 @@ const counting: MGCommand = withChecks(
               .setDescription("channel you want to unregister")
               .setRequired(true)
           )
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("currentcount")
+          .setDescription("query the current count in a channel")
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("countingprotection")
+          .setDescription(
+            "sets a channel up so that users can count without trolling"
+          )
+          .addChannelOption((option) =>
+            option
+              .setName("channel")
+              .setDescription("channel you want to protect")
+              .setRequired(true)
+          )
       ),
 
     // execute command
@@ -79,6 +97,8 @@ const counting: MGCommand = withChecks(
         addChannel(interaction, guild, guildData);
       } else if (subcommand === "removechannel") {
         removeChannel(interaction, guild, guildData);
+      } else if (subcommand === "currentcount") {
+        currentCount(interaction, guildData);
       }
     },
   }
@@ -89,14 +109,7 @@ async function addChannel(
   guild: Guild,
   guildData: any
 ) {
-  const channel = interaction.options.getChannel("channel");
-
-  if (channel === null) {
-    await interaction.reply({
-      embeds: [MGEmbed(MGStatus.Error).setTitle("Unable to find channel!")],
-    });
-    return;
-  }
+  const channel = interaction.options.getChannel("channel")!;
 
   if (guildData["countingChannels"] === 0) {
     guildData["countingChannels"] = {};
@@ -128,14 +141,7 @@ async function removeChannel(
   guild: Guild,
   serverData: any
 ) {
-  const channel = interaction.options.getChannel("channel");
-
-  if (channel === null) {
-    await interaction.reply({
-      embeds: [MGEmbed(MGStatus.Error).setTitle("Unable to find channel!")],
-    });
-    return;
-  }
+  const channel = interaction.options.getChannel("channel")!;
 
   if (
     serverData["countingChannels"] === 0 ||
@@ -170,6 +176,51 @@ async function removeChannel(
       });
     });
   }
+}
+
+async function currentCount(interaction: CommandInteraction, guildData: any) {
+  const channel = interaction.channel;
+  if (
+    channel == null ||
+    guildData["countingChannels"][channel.id] == undefined
+  ) {
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Error).setTitle(
+          `This channel is not yet a counting channel. Please use /counting addchannel to add this channel.`
+        ),
+      ],
+    });
+    return;
+  }
+  if (guildData["countingChannels"][channel.id]["id"] == 0) {
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Success).setTitle(
+          `This is a new counting channel! The current count is 0. Enjoy counting :)`
+        ),
+      ],
+    });
+    return;
+  }
+  await interaction.reply({
+    embeds: [
+      MGEmbed(MGStatus.Info)
+        .setTitle(
+          `The current count is: ${
+            guildData["countingChannels"][channel.id]["count"]
+          }`
+        )
+        .setDescription(
+          `It was last counted by <@${
+            guildData["countingChannels"][channel.id]["id"]
+          }>`
+        )
+        .setFooter(
+          "To find out more stats for counting in this server, use /serverprofile"
+        ),
+    ],
+  });
 }
 
 export default counting;
