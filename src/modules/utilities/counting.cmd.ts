@@ -30,12 +30,14 @@ import {
   Permissions,
   CommandInteraction,
   Guild,
-  GuildChannel,
   TextChannel,
 } from "discord.js";
 import withChecks from "../../lib/checks";
 import { userPermsTest } from "../../lib/checks/permissions";
 import cooldownTest from "../../lib/checks/cooldown";
+import { Counting } from "../../types/firebase";
+import { setProtect } from "./counting.evt";
+import { upperCase } from "lodash";
 
 const counting: MGCommand = withChecks(
   [cooldownTest(2), userPermsTest(Permissions.FLAGS.ADMINISTRATOR)],
@@ -73,13 +75,17 @@ const counting: MGCommand = withChecks(
       .addSubcommand((subcommand) =>
         subcommand
           .setName("countingprotection")
-          .setDescription(
-            "sets a channel up so that users can count without trolling"
-          )
+          .setDescription("Configures a channel for counting protection")
           .addChannelOption((option) =>
             option
               .setName("channel")
               .setDescription("channel you want to protect")
+              .setRequired(true)
+          )
+          .addBooleanOption((option) =>
+            option
+              .setName("protection")
+              .setDescription("Add counting protection for trolls")
               .setRequired(true)
           )
       ),
@@ -100,11 +106,13 @@ const counting: MGCommand = withChecks(
       }
       const guildData = await MGFirebase.getData(`guild/${guild.id}`);
       if (subcommand === "addchannel") {
-        addChannel(interaction, guild, guildData);
+        await addChannel(interaction, guild, guildData);
       } else if (subcommand === "removechannel") {
-        removeChannel(interaction, guild, guildData);
+        await removeChannel(interaction, guild, guildData);
       } else if (subcommand === "currentcount") {
-        currentCount(interaction, guildData);
+        await currentCount(interaction, guildData);
+      } else if (subcommand === "countingprotection") {
+        await protectChannel(interaction, guildData);
       }
     },
   }
@@ -135,7 +143,11 @@ async function addChannel(
     guildData["countingChannels"] = {};
   }
   if (guildData["countingChannels"][channel.id] === undefined) {
-    guildData["countingChannels"][channel.id] = { count: 0, id: 0 };
+    guildData["countingChannels"][channel.id] = {
+      count: 0,
+      id: 0,
+      protect: { protection: false },
+    } as Counting;
     channel.setTopic("Current Count: 0");
     await MGFirebase.setData(`guild/${guild.id}`, guildData).then(async () => {
       await interaction.reply({
@@ -254,6 +266,44 @@ async function currentCount(interaction: CommandInteraction, guildData: any) {
         .setFooter(
           "To find out more stats for counting in this server, use /serverprofile"
         ),
+    ],
+  });
+}
+
+async function protectChannel(interaction: CommandInteraction, guildData: any) {
+  const channel = interaction.options.getChannel("channel"),
+    protection = interaction.options.getBoolean("protection")!;
+  if (
+    channel == null ||
+    guildData["countingChannels"][channel.id] == undefined
+  ) {
+    await interaction.reply({
+      embeds: [
+        MGEmbed(MGStatus.Error).setTitle(
+          `This channel is not yet a counting channel. Please use /counting addchannel to add this channel.`
+        ),
+      ],
+    });
+    return;
+  }
+  guildData["countingChannels"][channel.id]["protection"] = {
+    protection: protection,
+  };
+  await MGFirebase.setData(`guild/${interaction.guild!.id}`, guildData);
+  setProtect(interaction.guild!.id, channel.id, {
+    protection: protection,
+  });
+
+  await interaction.reply({
+    embeds: [
+      MGEmbed(MGStatus.Success)
+        .setTitle(`The following configs have been applied to ${channel.name}`)
+        .setFields([
+          {
+            name: "Counting Troll Protection",
+            value: `${upperCase(`${protection}`)}`,
+          },
+        ]),
     ],
   });
 }

@@ -49,10 +49,20 @@ export interface Guild {
     highestCount: number;
     totalCount: number;
   };
-  countingChannels: { [id: string]: { count: number; id: number } } | number;
+  countingChannels: { [id: string]: Counting } | number;
   starboardChannel: { id: string; thresh: number } | number;
   starboardMsgs: { [id: string]: { stars: number; rxnid: string } } | number;
   autoresponse: { [trigger: string]: string };
+}
+
+export interface Counting {
+  count: number;
+  id: number;
+  protect: CountingProtection;
+}
+
+export interface CountingProtection {
+  protection: boolean;
 }
 
 export const defaultGuild: Guild = {
@@ -67,6 +77,10 @@ export const defaultGuild: Guild = {
     maxigames:
       "Hello there! Did you call me? (This is a default autoresponse for every guild. You can remove or add more autoresponses using the /autoresponse commands, but only admins can do it!)",
   },
+};
+
+export const defaultCountingProtection: CountingProtection = {
+  protection: false,
 };
 
 interface User {

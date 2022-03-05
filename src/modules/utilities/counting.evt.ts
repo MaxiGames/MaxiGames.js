@@ -1,10 +1,42 @@
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
-import { Message, TextChannel } from "discord.js";
+import { Client, Message, TextChannel } from "discord.js";
 import { partial_res } from "../../lib/misc";
+import { CountingProtection } from "../../types/firebase";
+
+let protect: {
+  [guildID: string]: { [channelID: string]: CountingProtection };
+} = {};
+let deletedMessages: string[] = [];
+
+export function setProtect(
+  guild: string,
+  channel: string,
+  protectConfig: CountingProtection
+) {
+  if (protect[guild] === undefined) {
+    protect[guild] = { [channel]: protectConfig };
+    return;
+  }
+  protect[guild][channel] = protectConfig;
+}
 
 const countingListener = [
+  {
+    name: "ready",
+    once: true,
+    async execute(client: Client) {
+      for (let guildID in client.guilds.cache) {
+        let data = await MGFirebase.getData(
+          `guild/${guildID}/countingChannels`
+        );
+        for (let i in data) {
+          setProtect(guildID, i, data[i]["protection"]);
+        }
+      }
+    },
+  },
   {
     name: "messageCreate",
     async execute(msg: Message) {
@@ -58,7 +90,7 @@ const countingListener = [
             MGEmbed(MGStatus.Warn)
               .setTitle(`You cannot count twice!`)
               .setDescription(
-                `${msg.author.username}, you are not allowed to count twice. This is to prevent 1 person from counting to a huge number by themself.`
+                `${msg.author.username}, you are not allowed to count twice. This is to prevent one person from counting to a huge number by themselves.`
               ),
           ],
         });
@@ -110,6 +142,71 @@ const countingListener = [
               ),
           ],
         });
+      }
+    },
+  },
+  //counting protection
+  {
+    name: "messageUpdate",
+    async execute(oldMsg: Message, newMsg: Message) {
+      let msg = oldMsg;
+      try {
+        if (msg.guild === null || msg.author.bot) {
+          return;
+        }
+      } catch {
+        return;
+      } //this might throw an error if the message that was edited was sent before bot started
+      try {
+        if (protect[msg.guild.id][msg.channel.id].protection) {
+          deletedMessages.push(newMsg.id);
+          await newMsg.reply({
+            embeds: [
+              MGEmbed(MGStatus.Warn)
+                .setTitle("A message was EDITED here.")
+                .setDescription("The original message was: " + oldMsg.content),
+            ],
+          });
+          try {
+            await newMsg.delete();
+          } catch {
+            return;
+          }
+        }
+      } catch {
+        return;
+      }
+    },
+  },
+  {
+    name: "messageDelete",
+    async execute(deletedMessage: Message) {
+      let msg = deletedMessage;
+      try {
+        if (msg.guild === null || msg.author.bot) {
+          return;
+        }
+        if (deletedMessages.includes(`${deletedMessage.id}`)) {
+          deletedMessages.splice(
+            deletedMessages.indexOf(`${deletedMessage.id}`)
+          );
+          return;
+        }
+      } catch {
+        return;
+      } //this might throw an error if the message that was edited was sent before bot started
+      try {
+        if (protect[msg.guild.id][msg.channel.id].protection) {
+          await deletedMessage.channel.send({
+            embeds: [
+              MGEmbed(MGStatus.Warn)
+                .setTitle("A message was DELETED here.")
+                .setDescription("The message was: " + deletedMessage.content),
+            ],
+          });
+        }
+      } catch {
+        return;
       }
     },
   },

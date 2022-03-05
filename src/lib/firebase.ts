@@ -22,7 +22,11 @@ import moan from "../lib/moan";
 import MGS from "../lib/statuses";
 import { MGEmbed } from "./flavoured";
 import MGStatus from "../lib/statuses";
-import { defaultGuild, defaultUser } from "../types/firebase";
+import {
+  defaultCountingProtection,
+  defaultGuild,
+  defaultUser,
+} from "../types/firebase";
 
 export class FirebaseManager {
   db: admin.database.Database | undefined = undefined;
@@ -158,33 +162,16 @@ export class FirebaseManager {
   }
 
   private async initData() {
-    const usr = await this.db?.ref("/user").get();
-    const data = usr?.val();
+    const spc = await this.db?.ref("/guild").get();
+    const data = spc?.val();
     for (const i in data) {
-      if (!data[i]["cooldowns"]["trivia"]) {
-        data[i]["cooldowns"]["trivia"] = defaultUser.cooldowns.trivia;
+      for (const j in data[i]["countingChannels"]) {
+        if (data[i]["countingChannels"][j]["protect"] === undefined)
+          data[i]["countingChannels"][j]["protect"] = defaultCountingProtection;
       }
     }
-    for (const i in data) {
-      if (!data[i]["minigames"]["trivia"]) {
-        data[i]["minigames"]["trivia"] = defaultUser.minigames.trivia;
-      }
-    }
-    for (const i in data) {
-      if (
-        !data[i]["minigames"]["guessthecolour"] ||
-        typeof data[i]["minigames"]["guessthecolour"] === "string"
-      ) {
-        data[i]["minigames"]["guessthecolour"] =
-          defaultUser.minigames.guessthecolour;
-      }
-      if (!data[i]["minigames"]["escapethehouse"]) {
-        data[i]["minigames"]["escapethehouse"] =
-          defaultUser.minigames.escapethehouse;
-      }
-    }
-    await this.db?.ref("/user").set(data);
-    moan(MGS.Success, "defaultised data for old database");
+    await this.db?.ref("/guild").set(data);
+    moan(MGS.Success, "defaultised new counting protection data");
   }
 
   private async announcement(client: Client) {
