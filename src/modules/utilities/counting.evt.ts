@@ -100,10 +100,8 @@ const countingListener = [
       if (number - 1 === curCount) {
         // correct!
         await msg.react("✅");
-        guildData["countingChannels"][msg.channel.id] = {
-          count: number,
-          id: msg.author.id,
-        };
+        guildData["countingChannels"][msg.channel.id]["count"] = number;
+        guildData["countingChannels"][msg.channel.id]["id"] = msg.author.id;
         await (msg.channel as TextChannel).setTopic(`Current Count: ${number}`);
 
         // show on statistics
@@ -126,10 +124,8 @@ const countingListener = [
       } else {
         // wrong.
         await msg.react("❌");
-        guildData["countingChannels"][msg.channel.id] = {
-          count: 0,
-          id: 0,
-        };
+        guildData["countingChannels"][msg.channel.id]["count"] = 0;
+        guildData["countingChannels"][msg.channel.id]["id"] = 0;
         await (msg.channel as TextChannel).setTopic("Current Count: 0");
         await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
         await msg.reply({
