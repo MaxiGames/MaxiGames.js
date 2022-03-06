@@ -32,7 +32,7 @@ const countingListener = [
           `guild/${guildID}/countingChannels`
         );
         for (let i in data) {
-          setProtect(guildID, i, data[i]["protection"]);
+          setProtect(guildID, i, data[i]["protect"]);
         }
       }
     },

@@ -286,7 +286,7 @@ async function protectChannel(interaction: CommandInteraction, guildData: any) {
     });
     return;
   }
-  guildData["countingChannels"][channel.id]["protection"] = {
+  guildData["countingChannels"][channel.id]["protect"] = {
     protection: protection,
   };
   await MGFirebase.setData(`guild/${interaction.guild!.id}`, guildData);
