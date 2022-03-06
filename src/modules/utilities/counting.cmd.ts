@@ -208,6 +208,8 @@ async function removeChannel(
     });
   } else {
     delete serverData["countingChannels"][channel.id];
+    if (serverData["countingChannels"][channel.id] === {})
+      serverData["countingChannels"][channel.id] = 0;
     await MGFirebase.setData(`guild/${guild.id}`, serverData).then(async () => {
       if (channel === null) {
         return;
