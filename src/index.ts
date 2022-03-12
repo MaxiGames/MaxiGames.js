@@ -76,7 +76,7 @@ for (const event of events) {
         await event.execute(...args);
       } catch (e) {
         try {
-          args[0].channel.send(
+          await args[0].channel.send(
             "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
           );
         } catch {}
@@ -90,7 +90,7 @@ for (const event of events) {
       } catch (e) {
         try {
           args[0].channel.send(
-            "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
+            await "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
           );
         } catch {}
         moan(MGS.Error, e);
@@ -117,10 +117,12 @@ client.on("interactionCreate", async (interaction) => {
   } catch (error) {
     moan(MGS.Error, (error as Error).stack);
 
-    await interaction.reply({
-      content: "There was an error while executing this command!",
-      ephemeral: true,
-    });
+    try {
+      await interaction.reply({
+        content: "There was an error while executing this command!",
+        ephemeral: true,
+      });
+    } catch {}
   }
 });
 
