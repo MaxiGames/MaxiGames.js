@@ -56,7 +56,7 @@ try {
     webhook.login("/top.gg/bot/863419048041381920/vote", "3000");
 
     webhook.on("vote", (vote: any) => {
-      console.log(`User id: ${vote.user}\nAll data: ${vote}`);
+      moan(MGS.Info, `User id: ${vote.user}\nAll data: ${vote}`);
     });
   }
 } catch {
@@ -85,7 +85,8 @@ for (const event of events) {
     });
   } else {
     client.on(event.name, async (...args) => {
-      try {
+      await event.execute(...args);
+      /*       try {
         await event.execute(...args);
       } catch (e) {
         try {
@@ -94,7 +95,7 @@ for (const event of events) {
           );
         } catch {}
         moan(MGS.Error, e);
-      }
+      } */
     });
   }
 
