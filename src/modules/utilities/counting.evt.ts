@@ -128,6 +128,7 @@ const countingListener = [
         guildData["countingChannels"][msg.channel.id]["id"] = 0;
         let curChannel = msg.channel as TextChannel;
         await curChannel.setTopic("Current Count: 0");
+        await msg.react("❌");
         await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
         await msg.reply({
           embeds: [
@@ -139,7 +140,6 @@ const countingListener = [
               ),
           ],
         });
-        await msg.react("❌");
       }
     },
   },
