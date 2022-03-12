@@ -102,7 +102,7 @@ const countingListener = [
         guildData["countingChannels"][msg.channel.id]["count"] = number;
         guildData["countingChannels"][msg.channel.id]["id"] = msg.author.id;
         let curChannel = msg.channel as TextChannel;
-        await curChannel.setTopic(`Current Count: ${number}`);
+        curChannel.setTopic(`Current Count: ${number}`);
 
         // show on statistics
         guildData["statistics"]["totalCount"] += 1;
@@ -127,7 +127,7 @@ const countingListener = [
         guildData["countingChannels"][msg.channel.id]["count"] = 0;
         guildData["countingChannels"][msg.channel.id]["id"] = 0;
         let curChannel = msg.channel as TextChannel;
-        await curChannel.setTopic("Current Count: 0");
+        curChannel.setTopic("Current Count: 0");
         await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
         await msg.reply({
           embeds: [
@@ -139,8 +139,8 @@ const countingListener = [
               ),
           ],
         });
+        await msg.react("❌");
       }
-      await msg.react("❌");
     },
   },
   //counting protection

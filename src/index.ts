@@ -85,8 +85,7 @@ for (const event of events) {
     });
   } else {
     client.on(event.name, async (...args) => {
-      await event.execute(...args);
-      /*       try {
+      try {
         await event.execute(...args);
       } catch (e) {
         try {
@@ -95,7 +94,7 @@ for (const event of events) {
           );
         } catch {}
         moan(MGS.Error, e);
-      } */
+      }
     });
   }
 
