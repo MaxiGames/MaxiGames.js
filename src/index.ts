@@ -80,9 +80,7 @@ for (const event of events) {
             "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
           );
         } catch {}
-        try {
-          moan(MGS.Error, e);
-        } catch {}
+        moan(MGS.Error, e);
       }
     });
   } else {
@@ -95,9 +93,7 @@ for (const event of events) {
             "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
           );
         } catch {}
-        try {
-          moan(MGS.Error, e);
-        } catch {}
+        moan(MGS.Error, e);
       }
     });
   }

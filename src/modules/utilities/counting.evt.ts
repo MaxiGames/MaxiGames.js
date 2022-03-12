@@ -99,7 +99,6 @@ const countingListener = [
 
       if (number - 1 === curCount) {
         // correct!
-        await msg.react("✅");
         guildData["countingChannels"][msg.channel.id]["count"] = number;
         guildData["countingChannels"][msg.channel.id]["id"] = msg.author.id;
         await (msg.channel as TextChannel).setTopic(`Current Count: ${number}`);
@@ -121,9 +120,9 @@ const countingListener = [
           userData["count"]["highestCount"] = number;
         }
         await MGFirebase.setData(`user/${msg.author.id}`, userData);
+        await msg.react("✅");
       } else {
         // wrong.
-        await msg.react("❌");
         guildData["countingChannels"][msg.channel.id]["count"] = 0;
         guildData["countingChannels"][msg.channel.id]["id"] = 0;
         await (msg.channel as TextChannel).setTopic("Current Count: 0");
@@ -138,6 +137,7 @@ const countingListener = [
               ),
           ],
         });
+        await msg.react("❌");
       }
     },
   },
