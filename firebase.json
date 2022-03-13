@@ -1,10 +1,10 @@
 {
   "database": {
-    "rules": "database.rules.json"
+    "rules": "firebase/database/rules.json"
   },
   "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
+    "rules": "firebase/firestore/rules.rules",
+    "indexes": "firebase/firestore/indexes.json"
   },
   "emulators": {
     "firestore": {
