@@ -22,9 +22,11 @@
  */
 
 import { Client, Intents } from "discord.js";
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v9";
+import * as admin from "firebase-admin";
 import { config, firebaseConfig, apiConfig } from "./utils/config";
 import { commands, events } from "./modules";
-import * as admin from "firebase-admin";
 import { MGFirebase } from "./lib/firebase";
 import { defaultGuild } from "./types/firebase";
 import moan from "./lib/moan";
@@ -167,7 +169,8 @@ client.login(config.tokenId).then(() => {
 
   // change activity on guild join
   client.on("guildCreate", (guild) => {
-    moan(MGS.Info, `joined new guild "${guild.name}"`);
+    moan(MGS.Info, `Joined new guild "${guild.name}."`);
+
     currentGuildCount++;
     activityManager.currentGuildCount++;
     if (process.env.NODE_ENV == "production") {
@@ -176,6 +179,24 @@ client.login(config.tokenId).then(() => {
         .then(moan(MGS.Info, "Posted new count to top.gg"));
     }
     MGFirebase.setData(`server/${guild.id}`, defaultGuild);
+
+    // push slash commands
+    const rest = new REST({ version: "9" }).setToken(config.tokenId);
+    const commandsjson = [];
+
+    for (const [_, cmd] of commands.entries()) {
+      if (cmd.data.toJSON) {
+        commandsjson.push(cmd.data.toJSON());
+      }
+    }
+
+    try {
+      rest.put(Routes.applicationGuildCommands(config.clientId, guild.id), {
+        body: commandsjson,
+      });
+    } catch (e) {
+      moan(MGS.Error, e);
+    }
   });
 
   // change activity on guild leave
