@@ -20,13 +20,13 @@ import { MGFirebase } from "../../lib/firebase";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MessageReaction, TextChannel, User } from "discord.js";
-import { partial_res } from "../../lib/misc";
+import { partialRes } from "../../lib/misc";
 
 const starboardwatch = [
   {
     name: "messageReactionAdd",
     async execute(reaction: MessageReaction, user: User) {
-      const t = await partial_res(reaction);
+      const t = await partialRes(reaction);
       if (t === undefined) {
         return;
       }
@@ -104,7 +104,7 @@ const starboardwatch = [
   {
     name: "messageReactionRemove",
     async execute(reaction: MessageReaction, user: User) {
-      const t = await partial_res(reaction);
+      const t = await partialRes(reaction);
       if (t === undefined) {
         return;
       }

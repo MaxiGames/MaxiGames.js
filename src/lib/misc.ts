@@ -20,7 +20,7 @@
  * A bunch of mostly quite simple functions that aren't really big enough for
  * their own files
  *
- * has: partial_res, trycatcherr
+ * has: partialRes, trycatcherr
  */
 
 import {
@@ -49,7 +49,7 @@ type _p =
   | Message
   | MessageReaction;
 
-async function partial_res<T extends _p>(obj: T): Promise<T | undefined> {
+async function partialRes<T extends _p>(obj: T): Promise<T | undefined> {
   if (obj.partial) {
     try {
       return (await obj.fetch()) as T;
@@ -74,4 +74,4 @@ async function trycatcherr<a>(f: () => a): Promise<[a] | []> {
   }
 }
 
-export { partial_res, trycatcherr };
+export { partialRes, trycatcherr };
