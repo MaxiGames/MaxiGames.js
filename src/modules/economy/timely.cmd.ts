@@ -21,11 +21,11 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGCommand } from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
-import cooldownTest, { convertSecondsToDay } from "../../lib/checks/cooldown";
+import cooldownCheck, { convertSecondsToDay } from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
 import commandLog from "../../lib/comamndlog";
 
-const timely: MGCommand = withChecks([cooldownTest(5)], {
+const timely: MGCommand = withChecks([cooldownCheck(5)], {
   data: new SlashCommandBuilder()
     .setName("timely")
     .setDescription(

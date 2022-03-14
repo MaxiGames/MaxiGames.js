@@ -22,11 +22,11 @@ import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGCommand } from "../../types/command";
 import { MGFirebase } from "../../lib/firebase";
-import cooldownTest from "../../lib/checks/cooldown";
+import cooldownCheck from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
 import commandLog from "../../lib/comamndlog";
 
-const gamble: MGCommand = withChecks([cooldownTest(10)], {
+const gamble: MGCommand = withChecks([cooldownCheck(10)], {
   data: new SlashCommandBuilder()
     .setName("gamble")
     .setDescription("gamble some money :O")

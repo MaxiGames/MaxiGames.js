@@ -23,11 +23,11 @@ import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
 import { Permissions, CommandInteraction, Guild } from "discord.js";
 import withChecks from "../../lib/checks";
-import cooldownTest from "../../lib/checks/cooldown";
-import { userPermsTest } from "../../lib/checks/permissions";
+import cooldownCheck from "../../lib/checks/cooldown";
+import { userPermsCheck } from "../../lib/checks/permissions";
 
 const starboard: MGCommand = withChecks(
-  [cooldownTest(5), userPermsTest(Permissions.FLAGS.ADMINISTRATOR)],
+  [cooldownCheck(5), userPermsCheck(Permissions.FLAGS.ADMINISTRATOR)],
   {
     data: new SlashCommandBuilder()
       .setName("starboard")

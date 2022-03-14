@@ -21,11 +21,11 @@ import type { MGCommand } from "../../types/command";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
-import cooldownTest from "../../lib/checks/cooldown";
+import cooldownCheck from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
 import commandLog from "../../lib/comamndlog";
 
-const money: MGCommand = withChecks([cooldownTest(20)], {
+const money: MGCommand = withChecks([cooldownCheck(20)], {
   data: new SlashCommandBuilder()
     .setName("money")
     .setDescription("Get more money!!!"),

@@ -19,14 +19,14 @@
 import { CommandInteraction } from "discord.js";
 import { MGFirebase } from "../firebase";
 import { MGEmbed } from "../flavoured";
-import type MGCmdTest from "../../types/checks";
+import type MGCmdCheck from "../../types/checks";
 import MGStatus from "../statuses";
 
-export default function cooldownTest(
+export default function cooldownCheck(
   cooldown: number,
   validator: (interaction: CommandInteraction) => boolean = (_) => false
 ) {
-  const ret: MGCmdTest = {
+  const ret: MGCmdCheck = {
     async check(command, interaction) {
       const data = await MGFirebase.getData(`user/${interaction.user.id}`);
       if (data === undefined) {

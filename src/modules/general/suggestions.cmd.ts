@@ -24,9 +24,9 @@ import type { MGCommand } from "../../types/command";
 import { MessageActionRow, MessageButton, ThreadChannel } from "discord.js";
 import { Suggestions } from "../../types/firebase";
 import withChecks from "../../lib/checks";
-import cooldownTest from "../../lib/checks/cooldown";
+import cooldownCheck from "../../lib/checks/cooldown";
 
-const suggestions: MGCommand = withChecks([cooldownTest(10)], {
+const suggestions: MGCommand = withChecks([cooldownCheck(10)], {
   data: new SlashCommandBuilder()
     .setName("suggestion")
     .setDescription("Suggest something for the bot!")

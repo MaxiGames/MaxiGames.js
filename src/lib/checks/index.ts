@@ -18,7 +18,7 @@
 
 import { CommandInteraction } from "discord.js";
 import type { MGCommand } from "../../types/command";
-import type MGCmdTest from "../../types/checks";
+import type MGCmdCheck from "../../types/checks";
 
 function tail<a>(l: a[]) {
   // prettier-disable
@@ -30,7 +30,7 @@ function tail<a>(l: a[]) {
 }
 
 export default function withChecks(
-  tests: MGCmdTest[],
+  tests: MGCmdCheck[],
   command: MGCommand
 ): MGCommand {
   const ret: MGCommand = {
@@ -46,10 +46,10 @@ export default function withChecks(
 async function chain(
   command: MGCommand,
   interaction: CommandInteraction,
-  tests: MGCmdTest[],
+  tests: MGCmdCheck[],
   goal: (interaction: CommandInteraction) => Promise<void>
 ): Promise<boolean> {
-  async function iter(tests: MGCmdTest[]): Promise<boolean> {
+  async function iter(tests: MGCmdCheck[]): Promise<boolean> {
     if (tests.length === 0) {
       // Finally passed all tests!
       await goal(interaction);

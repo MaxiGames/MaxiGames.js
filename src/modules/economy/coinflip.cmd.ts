@@ -25,7 +25,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
-import cooldownTest from "../../lib/checks/cooldown";
+import cooldownCheck from "../../lib/checks/cooldown";
 import withChecks from "../../lib/checks";
 import commandLog from "../../lib/comamndlog";
 
@@ -37,7 +37,7 @@ function otherOption(name: string) {
   }
 }
 
-const gamble = withChecks([cooldownTest(10)], {
+const gamble = withChecks([cooldownCheck(10)], {
   data: new SlashCommandBuilder()
     .setName("coinflip")
     .setDescription(

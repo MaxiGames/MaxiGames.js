@@ -19,7 +19,7 @@
 import type { CommandInteraction } from "discord.js";
 import type { MGCommand } from "./command";
 
-export default interface MGCmdTest {
+export default interface MGCmdCheck {
   check: (
     command: MGCommand,
     interaction: CommandInteraction

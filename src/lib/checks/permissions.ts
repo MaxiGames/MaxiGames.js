@@ -17,7 +17,7 @@
  */
 
 import { MGEmbed } from "../flavoured";
-import type MGCmdTest from "../../types/checks";
+import type MGCmdCheck from "../../types/checks";
 import MGStatus from "../statuses";
 import {
   GuildMemberRoleManager,
@@ -25,8 +25,8 @@ import {
   PermissionResolvable,
 } from "discord.js";
 
-export function userPermsTest(perms: PermissionResolvable) {
-  const ret: MGCmdTest = {
+export function userPermsCheck(perms: PermissionResolvable) {
+  const ret: MGCmdCheck = {
     async check(command, interaction) {
       return (interaction.member!.permissions as Permissions).has(perms);
     },
@@ -53,7 +53,7 @@ export function userPermsTest(perms: PermissionResolvable) {
 }
 
 export function userRolesTest(roles: string[]) {
-  const ret: MGCmdTest = {
+  const ret: MGCmdCheck = {
     async check(command, interaction) {
       for (const c of roles) {
         if (

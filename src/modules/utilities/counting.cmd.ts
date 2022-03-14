@@ -33,14 +33,14 @@ import {
   TextChannel,
 } from "discord.js";
 import withChecks from "../../lib/checks";
-import { userPermsTest } from "../../lib/checks/permissions";
-import cooldownTest from "../../lib/checks/cooldown";
+import { userPermsCheck } from "../../lib/checks/permissions";
+import cooldownCheck from "../../lib/checks/cooldown";
 import { Counting } from "../../types/firebase";
 import { setProtect } from "./counting.evt";
 import { upperCase } from "lodash";
 
 const counting: MGCommand = withChecks(
-  [cooldownTest(2), userPermsTest(Permissions.FLAGS.ADMINISTRATOR)],
+  [cooldownCheck(2), userPermsCheck(Permissions.FLAGS.ADMINISTRATOR)],
   {
     data: new SlashCommandBuilder()
       .setName("counting")

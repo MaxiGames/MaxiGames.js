@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import cooldownTest from "../../lib/checks/cooldown";
+import cooldownCheck from "../../lib/checks/cooldown";
 import got from "got-cjs";
 import { MGEmbed } from "../../lib/flavoured";
 import { MGModule } from "../../types/command";
@@ -43,7 +43,7 @@ interface TriviaMultiQn {
 }
 
 const trivia: MGModule = {
-  command: withChecks([cooldownTest(10)], {
+  command: withChecks([cooldownCheck(10)], {
     data: new SlashCommandBuilder()
       .setName("trivia")
       .setDescription("Answer some simple questions correctly for points!")
