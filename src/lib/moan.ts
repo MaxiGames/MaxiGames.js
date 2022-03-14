@@ -89,8 +89,8 @@ export default function moan(status: MGStatus, msg: string | unknown): void {
         /at (.+) \(/.exec(x),
         /\(.+:(?:.+:)?([0-9]+):[0-9]+\)/.exec(x),
       ])
-      .filter((x) => x[0] !== null && x[1] !== null && x[2] !== null)
-      .map((x) => [x[0]![0].slice(1).split(":")[0], x[1]![1], x[2]![1]])
+      .filter((x) => x.every((a) => a != null))
+      .map(([x, y, z]) => [x![0].slice(1).split(":")[0], y![1], z![1]])
       .filter((x) => x[0] !== __filename)[0];
 
     e +=
