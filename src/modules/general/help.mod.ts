@@ -31,7 +31,6 @@ import type { MGModule } from "../../types/command";
 import fs from "fs";
 import { lowerCase, startCase } from "lodash";
 import { MGFirebase } from "../../lib/firebase";
-import moan from "../../lib/moan";
 
 const moddirs = getDirectories("./dist/src/modules");
 
