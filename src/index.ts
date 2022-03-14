@@ -28,6 +28,7 @@ import * as admin from "firebase-admin";
 import { MGFirebase } from "./lib/firebase";
 import { defaultGuild } from "./types/firebase";
 import moan from "./lib/moan";
+import { trycatcherr } from "./lib/misc";
 import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
 import logToDiscord from "./utils/log";
@@ -75,12 +76,14 @@ for (const event of events) {
       try {
         await event.execute(...args);
       } catch (e) {
-        try {
-          await args[0].channel.send(
-            "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
-          );
-        } catch {}
-        moan(MGS.Error, e);
+        trycatcherr(
+          async () =>
+            await args[0].channel.send(
+              "An has error ocurred. Please check the bot permissions " +
+                "(make sure it has administrator permissions in this channel). " +
+                "If the issue still persists, please submit a `/bugreport`"
+            )
+        );
       }
     });
   } else {
@@ -88,12 +91,14 @@ for (const event of events) {
       try {
         await event.execute(...args);
       } catch (e) {
-        try {
-          args[0].channel.send(
-            await "An error ocurred. Please check the bot permissions (make sure it has administrator permissions in this channel). If the issue still persists, please submit a `\\bugreport`"
-          );
-        } catch {}
-        moan(MGS.Error, e);
+        trycatcherr(
+          async () =>
+            await args[0].channel.send(
+              "An error ocurred. Please check the bot permissions " +
+                "(make sure it has administrator permissions in this channel). " +
+                "if the issue still persists, please submit a `\\bugreport`"
+            )
+        );
       }
     });
   }
@@ -114,15 +119,16 @@ client.on("interactionCreate", async (interaction) => {
 
   try {
     await command.execute(interaction);
-  } catch (error) {
-    moan(MGS.Error, (error as Error).stack);
+  } catch (e) {
+    moan(MGS.Error, (e as Error).stack);
 
-    try {
-      await interaction.reply({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      });
-    } catch {}
+    trycatcherr(
+      async () =>
+        await interaction.reply({
+          content: "There was an error while executing this command!",
+          ephemeral: true,
+        })
+    );
   }
 });
 

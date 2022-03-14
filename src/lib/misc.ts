@@ -19,6 +19,8 @@
 /*
  * A bunch of mostly quite simple functions that aren't really big enough for
  * their own files
+ *
+ * has: partial_res, trycatcherr
  */
 
 import {
@@ -63,4 +65,13 @@ async function partial_res<T extends _p>(obj: T): Promise<T | undefined> {
   }
 }
 
-export { partial_res };
+async function trycatcherr<a>(f: () => a): Promise<[a] | []> {
+  try {
+    return [await f()];
+  } catch (e) {
+    moan(MGS.Error, e);
+    return [];
+  }
+}
+
+export { partial_res, trycatcherr };
