@@ -13,8 +13,8 @@
     "deploy-commands": "node .scripts/deploy-commands.js",
     "delete-commands": "node .scripts/delete-commands.js",
     "deploy": "./.scripts/heroku-deploy.sh",
-    "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
-    "start-prod": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/serviceAccountKey-dev.json\" npm run init",
+    "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/extconfigs/serviceAccountKey-dev.json\" npm run init",
+    "start-prod": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/extconfigs/serviceAccountKey-dev.json\" npm run init",
     "buildStart": "npm run build; npm run deploy-commands; npm run start;"
   },
   "engines": {

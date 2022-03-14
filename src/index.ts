@@ -136,6 +136,11 @@ admin.initializeApp({
   databaseURL: firebaseConfig,
 });
 
+console.log({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: firebaseConfig,
+});
+
 MGFirebase.init(client);
 
 // set bot activity upon guild events

@@ -21,9 +21,9 @@
  * Description: Firebase Configuration
  */
 
-import configProd from "../../config-prod.json";
-import configDev from "../../config-dev.json";
-import api from "../../api-token.json";
+import configProd from "../../extconfigs/config-prod.json";
+import configDev from "../../extconfigs/config-dev.json";
+import api from "../../extconfigs/api-token.json";
 
 export const config =
   process.env.NODE_ENV == "production" ? configProd : configDev;

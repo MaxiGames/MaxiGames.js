@@ -3,9 +3,7 @@ node_modules
 dist/
 js/
 
-config*.json
-serviceAccountKey*.json
-api-token.json
+extconfig/
 
 *.swp
 *.d.ts
