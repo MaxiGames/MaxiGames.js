@@ -28,6 +28,11 @@ interface MGCommand {
   execute(interaction: CommandInteraction): Promise<void>;
 }
 
+interface MGEvent {
+  name: string;
+  execute(interaction: Interaction): Promise<void>;
+}
+
 // A container for holding together (ostensibly) related events and commands.
 interface MGModule {
   command: MGCommand;
@@ -37,4 +42,4 @@ interface MGModule {
   }[];
 }
 
-export { MGCommand, MGModule };
+export { MGCommand, MGEvent, MGModule };

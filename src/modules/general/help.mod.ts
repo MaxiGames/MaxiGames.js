@@ -67,7 +67,9 @@ const help: MGModule = {
 
 // forming the select menus
 for (const dir of moddirs) {
-  if (dir == "startup") continue;
+  if (dir == "startup") {
+    continue;
+  }
   let description: string | null = null;
   fs.readFile(`./src/modules/${dir}/description.txt`, function (error, data) {
     if ((error === undefined || error === null) && data !== undefined) {
@@ -158,9 +160,12 @@ export async function mainHelp(
 
   let counter = 1;
   for (const i of cmds) {
-    if (i.endsWith("evt.js")) continue;
+    if (i.endsWith("evt.js")) {
+      continue;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const curDescription = require(`../${lowerCase(page)}/${i}`);
-    if (i.endsWith("cmd.js"))
+    if (i.endsWith("cmd.js")) {
       fields.push({
         name: `${counter}. ${startCase(i.replace(".js", "")).replace(
           " Cmd",
@@ -173,7 +178,7 @@ export async function mainHelp(
         }`,
         inline: false,
       });
-    else {
+    } else {
       //ends with mod.ts
       fields.push({
         name: `${counter}. ${startCase(i.replace(".js", "")).replace(
@@ -198,8 +203,8 @@ export async function mainHelp(
       MGEmbed(MGStatus.Success)
         .setTitle("MaxiGames Help! Category: **${startCase(page)}**")
         .setDescription(
-          `To get support for specific queries and help, please join the MaxiGames Official Server ` +
-            `at https://discord.gg/hkkkTqhGAz and create a ticket.`
+          "To get support for specific queries and help, please join the MaxiGames" +
+            "Official Server at https://discord.gg/hkkkTqhGAz and create a ticket."
         )
         .addFields(fields)
         .setFooter(`Version: ${version}. Built with discord.js :)`)

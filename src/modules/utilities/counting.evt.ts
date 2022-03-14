@@ -5,10 +5,10 @@ import { Client, Message, TextChannel } from "discord.js";
 import { partialRes } from "../../lib/misc";
 import { CountingProtection } from "../../types/firebase";
 
-let protect: {
+const protect: {
   [guildID: string]: { [channelID: string]: CountingProtection };
 } = {};
-let deletedMessages: string[] = [];
+const deletedMessages: string[] = [];
 
 export function setProtect(
   guild: string,
@@ -27,11 +27,11 @@ const countingListener = [
     name: "ready",
     once: true,
     async execute(client: Client) {
-      for (let guildID in client.guilds.cache) {
-        let data = await MGFirebase.getData(
+      for (const guildID in client.guilds.cache) {
+        const data = await MGFirebase.getData(
           `guild/${guildID}/countingChannels`
         );
-        for (let i in data) {
+        for (const i in data) {
           setProtect(guildID, i, data[i]["protect"]);
         }
       }
@@ -88,7 +88,7 @@ const countingListener = [
         await msg.reply({
           embeds: [
             MGEmbed(MGStatus.Warn)
-              .setTitle(`You cannot count twice!`)
+              .setTitle("You cannot count twice!")
               .setDescription(
                 `${msg.author.username}, you are not allowed to count twice. This is to prevent one person from counting to a huge number by themselves.`
               ),
@@ -141,18 +141,18 @@ const countingListener = [
       }
     },
   },
-  //counting protection
+  // counting protection
   {
     name: "messageUpdate",
     async execute(oldMsg: Message, newMsg: Message) {
-      let msg = oldMsg;
+      const msg = oldMsg;
       try {
         if (msg.guild === null || msg.author.bot) {
           return;
         }
       } catch {
         return;
-      } //this might throw an error if the message that was edited was sent before bot started
+      } // this might throw an error if the message that was edited was sent before bot started
       try {
         if (protect[msg.guild.id][msg.channel.id].protection) {
           deletedMessages.push(newMsg.id);
@@ -177,7 +177,7 @@ const countingListener = [
   {
     name: "messageDelete",
     async execute(deletedMessage: Message) {
-      let msg = deletedMessage;
+      const msg = deletedMessage;
       try {
         if (msg.guild === null || msg.author.bot) {
           return;
@@ -190,7 +190,7 @@ const countingListener = [
         }
       } catch {
         return;
-      } //this might throw an error if the message that was edited was sent before bot started
+      } // this might throw an error if the message that was edited was sent before bot started
       try {
         if (protect[msg.guild.id][msg.channel.id].protection) {
           await deletedMessage.channel.send({
