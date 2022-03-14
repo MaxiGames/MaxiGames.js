@@ -3,7 +3,7 @@ node_modules
 dist/
 js/
 
-extconfig/
+extconfigs/
 
 *.swp
 *.d.ts
