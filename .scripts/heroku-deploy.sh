@@ -10,7 +10,7 @@ if [ ! $(git branch --show-current) = "master" ]; then
 fi
 
 rm -f tar
-tar cf tar serviceAccountKey-dev.json config-dev.json config-prod.json api-token.json >/dev/null 2>&1  # shh
+tar cf tar extconfigs >/dev/null 2>&1  # shh
 s=$?
 bruh=0  # bruh
 oink=0  # oink oink
@@ -36,7 +36,7 @@ if [ ! $s -eq 0 ]; then
     exit 1
 fi
 
-git add -f serviceAccountKey-dev.json config-dev.json config-prod.json api-token.json >/dev/null 2>&1  # please just shut up
+git add -f extconfigs >/dev/null 2>&1  # please just shut up
 s1=$?
 git commit --allow-empty -m $remote >/dev/null 2>&1  # please just shut up as well
 if [ "$(git status --porcelain)" ]; then
