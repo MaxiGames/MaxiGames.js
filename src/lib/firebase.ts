@@ -22,11 +22,7 @@ import moan from "../lib/moan";
 import MGS from "../lib/statuses";
 import { MGEmbed } from "./flavoured";
 import MGStatus from "../lib/statuses";
-import {
-  defaultCountingProtection,
-  defaultGuild,
-  defaultUser,
-} from "../types/firebase";
+import { defaultGuild, defaultUser } from "../types/firebase";
 
 export class FirebaseManager {
   db: admin.database.Database | undefined = undefined;
@@ -164,15 +160,6 @@ export class FirebaseManager {
   private async initData() {
     const spc = await this.db?.ref("/guild").get();
     const data = spc?.val();
-    for (const i in data) {
-      for (const j in data[i]["countingChannels"]) {
-        if (
-          data[i]["countingChannels"][j]["protect"] === undefined &&
-          typeof data[i]["countingChannels"][j] !== "number"
-        )
-          data[i]["countingChannels"][j]["protect"] = defaultCountingProtection;
-      }
-    }
     await this.db?.ref("/guild").set(data);
     moan(MGS.Success, "defaultised new counting protection data");
   }

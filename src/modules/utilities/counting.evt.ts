@@ -1,50 +1,17 @@
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { partialRes } from "../../lib/misc";
-import { CountingProtection } from "../../types/firebase";
-
-const protect: {
-  [guildID: string]: { [channelID: string]: CountingProtection };
-} = {};
-const deletedMessages: string[] = [];
-
-export function setProtect(
-  guild: string,
-  channel: string,
-  protectConfig: CountingProtection
-) {
-  if (protect[guild] === undefined) {
-    protect[guild] = { [channel]: protectConfig };
-    return;
-  }
-  protect[guild][channel] = protectConfig;
-}
 
 const countingListener = [
   {
-    name: "ready",
-    once: true,
-    async execute(client: Client) {
-      for (const guildID in client.guilds.cache) {
-        const data = await MGFirebase.getData(
-          `guild/${guildID}/countingChannels`
-        );
-        for (const i in data) {
-          setProtect(guildID, i, data[i]["protect"]);
-        }
-      }
-    },
-  },
-  {
     name: "messageCreate",
-    async execute(msg: Message) {
-      const t = await partialRes(msg);
-      if (t === undefined) {
+    async execute(umsg: Message) {
+      const msg = await partialRes(umsg);
+      if (msg === undefined) {
         return;
       }
-      msg = t;
 
       if (msg.guild === null || msg.author.bot) {
         return;
@@ -84,14 +51,13 @@ const countingListener = [
 
       // same person?
       if (id === msg.author.id) {
-        await msg.react("⚠️");
-        await msg.reply({
+        await msg.delete();
+        await msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Warn)
-              .setTitle("You cannot count twice!")
-              .setDescription(
-                `${msg.author.username}, you are not allowed to count twice. This is to prevent one person from counting to a huge number by themselves.`
-              ),
+              .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+              .setTitle(number.toString())
+              .setDescription("You aren't allowed to count twice in a row!"),
           ],
         });
         return;
@@ -102,105 +68,51 @@ const countingListener = [
         guildData["countingChannels"][msg.channel.id]["count"] = number;
         guildData["countingChannels"][msg.channel.id]["id"] = msg.author.id;
 
-        // show on statistics
-        guildData["statistics"]["totalCount"] += 1;
-        if (guildData["statistics"]["highestCount"] < number) {
-          guildData["statistics"]["highestCount"] = number;
-          await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
-          await msg.react("⚡");
-        } else {
-          await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
-        }
-
         // add to personal statistics
         const userData = await MGFirebase.getData(`user/${msg.author.id}`);
         userData["count"]["totalCount"]++;
         if (userData["count"]["highestCount"] < number) {
           userData["count"]["highestCount"] = number;
         }
+
         await MGFirebase.setData(`user/${msg.author.id}`, userData);
-        await msg.react("✅");
+        await msg.delete();
+        await msg.channel.send({
+          embeds: [
+            MGEmbed(MGStatus.Success)
+              .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+              .setTitle(number.toString())
+              .setDescription(
+                guildData["statistics"]["highestCount"] < number
+                  ? "New highscore!"
+                  : ""
+              ),
+          ],
+        });
+
+        // show on statistics, perhaps update
+        guildData["statistics"]["totalCount"] += 1;
+        await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
+        if (guildData["statistics"]["highestCount"] < number) {
+          guildData["statistics"]["highestCount"] = number;
+        }
       } else {
         // wrong.
         guildData["countingChannels"][msg.channel.id]["count"] = 0;
         guildData["countingChannels"][msg.channel.id]["id"] = 0;
         await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
-        await msg.reply({
+        await msg.delete();
+        await msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Error)
-              .setTitle(`${msg.author.username} ruined it!`)
+              .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+              .setTitle(number.toString())
               .setDescription(
-                `${msg.author.username} counted ${number}, but the next count was ` +
-                  `${curCount + 1}. The counter has been reset to 0.`
+                `...but the next number is ${curCount + 1}. ` +
+                  "Counter reset to 0."
               ),
           ],
         });
-        await msg.react("❌");
-      }
-    },
-  },
-  // counting protection
-  {
-    name: "messageUpdate",
-    async execute(oldMsg: Message, newMsg: Message) {
-      const msg = oldMsg;
-      try {
-        if (msg.guild === null || msg.author.bot) {
-          return;
-        }
-      } catch {
-        return;
-      } // this might throw an error if the message that was edited was sent before bot started
-      try {
-        if (protect[msg.guild.id][msg.channel.id].protection) {
-          deletedMessages.push(newMsg.id);
-          await newMsg.reply({
-            embeds: [
-              MGEmbed(MGStatus.Warn)
-                .setTitle("A message was EDITED here.")
-                .setDescription("The original message was: " + oldMsg.content),
-            ],
-          });
-          try {
-            await newMsg.delete();
-          } catch {
-            return;
-          }
-        }
-      } catch {
-        return;
-      }
-    },
-  },
-  {
-    name: "messageDelete",
-    async execute(deletedMessage: Message) {
-      const msg = deletedMessage;
-      try {
-        if (msg.guild === null || msg.author.bot) {
-          return;
-        }
-        if (deletedMessages.includes(`${deletedMessage.id}`)) {
-          deletedMessages.splice(
-            deletedMessages.indexOf(`${deletedMessage.id}`)
-          );
-          return;
-        }
-      } catch {
-        return;
-      } // this might throw an error if the message that was edited was sent before bot started
-      try {
-        if (protect[msg.guild.id][msg.channel.id].protection) {
-          await deletedMessage.channel.send({
-            embeds: [
-              MGEmbed(MGStatus.Warn)
-                .setTitle("A message was DELETED here.")
-                .setDescription("The message was: " + deletedMessage.content),
-            ],
-          });
-        }
-      } catch {
-        return;
       }
     },
   },

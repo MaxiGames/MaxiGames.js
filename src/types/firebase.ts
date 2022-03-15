@@ -58,13 +58,7 @@ export interface Guild {
 export interface Counting {
   count: number;
   id: number;
-  protect: CountingProtection;
 }
-
-export interface CountingProtection {
-  protection: boolean;
-}
-
 export const defaultGuild: Guild = {
   countingChannels: 0,
   starboardChannel: 0,
@@ -77,10 +71,6 @@ export const defaultGuild: Guild = {
     maxigames:
       "Hello there! Did you call me? (This is a default autoresponse for every guild. You can remove or add more autoresponses using the /autoresponse commands, but only admins can do it!)",
   },
-};
-
-export const defaultCountingProtection: CountingProtection = {
-  protection: false,
 };
 
 interface User {

@@ -36,7 +36,6 @@ import withChecks from "../../lib/checks";
 import { userPermsCheck } from "../../lib/checks/permissions";
 import cooldownCheck from "../../lib/checks/cooldown";
 import { Counting } from "../../types/firebase";
-import { setProtect } from "./counting.evt";
 import { upperCase } from "lodash";
 
 const counting: MGCommand = withChecks(
@@ -208,7 +207,9 @@ async function removeChannel(
     });
   } else {
     delete serverData["countingChannels"][channel.id];
-    if (serverData["countingChannels"]) serverData["countingChannels"] = 0;
+    if (serverData["countingChannels"]) {
+      serverData["countingChannels"] = 0;
+    }
     await MGFirebase.setData(`guild/${guild.id}`, serverData).then(async () => {
       if (channel === null) {
         return;
@@ -235,7 +236,7 @@ async function currentCount(interaction: CommandInteraction, guildData: any) {
     await interaction.reply({
       embeds: [
         MGEmbed(MGStatus.Error).setTitle(
-          `This channel is not yet a counting channel. Please use /counting addchannel to add this channel.`
+          "This channel is not yet a counting channel. Please use /counting addchannel to add this channel."
         ),
       ],
     });
@@ -245,7 +246,7 @@ async function currentCount(interaction: CommandInteraction, guildData: any) {
     await interaction.reply({
       embeds: [
         MGEmbed(MGStatus.Success).setTitle(
-          `This is a new counting channel! The current count is 0. Enjoy counting :)`
+          "This is a new counting channel! The current count is 0. Enjoy counting :)"
         ),
       ],
     });
@@ -281,7 +282,7 @@ async function protectChannel(interaction: CommandInteraction, guildData: any) {
     await interaction.reply({
       embeds: [
         MGEmbed(MGStatus.Error).setTitle(
-          `This channel is not yet a counting channel. Please use /counting addchannel to add this channel.`
+          "This channel is not yet a counting channel. Please use /counting addchannel to add this channel."
         ),
       ],
     });
@@ -291,9 +292,6 @@ async function protectChannel(interaction: CommandInteraction, guildData: any) {
     protection: protection,
   };
   await MGFirebase.setData(`guild/${interaction.guild!.id}`, guildData);
-  setProtect(interaction.guild!.id, channel.id, {
-    protection: protection,
-  });
 
   await interaction.reply({
     embeds: [
