@@ -78,6 +78,7 @@ for (const event of events) {
       try {
         await event.execute(...args);
       } catch (e) {
+        moan(MGS.Error, e);
         trycatcherr(
           async () =>
             await args[0].channel.send(
@@ -93,6 +94,7 @@ for (const event of events) {
       try {
         await event.execute(...args);
       } catch (e) {
+        moan(MGS.Error, e);
         trycatcherr(
           async () =>
             await args[0].channel.send(
