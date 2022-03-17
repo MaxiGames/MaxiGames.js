@@ -145,7 +145,7 @@ async function addChannel(
     guildData["countingChannels"][channel.id] = {
       count: 0,
       id: 0,
-      protect: { protection: false },
+      prevmsg: "",
     } as Counting;
     channel.setTopic("Current Count: 0");
     await MGFirebase.setData(`guild/${guild.id}`, guildData).then(async () => {

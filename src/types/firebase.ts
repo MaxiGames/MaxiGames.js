@@ -58,6 +58,7 @@ export interface Guild {
 export interface Counting {
   count: number;
   id: number;
+  prevmsg: string;
 }
 export const defaultGuild: Guild = {
   countingChannels: 0,

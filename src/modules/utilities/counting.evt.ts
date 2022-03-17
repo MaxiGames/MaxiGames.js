@@ -77,22 +77,37 @@ const countingListener = [
 
         await MGFirebase.setData(`user/${msg.author.id}`, userData);
         await msg.delete();
-        await msg.channel.send({
+
+        // the previous one is no longer a highscore
+        try {
+          const pmsg = await partialRes(
+            await msg.channel.messages.fetch(
+              guildData["countingChannels"][msg.channel.id]["prevmsg"]
+            )
+          );
+          if (pmsg?.embeds[0].description === "Highscore!") {
+            pmsg.edit({ embeds: [pmsg.embeds[0].setDescription("")] });
+          }
+        } catch {
+          // don't even log it, it is in no way an error
+        }
+
+        const smsg = await msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Success)
               .setAuthor(msg.author.username, msg.author.displayAvatarURL())
               .setTitle(number.toString())
               .setDescription(
                 guildData["statistics"]["highestCount"] < number
-                  ? "New highscore!"
+                  ? "Highscore!"
                   : ""
               ),
           ],
         });
+        guildData["countingChannels"][msg.channel.id]["prevmsg"] = smsg.id;
 
         // show on statistics, perhaps update
         guildData["statistics"]["totalCount"] += 1;
-        await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
         if (guildData["statistics"]["highestCount"] < number) {
           guildData["statistics"]["highestCount"] = number;
         }
@@ -100,9 +115,8 @@ const countingListener = [
         // wrong.
         guildData["countingChannels"][msg.channel.id]["count"] = 0;
         guildData["countingChannels"][msg.channel.id]["id"] = 0;
-        await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
         await msg.delete();
-        await msg.channel.send({
+        const smsg = await msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Error)
               .setAuthor(msg.author.username, msg.author.displayAvatarURL())
@@ -113,7 +127,10 @@ const countingListener = [
               ),
           ],
         });
+        guildData["countingChannels"][msg.channel.id]["prevmsg"] = smsg.id;
       }
+
+      await MGFirebase.setData(`guild/${msg?.guild?.id}`, guildData);
     },
   },
 ];
