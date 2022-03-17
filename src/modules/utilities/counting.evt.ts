@@ -51,8 +51,8 @@ const countingListener = [
 
       // same person?
       if (id === msg.author.id) {
-        await msg.delete();
-        await msg.channel.send({
+        msg.delete();
+        msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Warn)
               .setAuthor(msg.author.username, msg.author.displayAvatarURL())
