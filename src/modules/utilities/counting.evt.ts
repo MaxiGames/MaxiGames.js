@@ -75,19 +75,19 @@ const countingListener = [
           userData["count"]["highestCount"] = number;
         }
 
-        await MGFirebase.setData(`user/${msg.author.id}`, userData);
-        await msg.delete();
+        MGFirebase.setData(`user/${msg.author.id}`, userData);
+        msg.delete();
 
         // the previous one is no longer a highscore
         try {
-          const pmsg = await partialRes(
-            await msg.channel.messages.fetch(
-              guildData["countingChannels"][msg.channel.id]["prevmsg"]
-            )
-          );
-          if (pmsg?.embeds[0].description === "Highscore!") {
-            pmsg.edit({ embeds: [pmsg.embeds[0].setDescription("")] });
-          }
+          msg.channel.messages
+            .fetch(guildData["countingChannels"][msg.channel.id]["prevmsg"])
+            .then(partialRes)
+            .then((pmsg) => {
+              if (pmsg?.embeds[0].description === "Highscore!") {
+                pmsg.edit({ embeds: [pmsg.embeds[0].setDescription("")] });
+              }
+            });
         } catch {
           // don't even log it, it is in no way an error
         }
@@ -115,7 +115,7 @@ const countingListener = [
         // wrong.
         guildData["countingChannels"][msg.channel.id]["count"] = 0;
         guildData["countingChannels"][msg.channel.id]["id"] = 0;
-        await msg.delete();
+        msg.delete();
         const smsg = await msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Error)
