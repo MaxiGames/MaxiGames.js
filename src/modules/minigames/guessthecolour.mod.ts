@@ -63,7 +63,7 @@ const guessTheColour: MGModule = {
       }
       const embed = MGEmbed()
         .setTitle("Guess The Colour!")
-        .setFooter("Time given to see colour: 3 seconds")
+        .setFooter({ text: "Time given to see colour: 3 seconds" })
         .setDescription("<--- Guess embed's colour!")
         .addFields({
           name: "User ID:",
@@ -79,7 +79,9 @@ const guessTheColour: MGModule = {
         if (newMessage.embeds[0].description !== "<--- Guess embed's colour!") {
           return;
         }
-        embed.setFooter("Time is up! You can no longer see the colour!");
+        embed.setFooter({
+          text: "Time is up! You can no longer see the colour!",
+        });
         embed.setDescription(
           "The colour has been removed. You still have infinite time to guess it tho..."
         );

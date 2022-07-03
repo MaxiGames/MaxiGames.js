@@ -265,9 +265,9 @@ async function currentCount(interaction: CommandInteraction, guildData: any) {
             guildData["countingChannels"][channel.id]["id"]
           }>`
         )
-        .setFooter(
-          "To find out more stats for counting in this server, use /serverprofile"
-        ),
+        .setFooter({
+          text: "To find out more stats for counting in this server, use /serverprofile",
+        }),
     ],
   });
 }

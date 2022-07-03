@@ -37,7 +37,7 @@ function generateWarning(no: number, userid: string) {
             "**ONLY PRESS CONFIRM IF YOU ARE VERY SURE YOU WANT TO DELETE YOUR DATA**.\n" +
             "*3 Presses of the confirm button are needed.*"
         )
-        .setFooter(`USER-ID: ${userid}`),
+        .setFooter({ text: `USER-ID: ${userid}` }),
     ],
     components: [
       new MessageActionRow().addComponents([

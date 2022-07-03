@@ -1,7 +1,7 @@
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
 import { MGFirebase } from "../../lib/firebase";
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { partialRes } from "../../lib/misc";
 
 const countingListener = [
@@ -55,7 +55,10 @@ const countingListener = [
         msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Warn)
-              .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+              .setAuthor({
+                name: msg.author.username,
+                url: msg.author.displayAvatarURL(),
+              })
               .setTitle(number.toString())
               .setDescription("You aren't allowed to count twice in a row!"),
           ],
@@ -95,7 +98,10 @@ const countingListener = [
         const smsg = await msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Success)
-              .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+              .setAuthor({
+                name: msg.author.username,
+                url: msg.author.displayAvatarURL(),
+              })
               .setTitle(number.toString())
               .setDescription(
                 guildData["statistics"]["highestCount"] < number
@@ -119,7 +125,10 @@ const countingListener = [
         const smsg = await msg.channel.send({
           embeds: [
             MGEmbed(MGStatus.Error)
-              .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+              .setAuthor({
+                name: msg.author.username,
+                url: msg.author.displayAvatarURL(),
+              })
               .setTitle(number.toString())
               .setDescription(
                 `...but the next number is ${curCount + 1}. ` +

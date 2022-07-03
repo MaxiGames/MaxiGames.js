@@ -207,7 +207,7 @@ export async function mainHelp(
             "Official Server at https://discord.gg/hkkkTqhGAz and create a ticket."
         )
         .addFields(fields)
-        .setFooter(`Version: ${version}. Built with discord.js :)`)
+        .setFooter({ text: `Version: ${version}. Built with discord.js :)` })
         .setThumbnail(
           "https://avatars.githubusercontent.com/u/88721933?s=200&v=4"
         ),

@@ -95,9 +95,9 @@ const suggestions = [
                         value: `${added}`,
                       },
                     ])
-                    .setFooter(
-                      `Suggested by ${user.username}#${user.discriminator} (${user.id}), reviewed by ${interaction.user.username}#${interaction.user.discriminator}.`
-                    ),
+                    .setFooter({
+                      text: `Suggested by ${user.username}#${user.discriminator} (${user.id}), reviewed by ${interaction.user.username}#${interaction.user.discriminator}.`,
+                    }),
                 ],
               });
 
@@ -119,9 +119,9 @@ const suggestions = [
                         value: `${added}`,
                       },
                     ])
-                    .setFooter(
-                      `Suggested by ${user.username}#${user.discriminator} (${user.id}), reviewed by ${interaction.user.username}#${interaction.user.discriminator}.`
-                    ),
+                    .setFooter({
+                      text: `Suggested by ${user.username}#${user.discriminator} (${user.id}), reviewed by ${interaction.user.username}#${interaction.user.discriminator}.`,
+                    }),
                 ],
               });
             })

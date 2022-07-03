@@ -25,13 +25,12 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import withChecks from "../../lib/checks";
 import {
   ButtonInteraction,
-  InteractionReplyOptions,
   MessageActionRow,
   MessageButton,
   MessageInteraction,
+  WebhookEditMessageOptions,
 } from "discord.js";
 import { MGFirebase } from "../../lib/firebase";
-import { APIButtonComponent } from "discord.js/node_modules/discord-api-types";
 
 type DifficultyT = "easy" | "medium" | "hard";
 
@@ -95,17 +94,23 @@ const trivia: MGModule = {
             difficulty: idstr[1] as DifficultyT,
             question: msg.embeds[0].description!,
             choices: msg.components![0].components.map(
-              (b) => (b as APIButtonComponent).label!
+              (b) => (b as MessageButton).label!
             ),
             correct: b64d(idstr[2]),
           };
 
-          if (idstr[2] == idstr[3]) {
-            await interaction.update(mkTriviaMsg(triv, triv.difficulty, 0));
-            await changeRating(interaction, true, triv.difficulty);
-          } else {
-            await interaction.update(mkTriviaMsg(triv, triv.difficulty, 1));
-            await changeRating(interaction, false, triv.difficulty);
+          try {
+            if (idstr[2] == idstr[3]) {
+              await interaction.update(mkTriviaMsg(triv, triv.difficulty, 0));
+              await changeRating(interaction, true, triv.difficulty);
+            } else {
+              await interaction.update(mkTriviaMsg(triv, triv.difficulty, 1));
+              await changeRating(interaction, false, triv.difficulty);
+            }
+          } catch {
+            await interaction.update(
+              "An error has occurred in sending the iteraciton..."
+            );
           }
         }
       },
@@ -143,7 +148,7 @@ function mkTriviaMsg(
   triv: TriviaMultiQn | null,
   difficulty: DifficultyT,
   status: 0 | 1 | 2 | 3 // 0 = correct, 1 = wrong, 2 = timeout, 3 = initial creation
-): InteractionReplyOptions {
+): WebhookEditMessageOptions {
   if (triv == null) {
     return {
       embeds: [
@@ -152,7 +157,7 @@ function mkTriviaMsg(
           .setDescription(
             "There was an error while trying to fetch a question."
           )
-          .setFooter("error :("),
+          .setFooter({ text: "error :(" }),
       ],
     };
   }
@@ -181,12 +186,13 @@ function mkTriviaMsg(
       MGEmbed(status == 3 ? MGS.Info : status == 0 ? MGS.Success : MGS.Error)
         .setTitle(`Trivia time! (difficulty: ${difficulty})`)
         .setDescription(triv.question)
-        .setFooter(
-          status == 0 ? "correct!" :
-          status == 1 ? "wrong :(" :
-          status == 2 ? "timeout :(" :
-                        "waiting..." // prettier-ignore
-        ),
+        .setFooter({
+          text:
+            status == 0 ? "correct!" :
+              status == 1 ? "wrong :(" :
+                status == 2 ? "timeout :(" :
+                  "waiting...", // prettier-ignore
+        }),
     ],
     components: [row],
   };

@@ -50,7 +50,7 @@ const whoami: MGCommand = {
         }
       )
       .setThumbnail(`${interaction.user.displayAvatarURL()}`)
-      .setFooter(`ID: ${interaction.user.id}`);
+      .setFooter({ text: `ID: ${interaction.user.id}` });
     if (interaction.member instanceof GuildMember) {
       const roles: string = interaction.member.roles.cache.reduce(
         (previousValue, currentValue) => `${previousValue} ${currentValue}`

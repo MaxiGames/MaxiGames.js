@@ -20,11 +20,11 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import {
   ButtonInteraction,
   Interaction,
-  InteractionReplyOptions,
   MessageActionRow,
   MessageActionRowComponent as MARC,
   MessageButton,
   MessageEmbed,
+  WebhookEditMessageOptions,
 } from "discord.js";
 import { MGEmbed } from "../../lib/flavoured";
 import MGStatus from "../../lib/statuses";
@@ -281,7 +281,7 @@ function gen_disc_msg(
   p2id: string,
   p1turnp: boolean,
   lockedp: boolean
-): InteractionReplyOptions {
+): WebhookEditMessageOptions {
   return {
     embeds: [gen_disc_embed(board, p1id, p2id, p1turnp)],
     components: board2components(

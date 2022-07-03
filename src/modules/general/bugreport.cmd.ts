@@ -59,8 +59,16 @@ const bug: MGCommand = withChecks([cooldownCheck(10)], {
 
     // send it to the MG server
     const channel = interaction.client.guilds.cache
-      .get("837522963389349909")
-      ?.channels.cache.get("869960880631218196") as ThreadChannel;
+      .get(
+        process.env.NODE_ENV === "production"
+          ? "837522963389349909"
+          : "866939574419849216"
+      )
+      ?.channels.cache.get(
+        process.env.NODE_ENV === "production"
+          ? "869960880631218196"
+          : "873835031880163330"
+      ) as ThreadChannel;
     const msg = await channel.send({
       embeds: [
         MGEmbed(MGStatus.Success)

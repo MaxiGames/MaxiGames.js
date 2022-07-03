@@ -69,12 +69,13 @@ const starboardwatch = [
         .setDescription(
           `[Click to jump to message](${reaction.message.url})` + content
         )
-        .setFooter("React with ⭐ to star this message")
-        .setAuthor(
-          reaction.message.author!.username,
-          reaction.message.author!.avatarURL() ??
-            reaction.message.author!.defaultAvatarURL
-        );
+        .setFooter({ text: "React with ⭐ to star this message" })
+        .setAuthor({
+          name: reaction.message.author!.username,
+          url:
+            reaction.message.author!.avatarURL() ??
+            reaction.message.author!.defaultAvatarURL,
+        });
       reaction.message.attachments.each((a) => embed.setImage(a.url));
 
       const sbchan = (await reaction.client.channels.fetch(
@@ -138,12 +139,13 @@ const starboardwatch = [
         .setDescription(
           `[Click to jump to message](${reaction.message.url})` + content
         )
-        .setFooter("React with ⭐ to star this message")
-        .setAuthor(
-          reaction.message.author!.username,
-          reaction.message.author!.avatarURL() ??
-            reaction.message.author!.defaultAvatarURL
-        );
+        .setFooter({ text: "React with ⭐ to star this message" })
+        .setAuthor({
+          name: reaction.message.author!.username,
+          url:
+            reaction.message.author!.avatarURL() ??
+            reaction.message.author!.defaultAvatarURL,
+        });
       reaction.message.attachments.each((a) => embed.setImage(a.url));
 
       const sbchan = (await reaction.client.channels.fetch(

@@ -22,7 +22,7 @@ import moan from "../lib/moan";
 import MGS from "../lib/statuses";
 import { MGEmbed } from "./flavoured";
 import MGStatus from "../lib/statuses";
-import { defaultGuild, defaultUser } from "../types/firebase";
+import { defaultAdmin, defaultGuild, defaultUser } from "../types/firebase";
 
 export class FirebaseManager {
   db: admin.database.Database | undefined = undefined;
@@ -31,6 +31,7 @@ export class FirebaseManager {
 
   public async init(client: Client) {
     this.db = admin.database();
+    await this.createDefaultData();
     await this.initData();
     await this.announcement(client);
     const setDataCalls = this.setDataCalls;
@@ -61,20 +62,8 @@ export class FirebaseManager {
     }
     if (getDataCall > 100) {
       const ajr = await client.users.fetch("712942935129456671");
-      const tux = await client.users.fetch("682592012163481616");
       for (let i = 0; i < 100; i++) {
         await ajr.send({
-          embeds: [
-            MGEmbed(MGS.Error)
-              .setTitle(
-                "GetData was called too many times! AlERT! (sent a 100 times)"
-              )
-              .setDescription(
-                `getData was called ${getDataCall} in the past 5 minutes!!`
-              ),
-          ],
-        });
-        await tux.send({
           embeds: [
             MGEmbed(MGS.Error)
               .setTitle(
@@ -93,20 +82,8 @@ export class FirebaseManager {
     }
     if (setDataCall > 100) {
       const ajr = await client.users.fetch("712942935129456671");
-      const tux = await client.users.fetch("682592012163481616");
       for (let i = 0; i < 100; i++) {
         await ajr.send({
-          embeds: [
-            MGEmbed(MGS.Error)
-              .setTitle(
-                "SetData was called too many times! AlERT! (sent a 100 times)"
-              )
-              .setDescription(
-                `setData was called ${setDataCall} in the past 5 minutes!!`
-              ),
-          ],
-        });
-        await tux.send({
           embeds: [
             MGEmbed(MGS.Error)
               .setTitle(
@@ -162,6 +139,23 @@ export class FirebaseManager {
     const data = spc?.val();
     await this.db?.ref("/guild").set(data);
     moan(MGS.Success, "defaultised new counting protection data");
+  }
+
+  private async createDefaultData() {
+    const spc = await this.db?.ref("/").get();
+    let data = spc?.val();
+    if (data === null) {
+      data = {
+        user: defaultUser,
+        guild: defaultGuild,
+        announcement: "",
+        admin: defaultAdmin,
+        version: "",
+        news: "",
+      };
+      await this.db?.ref("/").set(data);
+      moan(MGS.Success, "defaultised data");
+    }
   }
 
   private async announcement(client: Client) {
