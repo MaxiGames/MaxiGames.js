@@ -35,6 +35,7 @@ import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
 import logToDiscord from "./utils/log";
 import ActivityDetails from "./utils/activityPanel";
+import * as http from "http";
 
 export const client = new Client({
   intents: [
@@ -212,4 +213,16 @@ client.login(config.tokenId).then(() => {
         .then(moan(MGS.Info, "Posted new count to top.gg"));
     }
   });
+});
+
+// quick port listener for back4app
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "text/plain");
+  res.end("Hello World\n");
+});
+
+const port = process.env.PORT || 8080;
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
 });
