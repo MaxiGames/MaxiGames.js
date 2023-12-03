@@ -222,7 +222,7 @@ const server = http.createServer((req, res) => {
   res.end("Hello World\n");
 });
 
-const port = process.env.PORT || 8080;
+const port = 8080;
 server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
