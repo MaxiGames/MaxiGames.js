@@ -4,7 +4,6 @@
   "description": "Your one and only discord bot that includes all forms of minigames you will ever want. Have a suggestion for another? Open an issue!",
   "main": "src/index.js",
   "scripts": {
-    "prepare": "husky install",
     "setup": "firebase emulators:start",
     "init": "node --experimental-top-level-await dist/src/index.js",
     "build": "rm -rf dist; tsc;",
@@ -15,7 +14,8 @@
     "deploy": "./.scripts/heroku-deploy.sh",
     "start": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/extconfigs/serviceAccountKey-dev.json\" npm run init",
     "start-prod": "GOOGLE_APPLICATION_CREDENTIALS=\"$(pwd)/extconfigs/serviceAccountKey-dev.json\" npm run init",
-    "buildStart": "npm run build; npm run deploy-commands; npm run start;"
+    "buildStart": "npm run build; npm run deploy-commands; npm run start;",
+    "buildStart-prod": "npm run build; npm run deploy-commands; npm run start-prod;"
   },
   "engines": {
     "node": ">=17.x"
