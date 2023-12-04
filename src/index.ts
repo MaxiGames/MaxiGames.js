@@ -20,46 +20,6 @@
  * File: src/index.ts
  * Description: Main file of MaxiGames
  */
-import { writeFile } from "fs";
-
-// write secrets to disk
-if (process.env.NODE_ENV == "production") {
-  writeFile(
-    "./extconfigs/config-prod.json",
-    JSON.stringify(process.env.CONFIG_PROD),
-    (e) => {
-      console.log(e);
-    }
-  );
-  writeFile(
-    "./extconfigs/config-dev.json",
-    JSON.stringify(process.env.CONFIG_DEV),
-    (e) => {
-      console.log(e);
-    }
-  );
-  writeFile(
-    "./extconfigs/api-token.json",
-    JSON.stringify(process.env.API_TOKEN),
-    (e) => {
-      console.log(e);
-    }
-  );
-  writeFile(
-    "./extconfigs/serviceAccountKey-dev.json",
-    JSON.stringify(process.env.SERVICEACCOUNTKEY_DEV),
-    (e) => {
-      console.log(e);
-    }
-  );
-  writeFile(
-    "./extconfigs/serviceAccountKey-prod.json",
-    JSON.stringify(process.env.SERVICEACCOUNTKEY_PROD),
-    (e) => {
-      console.log(e);
-    }
-  );
-}
 
 import { Client, Intents } from "discord.js";
 import { REST } from "@discordjs/rest";
@@ -75,7 +35,6 @@ import MGS from "./lib/statuses";
 import DBL from "top.gg-core";
 import logToDiscord from "./utils/log";
 import ActivityDetails from "./utils/activityPanel";
-import * as http from "http";
 
 export const client = new Client({
   intents: [
@@ -253,16 +212,4 @@ client.login(config.tokenId).then(() => {
         .then(moan(MGS.Info, "Posted new count to top.gg"));
     }
   });
-});
-
-// quick port listener for back4app
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end("Hello World\n");
-});
-
-const port = 8080;
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
 });
